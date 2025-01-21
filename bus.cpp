@@ -186,7 +186,7 @@ void BusPC1000::out(int address, int value) {
                     case 4: speed_slowdown=64;break;
                     case 5: speed_slowdown=32;break;
                     case 6: speed_slowdown=16;break;
-                    case 7: printf("oops clk off\n");speed_slowdown=999999;break;
+                    case 7: printf("oops clk off\n");speed_slowdown=99999;break;
                     default:assert(false);
                 }
                 //printf("<cks=%d slowdown=%d>\n",cks,speed_slowdown);

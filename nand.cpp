@@ -186,7 +186,8 @@ uint8_t read_nand(){
         if(cmd==0x50) y+=512u;
         unsigned int final= pos*528u+ y +nand_read_cnt;
         if(nand_read_cnt!=0||cmd!=0){
-            assert(final%528!=0);
+            //assert(final%528!=0);
+            if(final%528==0) printf("warn: read %04x accross 528 boundary\n",final);
         }
 
 

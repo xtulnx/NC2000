@@ -168,7 +168,23 @@ void sync_time_2000(){
 		rtc_reg[1]=local_time->tm_min;
 		rtc_reg[0]=local_time->tm_sec;
 }
+bool soft_reset=0;
+void try_soft_reset(){
+	if(bus->speed_slowdown>512){
+		soft_reset=1;
+		printf("soft reset!!\n");
+	}
+}
 void cpu_run_emux(){
+	if(soft_reset){
+		soft_reset=0;
+		ram_io[2]=1;
+		ram_io[3]|=1;
+		cpu->reset();
+		nc1020_states.last_cycles=0;
+		nc1020_states.cycles=0;
+		bus->speed_slowdown=1;
+	}
 	//assert(cycles==cpu->getTotalCycles()/12);
 	char *peeked_msg=peek_message();
 	if(peeked_msg){
