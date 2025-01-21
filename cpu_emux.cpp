@@ -283,16 +283,10 @@ void cpu_run_emux(){
 			//adapted from wayback
 			if ( ram_io[0x04] & 0x0F ) {
 				//why only set flag for timer0? why not set 0x20
-				extern bool hack_need_irq_by_timer0;
-				extern bool hack_need_irq_by_timer1;
-				if(hack_need_irq_by_timer0){
-					ram_io[0x01] |= 0x10u; 
-					cpu->IRQ();
-				}
-				if(hack_need_irq_by_timer1){
-					ram_io[0x01] |= 0x20u; 
-					cpu->IRQ();
-				}
+				//_ADD_TM1I_BIT() _ADD_TM1I_BIT() is inside KeepTimer01, why set it another time?
+				//this is from wayback
+				ram_io[0x01] |= 0x10;
+				cpu->IRQ();
 			}
 		}
 	}

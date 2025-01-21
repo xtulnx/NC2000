@@ -155,8 +155,6 @@ void EnableWatchDogFlag()
 
 // TODO: increase timer value by speed
 // seems PC1000's rom never start timer0/1 in tracing
-bool hack_need_irq_by_timer0;
-bool hack_need_irq_by_timer1;
 bool KeepTimer01( unsigned int cpuTick )
 {
     bool needirq = false;
@@ -223,7 +221,6 @@ bool KeepTimer01( unsigned int cpuTick )
 
         }
     }
-	hack_need_irq_by_timer0=needirq;
     // timer 1 next, only mode1
     if (timer1run_tmie && w0c_b67_TMODESL == 1) {
         timer1ticks += cpuTick;
@@ -239,10 +236,7 @@ bool KeepTimer01( unsigned int cpuTick )
         if (overflow) {
             _ADD_TM1I_BIT();
             needirq = true;
-			hack_need_irq_by_timer1=true;
-        }else{
-			hack_need_irq_by_timer1=false;
-		}
+        }
     }
     return needirq;
 }
