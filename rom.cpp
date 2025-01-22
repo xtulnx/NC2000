@@ -31,7 +31,7 @@ void LoadRom(const string romPath){
 }
 
 void init_rom(){
-    memset(&rom_buff,0,sizeof(rom_buff));
+    memset(&rom_buff,0xff,sizeof(rom_buff));
 	LoadRom(nc1020_rom.romPath);
 	if(nc1020mode){
 		for (uint32_t i=0; i<num_rom_pages/3; i++) {
