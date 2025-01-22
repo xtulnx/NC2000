@@ -181,8 +181,8 @@ void cpu_run_emux(){
 		ram_io[2]=1;
 		ram_io[3]|=1;
 		cpu->reset();
-		nc1020_states.last_cycles=0;
-		nc1020_states.cycles=0;
+		//nc1020_states.last_cycles=0;
+		//nc1020_states.cycles=0;
 		bus->speed_slowdown=1;
 	}
 	//assert(cycles==cpu->getTotalCycles()/12);

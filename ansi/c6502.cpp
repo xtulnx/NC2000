@@ -48,7 +48,7 @@ void C6502::reset() {
     nmiPending = false;
     nmiRequest = false;
 
-    total_cycles = 0;
+    //total_cycles = 0; //this has so many bad consequences...
 }
 
 long long C6502::getTotalCycles() {
