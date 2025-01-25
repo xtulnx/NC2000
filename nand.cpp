@@ -88,7 +88,9 @@ uint8_t read_nand(){
             printf("read while no CE\n");
         }
     }
-    assert(!CLE || ! ALE);
+    if(CLE && ALE){
+        printf("oops, in nand read, both CLE and ALE true!\n");
+    }
 
     //printf("tick=%lld, read %x  %02x\n",tick, addr, ram_io[addr]);
     uint8_t roa_bbs=ram_io[0x0a];
@@ -235,7 +237,10 @@ void nand_write(uint8_t value){
         ALE = ram_io[0x18]&0x02;
         CE = ram_io[0x18]&0x40;
     }
-    assert(!CLE || ! ALE);
+    if(CLE && ALE){
+        printf("oops, in nand write, both CLE and ALE true!\n");
+        return;
+    }
 
     //printf("tick=%llu write $29 %x  CLE=%d ALE=%d %d\n",tick%10000,value,CLE,ALE,(int)nand_cmd.size());
     if(enable_debug_nand) printf("tick=%llu write $29 %x  CLE=%d ALE=%d\n",tick%10000,value,CLE,ALE);

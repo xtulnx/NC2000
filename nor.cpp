@@ -129,7 +129,7 @@ void write_nor0(uint16_t addr,uint8_t value){
 
 	if(nc2000mode||nc3000mode){
 		if (bank_idx >= 0x80 && addr>=0x4000 && addr<=0xbfff) {
-			printf("write2!!!");
+			printf("oops, suspicious write to nor, bank_idx=%02x, addr=%04x\n",bank_idx, addr);
 			/*
 			Peek16(addr) = value;
 			if (addr == 0x8000 && value == 0xF0) {
@@ -139,12 +139,12 @@ void write_nor0(uint16_t addr,uint8_t value){
 		}
 	}
 
-	assert(bank_idx<num_nor_pages);
-
     if(nc2000mode||nc3000mode){
 		//assert(addr>=0x4000&& addr<=0xbfff);
 	}
     if (bank_idx >= num_nor_pages) {
+        printf("oops, in nor write, bank_idx>=num_nor_pages, bank_idx=%02x\n",bank_idx);
+        //note: bank_idx is not really used in below code
         return;
     }
 

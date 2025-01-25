@@ -389,7 +389,8 @@ void SwitchCheck(){
 		}
 		if((ramb_vol&0x03)!=0){
 			if(enable_oops)printf("oops3!\n");
-			assert(false);
+			printf("oops, (ramb_vol&0x03)!=0 ramb_vol=%x\n",ramb_vol);
+			//assert(false);
 		}
 	}
 }
