@@ -66,7 +66,7 @@ void SaveNor(){
 }
 
 void init_nor(){
-    memset(&nor_buff,0,sizeof(nor_buff));
+    memset(&nor_buff,0xff,sizeof(nor_buff));
     LoadNor();
     for (uint32_t i=0; i<num_nor_pages; i++) {
 		nor_banks[i] = nor_buff + (0x8000 * i);

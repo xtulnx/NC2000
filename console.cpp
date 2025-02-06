@@ -218,9 +218,9 @@ void handle_cmd(string str){
 	if(cmds[0]=="wqxhex"){
 			vector<char> wqxhex;
 			read_file("wqxhex.bin", wqxhex);
-			memcpy(nc1020_states.ext_ram, &wqxhex[0], wqxhex.size());
-			ram_io[0x00]|=0x80;
-			ram_io[0x0a]|=0x80;
+			memcpy(nc1020_states.ext_ram+0x4000, &wqxhex[0], wqxhex.size());
+			ram_io[0x00]=0x80;
+			ram_io[0x0a]=0x80;
 			super_switch();
 			mPC=0x4018;
 			bus->cpu->PC=0x4018;
