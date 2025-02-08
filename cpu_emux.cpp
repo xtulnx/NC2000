@@ -137,7 +137,7 @@ bool chk_ar(){
   return 0;
 }
 void setTime3000(){
-	Store(1025, 0);
+	if(!nc1020mode)Store(1025, 0);
 	rtc_reg[0]++;
 	if (rtc_reg[0] == '<') {
       rtc_reg[0] = '\0';
