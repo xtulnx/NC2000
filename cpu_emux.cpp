@@ -136,8 +136,7 @@ bool chk_ar(){
   }
   return 0;
 }
-void setTime3000(){
-	if(!nc1020mode)Store(1025, 0);
+void setTimeRTC(){
 	rtc_reg[0]++;
 	if (rtc_reg[0] == '<') {
       rtc_reg[0] = '\0';
@@ -152,7 +151,7 @@ void setTime3000(){
       }
     }
 }
-uint8_t trigger256_cnt=0;
+uint8_t trigger256_cnt=0;// uint8 here, will wrap back to 0
 int cpu_emux_target_cycles=128*12;
 
 bool time_adjusted;
@@ -239,8 +238,9 @@ void cpu_run_emux(){
 	if(trigger256){
 		if(nc1020mode||nc2000mode||nc3000mode){
 			if(trigger256_cnt==0){
+				if(!nc1020mode) Store(1025, 0);//prevent sleep
 				//at the begin of every second
-				setTime3000();
+				setTimeRTC();
 			}
 			//bump the 1/256 second
 			rtc_reg[4]=trigger256_cnt;
@@ -248,12 +248,16 @@ void cpu_run_emux(){
 	}
 
 	//todo study datasheet of how speed affect timers
-	uint32_t target_cycles=cpu_emux_target_cycles; target_cycles/=bus->speed_slowdown;
-	//if(enable_dyn_debug||enable_debug_pc||enable_dyn_debug_next_n) target_cycles=0;
-	uint32_t CpuTicks=cpu->exec2(target_cycles)/12;
+	uint32_t target_cycles=cpu_emux_target_cycles;
+	uint32_t CpuTicks;
 	if(false){
 		//TODO FIX ME
+		target_cycles/=bus->speed_slowdown;
+		CpuTicks=cpu->exec2(target_cycles)/12;
 		CpuTicks*=bus->speed_slowdown;
+	}
+	else{
+		CpuTicks=cpu->exec2(target_cycles)/12;
 	}
 	last_cycles=cycles;
 	cycles+=CpuTicks;
@@ -276,7 +280,6 @@ void cpu_run_emux(){
 				//printf("irq2!\n");
 			}
 		}
-		
 	}
 
 	if(nc1020mode||nc2000mode||nc3000mode){
@@ -292,13 +295,16 @@ void cpu_run_emux(){
 			}
 		}
 	}
-	if(trigger256){
+
+	if(trigger_x_times_per_s(250)){
 		if (bus->timeBaseEnable()) {
             //timebase中断为4ms一次，主要用于键盘扫描
             bus->setIrqTimeBase();
             cpu->IRQ();
         }
+	}
 
+	if(trigger256){
 		if(nc1020mode||nc2000mode||nc3000mode){
 			if(trigger256_cnt%128==0){
 				if(trigger256_cnt==0&& chk_ar()){
@@ -311,6 +317,8 @@ void cpu_run_emux(){
 						cpu->IRQ();
 					}
 				}
+			}
+			if(trigger256_cnt%128==64){ //avoid nmi triggerd at same time as rtc irq
 				if (bus->nmiEnable()){
 					printf("nmi!\n");
 					cpu->NMI();
