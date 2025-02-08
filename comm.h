@@ -54,7 +54,7 @@ const bool use_emux_bus = true;
 
 const bool correct_non_erased_nand_write = true;
 
-const bool nc2000_use_2600_rom = false;
+const bool nc2000_use_2600_rom = true;
 
 const bool use_legacy_key_io = false;
 
