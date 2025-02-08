@@ -89,6 +89,14 @@ int BusPC1000::in(int address) {
         }
 
     }
+    if(nc1020mode) {
+        switch(address){
+            case 0x20:
+                return dspStat();
+            case 0x21:
+                return dspRetData();
+        }
+    }
     if(nc3000mode){
         if(address==0x39) {
             return read_nand();
@@ -174,7 +182,7 @@ void BusPC1000::out(int address, int value) {
             return nand_write(value);
         } 
     }
-    if(nc2000mode) {
+    if(nc2000mode||nc1020mode) {
         if(address==0x05){
             uint8_t cks=value>>5;
             if (cks!=ram_io[0x05]>>5){
@@ -223,6 +231,21 @@ void BusPC1000::out(int address, int value) {
                 return;
         }
     }
+    if(nc1020mode){
+        switch (address) {
+            case IO_DSP_STAT://0x20
+                if (value == DSP_RESET_FLAG || value == DSP_WAKEUP_FLAG) {
+                    dspSleep = false;
+                    dsp->reset();
+                }
+                return;
+            case IO_DSP_DATA_HI://0x23
+                ioReg[IO_DSP_DATA_HI] = value;
+                dspCmd(ioReg[IO_DSP_DATA_HI] * 256 + ioReg[IO_DSP_DATA_LOW]);
+                dsp->write(value,ioReg[IO_DSP_DATA_LOW]);
+                return;
+        }
+    }
     if(nc1020mode||nc2000mode||nc3000mode){
         if(address==0x04){
             Write04GeneralCtrl(address,value);
@@ -267,12 +290,13 @@ void BusPC1000::out(int address, int value) {
         if(address==0x19){
             return Write19CkvSelect(address, value);//not important? seems like only hotlink inside
         }
+        /*
         if(address==0x20){
             return Write20JG(address, value);
         }
         if(address==0x23){
             return Write23(address,value);
-        }
+        }*/
         if(address==0x3d){
             ioReg[0x3d]= ioReg[0x3d] &0xf8 |value &7;
             return;
