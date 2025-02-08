@@ -66,8 +66,8 @@ enum NorFormat{
     PHYSICAL_ORDER,
     WQX2KUTIL
 };
-const NorFormat nor_read_format = NorFormat::WQX2KUTIL;
-const NorFormat nor_write_format = NorFormat::WQX2KUTIL;
+const NorFormat nor_read_format = NorFormat::PHYSICAL_ORDER;
+const NorFormat nor_write_format = NorFormat::PHYSICAL_ORDER;
 
 const bool enabled_dsp=true;
 const bool enable_beeper=true;
