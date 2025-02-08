@@ -1,4 +1,5 @@
 #include "comm.h"
+#include "ram.h"
 #include "state.h"
 #include "mem.h"
 #include <cassert>
@@ -128,6 +129,7 @@ bool read_nor(uint16_t addr, uint8_t &value){
         value=0x88;
 		return true;
 	}
+    //if(addr==0x8000||addr==0x4000) printf("[possible read nor bs=%02x roabbs=%02x vol=%02x %04x not handled]\n",ram_io[0],ram_io[0xa],ram_io[0x0d],addr);
     return false;
 }
 
@@ -137,7 +139,7 @@ void reset_nor_status(){
 }
 
 void write_nor0(uint16_t addr,uint8_t value){
-    //printf("[write nor %04x %02x]\n",addr,value);
+    //printf("[write nor bs=%02x roabbs=%02x vol=%02x %04x %02x]\n",ram_io[0],ram_io[0xa],ram_io[0x0d],addr,value);
 
     uint8_t bank_idx = ram_io[0x00];
 

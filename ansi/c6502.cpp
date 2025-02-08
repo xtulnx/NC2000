@@ -155,7 +155,7 @@ int C6502::readAddress(int address) {
 }
 
 void C6502::XXX_xx() {
-	printf("invalid instruction %x at %x\n",bus->read(PC - 1),PC-1);
+	printf("invalid instruction %x at %x bs=%02x roabbs=%02x vol=%02x\n",bus->read(PC - 1),PC-1,bus->read(0),bus->read(0xa),bus->read(0xd));
 	///////////throw bus->read(PC - 1);
     //throw new Error("不支持的指令 " + Integer.toHexString(bus->read(PC - 1)));
 }
