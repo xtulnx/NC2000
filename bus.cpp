@@ -254,7 +254,11 @@ void BusPC1000::out(int address, int value) {
             case IO_DSP_DATA_HI://0x23
                 ioReg[IO_DSP_DATA_HI] = value;
                 dspCmd(ioReg[IO_DSP_DATA_HI] * 256 + ioReg[IO_DSP_DATA_LOW]);
-                dsp->write(value,ioReg[IO_DSP_DATA_LOW]);
+                if(dspTrans){
+                    dspData = ioReg[IO_DSP_DATA_LOW];
+                }else{
+                    dsp->write(value,ioReg[IO_DSP_DATA_LOW]);
+                }
                 return;
         }
     }

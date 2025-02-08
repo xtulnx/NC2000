@@ -44,8 +44,8 @@ global switch
 ===================
 */
 
-const bool nc1020mode = false;
-const bool nc2000mode = true;
+const bool nc1020mode = true;
+const bool nc2000mode = false;
 const bool nc3000mode = false;
 const bool pc1000mode = false;
 
@@ -66,8 +66,8 @@ enum NorFormat{
     PHYSICAL_ORDER,
     WQX2KUTIL
 };
-const NorFormat nor_read_format = NorFormat::PHYSICAL_ORDER;
-const NorFormat nor_write_format = NorFormat::PHYSICAL_ORDER;
+const NorFormat nor_read_format = NorFormat::WQX2KUTIL;
+const NorFormat nor_write_format = NorFormat::WQX2KUTIL;
 
 const bool enabled_dsp=true;
 const bool enable_beeper=true;

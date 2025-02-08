@@ -142,7 +142,7 @@ void Store2(uint16_t addr, uint8_t value){
 }
 
 uint8_t* GetBank(uint8_t bank_idx){
-	if (pc1000mode){
+	/*if (pc1000mode){
 		if(ram_io[0x0a] &0x80){
 			return nor_banks[bank_idx&0xf];
 		}else{
@@ -153,7 +153,7 @@ uint8_t* GetBank(uint8_t bank_idx){
 			}
 		}
 		return NULL;
-	}
+	}*/
 
 	uint8_t volume_idx = ram_io[0x0D];
     if (bank_idx < num_nor_pages) {
@@ -303,12 +303,12 @@ void Switch0x2000(){
 void SwitchBbsBios_67(){
 	uint8_t** candidate_for_bbs;
 	uint8_t* bbs_pages[0x10];
-	if(nc1020mode||pc1000mode){
+	if(pc1000mode){
 		uint8_t volume_idx = ram_io[0x0D];
 		candidate_for_bbs = GetVolumm(volume_idx);
 	}
 
-	if(nc2000mode||nc3000mode){
+	if(nc2000mode||nc3000mode||nc1020mode){
 		candidate_for_bbs = nor_banks;
 	}
 

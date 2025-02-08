@@ -310,7 +310,14 @@ void cpu_run_emux(){
 				}
 			}
 		}
-
+		if(nc1020mode){ //not elegant, just trick the program to pass
+			if(trigger256_cnt%20!=0){
+					ram_io[0x0c]|=0x01;
+			}
+			else{
+					ram_io[0x0c]&=0xfe;
+			}
+		}
 	}
 
 	if(pc1000mode&&trigger_x_times_per_s(2)){

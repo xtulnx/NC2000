@@ -4,7 +4,7 @@ string inject_code;
 uint64_t tick=0;
 
 bool enable_dyn_debug=false;
-int enable_dyn_debug_next_n=0;
+int enable_dyn_debug_next_n=100;
 
 bool enable_debug_nand=false;
 
@@ -27,6 +27,7 @@ void rom_switcher(){
     if(nc1020mode){
         nc1020_rom.romPath = "./obj_lu.bin";
         nc1020_rom.norFlashPath = "./nc1020.fls";
+        nc1020_rom.norFlashPath = "./nc1020tw/nc1020ch.fls.half";
     }
     if(nc2000mode){
         nc1020_rom.nandFlashPath = "./phy_ggvsimformat_2000.nand";

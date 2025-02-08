@@ -39,13 +39,26 @@ void LoadNor(){
 		printf("nor file [%s] not exist!\n",nc1020_rom.norFlashPath.c_str());
 		exit(-1);
 	}
-	fread(temp_buff, 1, NOR_SIZE, file);
-    if(nor_read_format== PHYSICAL_ORDER){
-	    ProcessBinaryLinear(nor_buff, temp_buff, NOR_SIZE);
-    }else if(nor_read_format== WQX2KUTIL){
-        ProcessBinaryRev(nor_buff, temp_buff, NOR_SIZE);
+    if(0){
+        int sz=fread(temp_buff, 1, NOR_SIZE, file);
+        int cnt=0;
+        fprintf(stderr,"<<sz=%d>>\n",sz);
+        for(int i=0;i<sz;i++){
+            if(i%264>=7 && i%264<263){
+                nor_buff[cnt++]=temp_buff[i];
+            }
+            //if(cnt>=32768)break;
+        }
+        fprintf(stderr,"<<cnt=%d>>\n",cnt);
+    }else{
+        fread(temp_buff, 1, NOR_SIZE, file);
+        if(nor_read_format== PHYSICAL_ORDER){
+            ProcessBinaryLinear(nor_buff, temp_buff, NOR_SIZE);
+        }else if(nor_read_format== WQX2KUTIL){
+            ProcessBinaryRev(nor_buff, temp_buff, NOR_SIZE);
+        }
+        else assert(false);
     }
-    else assert(false);
 	free(temp_buff);
 	fclose(file);
 }
@@ -89,12 +102,12 @@ bool read_nor(uint16_t addr, uint8_t &value){
         return true;
     }
     if(fp_type == NOR_CMD::SW_ID && fp_step==3){
-        printf("FIXME, got NOR_CMD::SW_ID !!!!!!!! addr=%04x",addr);
-        assert(false);
+        printf("FIXME, got NOR_CMD::SW_ID !!!!!!!! addr=%04x\n",addr);
+        //assert(false);
         if(addr==0x8000) {
             if(pc1000mode){
                 value= 0xBF; //from wayback
-            }else if(nc2000mode){
+            }else if(nc2000mode||nc1020mode){
                 value= 0xC7;// from datasheet but not sure if it's exactly same database
             }else assert(false);
             return true;
