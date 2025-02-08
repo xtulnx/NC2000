@@ -51,7 +51,7 @@ const bool pc1000mode = false;
 
 const bool use_emux_cpu =true;
 const bool use_emux_bus = true;
-const bool use_legacy_cpu_loop = true;
+const bool use_legacy_cpu_loop = false;
 
 const bool correct_non_erased_nand_write = true;
 

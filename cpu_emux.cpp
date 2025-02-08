@@ -251,7 +251,9 @@ void cpu_run_emux(){
 	uint32_t target_cycles=cpu_emux_target_cycles; target_cycles/=bus->speed_slowdown;
 	//if(enable_dyn_debug||enable_debug_pc||enable_dyn_debug_next_n) target_cycles=0;
 	uint32_t CpuTicks=cpu->exec2(target_cycles)/12;
-	CpuTicks*=bus->speed_slowdown;
+	if(!nc1020mode){
+		CpuTicks*=bus->speed_slowdown;
+	}
 	last_cycles=cycles;
 	cycles+=CpuTicks;
 
