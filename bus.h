@@ -71,6 +71,7 @@ public:
     boolean dspSleep;
     boolean isPlayMusic;
 	int dspData;
+    bool dspTrans=0;
     ////////////////SoundStream* sound;
     int musicSample;
     boolean musicEnable;// = true;

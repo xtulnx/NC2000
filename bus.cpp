@@ -227,11 +227,23 @@ void BusPC1000::out(int address, int value) {
             case 0x33:
                 ioReg[0x33] = value;
                 dspCmd(ioReg[0x33] * 256 + ioReg[0x32]);
-                dsp->write(value,ioReg[0x32]);
+                if(dspTrans){
+                    dspData = ioReg[0x32];
+                }else{
+                    dsp->write(value,ioReg[0x32]);
+                }
                 return;
         }
     }
     if(nc1020mode){
+        if(false){
+            if(address==0x22) {
+                printf("<w %02x>",value);
+            }
+            if(address==0x23){
+                printf("[w %02x]\n",value);
+            }
+        }
         switch (address) {
             case IO_DSP_STAT://0x20
                 if (value == DSP_RESET_FLAG || value == DSP_WAKEUP_FLAG) {
@@ -501,9 +513,9 @@ void BusPC1000::setIrqTimer1() {
 int BusPC1000::dspStat() {
     int value = 0;
     if(nc2000mode||nc3000mode){
-        value=ram_io[0x30];
-        value &=~DSP_SLEEP_FLAG;
-        value &=~0x30;
+        //value=ram_io[0x30];
+        //value &=~DSP_SLEEP_FLAG;
+        //value &=~0x30;
     }
     if (dspSleep)
         value |= DSP_SLEEP_FLAG;
@@ -514,7 +526,7 @@ int BusPC1000::dspStat() {
     if(!dspSleep && sound_busy()){
         value |= 0x30;
     }
-    if(pc1000mode){
+    if(pc1000mode||dspTrans){
 	    value |= 0x40;
     }
     return value;
@@ -538,6 +550,13 @@ void BusPC1000::dspCmd(int cmd) {
 		case 0xd001:
 			dspData = 0x5a;
 			break;
+    }
+    if(cmd==0x7004){
+        //enable_dyn_debug_next_n=100;
+        dspTrans=true;
+    }
+    if(cmd==0xffff){
+        dspTrans=false;
     }
 }
 

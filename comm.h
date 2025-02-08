@@ -28,6 +28,7 @@ extern string inject_code;
 extern uint64_t tick;
 
 extern bool enable_dyn_debug;
+extern int enable_dyn_debug_next_n;
 extern bool enable_debug_nand;
 extern bool enable_debug_switch;
 extern bool enable_debug_pc;
@@ -43,8 +44,8 @@ global switch
 ===================
 */
 
-const bool nc1020mode = true;
-const bool nc2000mode = false;
+const bool nc1020mode = false;
+const bool nc2000mode = true;
 const bool nc3000mode = false;
 const bool pc1000mode = false;
 
@@ -53,7 +54,7 @@ const bool use_emux_bus = true;
 
 const bool correct_non_erased_nand_write = true;
 
-const bool nc2000_use_2600_rom = true;
+const bool nc2000_use_2600_rom = false;
 
 const bool use_legacy_key_io = false;
 

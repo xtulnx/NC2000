@@ -48,7 +48,7 @@ static const char *ADDR_MODE_FORMATS[] = {
 	"%04X: %.3s $%02X,Y", // AADR_MODE_ZERO_PAGE_Y_INDEXED,
 	"%04X: %.3s ($%02X,X)", // AADR_MODE_ZERO_PAGE_X_INDEXED_INDIRECT,
 	"%04X: %.3s ($%02X),Y", // AADR_MODE_ZERO_PAGE_Y_INDIRECT_INDEXED,
-	"      BAD INSTRUCTION",
+	"%04X: BAD INSTRUCTION",
 };
 
 // Get the instruction length for a given address mode.

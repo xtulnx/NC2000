@@ -174,6 +174,22 @@ void try_soft_reset(){
 		printf("soft reset!!\n");
 	}
 }
+void debug_pc(){
+	if(enable_debug_pc||enable_dyn_debug||enable_dyn_debug_next_n){
+		uint8_t & Peek16Debug(uint16_t addr);
+		unsigned char buf[10];
+		buf[0]=Peek16Debug(cpu->PC);
+		buf[1]=Peek16Debug(cpu->PC+1);
+		buf[2]=Peek16Debug(cpu->PC+2);
+		buf[3]=0;
+		printf("tick=%lld ",tick /*, reg_pc*/);
+		printf("%02x %02x %02x %02x; ",Peek16Debug(cpu->PC), Peek16Debug(cpu->PC+1),Peek16Debug(cpu->PC+2),Peek16Debug(cpu->PC+3));
+		printf("bs=%02x roa_bbs=%02x ramb=%02x zp=%02x reg=%02x,%02x,%02x,%02x,%03o  pc=%s",ram_io[0x00], ram_io[0x0a], ram_io[0x0d], ram_io[0x0f],cpu->A,cpu->X,cpu->Y,cpu->SP,cpu->P,disassemble_next(buf,cpu->PC).c_str());
+		printf("\n");
+		if(enable_dyn_debug_next_n>0) enable_dyn_debug_next_n--;
+		//getchar();
+	}
+}
 void cpu_run_emux(){
 	if(soft_reset){
 		soft_reset=0;
@@ -214,21 +230,6 @@ void cpu_run_emux(){
 	}
 	tick++;
 
-	if(enable_debug_pc||enable_dyn_debug){
-		uint8_t & Peek16Debug(uint16_t addr);
-		unsigned char buf[10];
-		buf[0]=Peek16Debug(cpu->PC);
-		buf[1]=Peek16Debug(cpu->PC+1);
-		buf[2]=Peek16Debug(cpu->PC+2);
-		buf[3]=0;
-		printf("tick=%lld ",tick /*, reg_pc*/);
-		printf("%02x %02x %02x %02x; ",Peek16Debug(cpu->PC), Peek16Debug(cpu->PC+1),Peek16Debug(cpu->PC+2),Peek16Debug(cpu->PC+3));
-		printf("bs=%02x roa_bbs=%02x ramb=%02x zp=%02x reg=%02x,%02x,%02x,%02x,%03o  pc=%s",ram_io[0x00], ram_io[0x0a], ram_io[0x0d], ram_io[0x0f],cpu->A,cpu->X,cpu->Y,cpu->SP,cpu->P,disassemble_next(buf,cpu->PC).c_str());
-		printf("\n");
-
-		//getchar();		
-	}
-
 	bool trigger256=trigger_x_times_per_s(256);
 
 	if(trigger256){
@@ -244,7 +245,7 @@ void cpu_run_emux(){
 
 	//todo study datasheet of how speed affect timers
 	uint32_t target_cycles=cpu_emux_target_cycles; target_cycles/=bus->speed_slowdown;
-	if(enable_dyn_debug||enable_debug_pc) target_cycles=0;
+	//if(enable_dyn_debug||enable_debug_pc||enable_dyn_debug_next_n) target_cycles=0;
 	uint32_t CpuTicks=cpu->exec2(target_cycles)/12;
 	CpuTicks*=bus->speed_slowdown;
 	last_cycles=cycles;
@@ -295,7 +296,7 @@ void cpu_run_emux(){
 			if(trigger256_cnt%128==0){
 				if(trigger256_cnt==0&& chk_ar()){
 					printf("chk_ar() return true!\n");
-					ram_io[0x3d] = 0x20;
+					ram_io[0x3d] = 0x10;
 					interr_flag&=0xfd;	
 				}else{
 					if(rtc_reg[10]&1 &&interr_flag&1){

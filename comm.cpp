@@ -4,6 +4,8 @@ string inject_code;
 uint64_t tick=0;
 
 bool enable_dyn_debug=false;
+int enable_dyn_debug_next_n=0;
+
 bool enable_debug_nand=false;
 
 bool enable_debug_switch=false;

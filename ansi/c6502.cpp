@@ -85,16 +85,17 @@ void C6502::exec(int cycle) {
 int C6502::exec2(int max_cycles) {
     //this can be false since IRQ() can be called externally
     //assert(clk==0);
-
+    if(nmiPending){
+        nmiPending = false;
+        doNMI();
+    }
     if (irqPending && (P & 4) == 0) {
         irqPending = false;
         doIRQ();
     }
-    if (nmiPending) {
-        nmiPending = false;
-        doNMI();
-    }
     do{
+        void debug_pc();
+        debug_pc();
         doCode(getCode());//allow one cycle anyway
     }while(clk<max_cycles);
     
