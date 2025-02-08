@@ -318,7 +318,7 @@ void cpu_run_emux(){
 			}
 		}
 		if(nc1020mode){ //not elegant, just trick the program to pass
-			if(trigger256_cnt%20!=0){
+			if(trigger256_cnt%20==10){
 					ram_io[0x0c]|=0x01;
 			}
 			else{

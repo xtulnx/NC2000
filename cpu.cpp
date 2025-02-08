@@ -508,7 +508,7 @@ void cpu_run2(){
 		timebase_cycles += CYCLES_TIMEBASE;
 		my_cnt++;
 		// cheat boot program to pass
-		if(my_cnt%20!=0){
+		if(my_cnt%20==10){
 				ram_io[0x0c]|=0x01;
 		}
 		else{
