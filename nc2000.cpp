@@ -149,7 +149,7 @@ bool is_grey_mode(){
 	unsigned short lcd_addr = lcdbuffaddr&lcdbuffaddrmask;
 	//printf("%x  ",lcd_addr);
 	//fflush(stdout);
-	if(nc2000mode||nc3000mode)
+	if(nc2000mode||nc3000mode||nc1020mode)
 		return lcd_addr==0x1380;
 	return false;
 }
