@@ -403,7 +403,7 @@ void init_cpu2(){
 }
 void cpu_run2(){
 	assert(use_emux_cpu);
-	assert(!use_emux_bus);
+	assert(!use_emux_bus||use_legacy_cpu_loop);
 
 	assert(cycles==cpu->getTotalCycles()/12);
 
@@ -503,10 +503,17 @@ void cpu_run2(){
 		}
 		//g_irq = true;
 	}
-
+	static int my_cnt=0;
 	if ((nc1020mode) && cycles >= timebase_cycles) {
 		timebase_cycles += CYCLES_TIMEBASE;
-
+		my_cnt++;
+		// cheat boot program to pass
+		if(my_cnt%20!=0){
+				ram_io[0x0c]|=0x01;
+		}
+		else{
+				ram_io[0x0c]&=0xfe;
+		}
 		nc1020_states.clock_buff[4] ++;
 		if (should_wake_up) {
 			should_wake_up = false;

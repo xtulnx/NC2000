@@ -191,6 +191,10 @@ void debug_pc(){
 	}
 }
 void cpu_run_emux(){
+	if(use_legacy_cpu_loop){
+		void cpu_run2();
+		return cpu_run2();
+	}
 	if(soft_reset){
 		soft_reset=0;
 		ram_io[2]=1;
