@@ -140,7 +140,7 @@ void write_nor0(uint16_t addr,uint8_t value){
 
     uint8_t bank_idx = ram_io[0x00];
 
-	if(nc2000mode||nc3000mode){
+	if(nc1020mode||nc2000mode||nc3000mode){
 		if (bank_idx >= 0x80 && addr>=0x4000 && addr<=0xbfff) {
 			printf("oops, suspicious write to nor, bank_idx=%02x, addr=%04x\n",bank_idx, addr);
 			/*

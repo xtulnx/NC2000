@@ -358,7 +358,7 @@ void UpdateKeypadRegisters()
                 } else {
                     // port0x -> port1y, and y is receive
                     // port0,port1 -> p30
-                    if (y >= 2 ||nc2000mode||nc3000mode) {
+                    if (y >= 2 ||nc2000mode||nc3000mode||nc1020mode) {
                         if (keypadmatrix[y][x]==1 && ((port0data & xbit) != 0)) {
                         tmpdest1 |= port1controlbit;
                     }
@@ -610,7 +610,7 @@ BYTE __iocallconv Read18Port4( BYTE )
         //qDebug("CLK%c:%d, DATA%c:%d", hotlinkios->w07_b5_DIR45?'O':'I', (zpioregs[io18_port4_data] & 0x20) != 0,  hotlinkios->w07_b6_DIR46?'O':'I', (zpioregs[io18_port4_data] & 0x40) != 0);
         qDebug("CLK%c: O%dI%d, DATA%c: O%dI%d", hotlinkios->w07_b5_DIR45?'O':'I', hotlinkios->w18_b5_P45OL,hotlinkios->r18_b5_P45ID,  hotlinkios->w07_b6_DIR46?'O':'I',  hotlinkios->w18_b6_P46OL,hotlinkios->r18_b6_P46ID);
     }
-    if(nc2000mode||nc3000mode){
+    if(nc1020mode||nc2000mode||nc3000mode){
         //nc3000c-lee has it but seems like no need?
         return zpioregs[io18_port4_data]|0x20;
     }

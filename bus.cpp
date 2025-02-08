@@ -705,7 +705,7 @@ boolean BusPC1000::nmiEnable() {
 }
 
 boolean BusPC1000::timeBaseEnable() {
-    if(nc2000mode||nc3000mode){
+    if(nc1020mode||nc2000mode||nc3000mode){
         if((ioReg[O_INT_ENABLE] & 8)) return false;
         /*
         // todo fix this

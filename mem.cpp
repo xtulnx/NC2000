@@ -369,7 +369,7 @@ void SwitchCheck(){
 			//////printf("ill bs %x\n",bs);
 		}
 	}
-	if(nc2000mode||nc3000mode){  
+	if(nc1020mode||nc2000mode||nc3000mode){  
 		//assert(bs<0x80);
 		if(bs<0x80 &&bs>=num_nor_pages) {
 			//printf("ill bs %x ; ",bs);

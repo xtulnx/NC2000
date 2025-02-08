@@ -160,6 +160,10 @@ bool CopyLcdBuffer(uint8_t* buffer){
 	if (lcd_addr == 0) return false;
 	memcpy(buffer, ram_buff + lcd_addr, 1600);
 
+	if(nc1020mode){
+		//TODO
+	}
+
 	if(nc2000mode||nc3000mode){
 		if(!is_grey_mode()){
 			memcpy(buffer, ram_buff + 0x19c0, 1600 );
