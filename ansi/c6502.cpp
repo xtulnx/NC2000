@@ -137,7 +137,11 @@ void C6502::doIRQ() {
 }
 
 int C6502::getCode() {
-    return bus->read(PC++);
+    int a= bus->read(PC++);
+    /*if(a==0){
+        printf("<%02x %02x>\n", bus->read(PC),bus->read(PC+1));
+    }*/
+    return a;
 }
 
 int C6502::getCodeW() {

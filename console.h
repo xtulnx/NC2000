@@ -183,3 +183,38 @@ PREEND:
 END: INT $0528
      JMP END  
 */
+
+
+/*
+nc1020 put:
+
+INT:.MACRO INT_PARAM
+    .DB $00
+    .DW INT_PARAM
+    .ENDM
+ .ORG $3000
+CREATE:   
+   INT $9301     #create file
+WRITE:
+   LDA #$00
+   STA $3f6      #avoid shutdown
+   LDA $3FFF
+   CMP #$00
+   BEQ PREEND
+   LDA $3FFF
+   STA $3200
+   LDA #$00
+   STA $120D
+   LDA #$32
+   STA $120E
+   LDA #$1
+   STA $120F
+   LDA #$0
+   STA $1210  
+   INT $9303       #do write
+   JMP WRITE
+PREEND:
+     INT $9307     #close
+END: INT $8304     #jump to time set
+     JMP END  
+*/
