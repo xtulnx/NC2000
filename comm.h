@@ -56,6 +56,7 @@ const bool use_legacy_cpu_loop = false;
 const bool correct_non_erased_nand_write = true;
 
 const bool nc2000_use_2600_rom = true;
+const bool nc1020_use_1024k_rom = false;
 
 const bool use_legacy_key_io = false;
 
@@ -145,7 +146,7 @@ const uint32_t BEEPER_AUDIO_HZ = 44100;
 rom related
 ===================
 */
-const uint32_t num_nor_pages =0x10+uint32_t(nc1020mode)*0x10+uint32_t(nc3000mode)*0x10;
+const uint32_t num_nor_pages =0x10+uint32_t(nc1020mode&&nc1020_use_1024k_rom)*0x10+uint32_t(nc3000mode)*0x10;
 
 //this is the nand pages of 528byte each
 const uint32_t num_nand_pages = 0+ uint32_t(nc2000mode)*65536  + uint32_t(nc3000mode)*65536*2;

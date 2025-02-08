@@ -137,6 +137,7 @@ void reset_nor_status(){
 }
 
 void write_nor0(uint16_t addr,uint8_t value){
+    //printf("[write nor %04x %02x]\n",addr,value);
 
     uint8_t bank_idx = ram_io[0x00];
 
