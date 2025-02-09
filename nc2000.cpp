@@ -158,21 +158,28 @@ bool CopyLcdBuffer(uint8_t* buffer){
     extern unsigned short lcdbuffaddrmask;
     unsigned short lcd_addr = lcdbuffaddr&lcdbuffaddrmask;
 	if (lcd_addr == 0) return false;
-	memcpy(buffer, ram_buff + lcd_addr, 1600);
 
 	if(nc1020mode){
-		//TODO
+		if(!is_grey_mode()){
+			memcpy(buffer, ram_buff + lcd_addr, 1600 );
+		}else{
+			memcpy(buffer, ram_buff + lcd_addr, 1600 *2);
+		}
+		return true;;
 	}
-
-	if(nc2000mode||nc3000mode){
+	else if(nc2000mode||nc3000mode){
+		//TODO: cannot use lcd_addr, it has some offset
 		if(!is_grey_mode()){
 			memcpy(buffer, ram_buff + 0x19c0, 1600 );
 		}else{
 			memcpy(buffer, ram_buff + 0x19c0 -1600, 1600 *2);
 		}
-
+		return true;
+	}else{
+		memcpy(buffer, ram_buff + lcd_addr, 1600);
+		return true;
 	}
-	return true;
+	assert(false);
 }
 
 
