@@ -286,7 +286,7 @@ void handle_cmd(string str){
 			if(read_file_noexit(cmds[1], file)!=0){
 				return ;
 			}
-			string target=cmds[1];
+			string target=split_s(cmds[1],"/").back();
 			if(cmds.size()>2) target=cmds[2];
 			queue.clear();
 			for(int i=0;i<file.size();i++){
