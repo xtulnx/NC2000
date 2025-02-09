@@ -41,7 +41,7 @@ void read_nand_file(){
             memcpy(&nand[0][0]+0x200+0x10 /*512+16=528*/,"ggv nc2000",strlen("ggv nc2000"));
         }
         else{
-            if(!nc2600_nandmagic_ggvsim){
+            if(!nc2600_rom_use_ggvsim){
                 //2600 physical nor expect this to be "ggv nc2010"
                 //nc2kutil dump shows there is a '\n' or 0x0A. But this doesn't matter. It boots either with or without `\n`
                 memcpy(&nand[0][0]+0x200+0x10 /*512+16=528*/,"ggv nc2010\n",strlen("ggv nc2010\n"));

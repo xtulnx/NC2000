@@ -25,28 +25,28 @@ WqxRom nc1020_rom = {
 
 void rom_switcher(){
     if(nc1020mode){
-        nc1020_rom.romPath = "./obj_lu.bin";
-        nc1020_rom.norFlashPath = "./nc1020.fls";
-        nc1020_rom.norFlashPath = "./nc1020tw/nc1020ch.fls.half";
+        nc1020_rom.romPath = "./1020/obj_lu.bin";
+        nc1020_rom.norFlashPath = "./1020/nc1020.fls";
+        nc1020_rom.norFlashPath = "./1020/nc1020ch.fls.half";
     }
     if(nc2000mode){
-        nc1020_rom.nandFlashPath = "./phy_ggvsimformat_2000.nand";
-        nc1020_rom.norFlashPath = "./phy_ggvsimformat_2000.nor";  
+        nc1020_rom.nandFlashPath = "./2000/phy_ggvsimformat_2000.nand";
+        nc1020_rom.norFlashPath = "./2000/phy_ggvsimformat_2000.nor";  
 
         if (nc2000_use_2600_rom){
-                nc1020_rom.nandFlashPath = "./phy_ggvsimformat_2600.nand";
-                nc1020_rom.norFlashPath = "./phy_ggvsimformat_2600.nor";  
-                if(nc2600_nandmagic_ggvsim){
-                    nc1020_rom.nandFlashPath = "./2600nand.bin";
-                    nc1020_rom.norFlashPath = "./2600nor.bin";  
+                nc1020_rom.nandFlashPath = "./2600/phy_ggvsimformat_2600.nand";
+                nc1020_rom.norFlashPath = "./2600/phy_ggvsimformat_2600.nor";  
+                if(nc2600_rom_use_ggvsim){
+                    nc1020_rom.nandFlashPath = "./2600/2600nand.bin";
+                    nc1020_rom.norFlashPath = "./2600/2600nor.bin";  
                 }
 
         }
     }
 
     if(nc3000mode){
-        nc1020_rom.nandFlashPath = "./nc3000.nand";
-        nc1020_rom.norFlashPath = "./nc3000.nor"; 
+        nc1020_rom.nandFlashPath = "./3000/nc3000.nand";
+        nc1020_rom.norFlashPath = "./3000/nc3000.nor"; 
     }
 
     if(pc1000mode){

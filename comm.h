@@ -58,10 +58,11 @@ const bool correct_non_erased_nand_write = true;
 const bool nc2000_use_2600_rom = true;
 const bool nc1020_use_1024k_rom = false;
 
+
 const bool use_legacy_key_io = false;
 
-//enable when you use 2600 nor/nand from ggvsim
-const bool nc2600_nandmagic_ggvsim = false;
+// note: 2600 ggvsim rom need different nand magic
+const bool nc2600_rom_use_ggvsim = false;
 
 enum NorFormat{
     INVALID,
