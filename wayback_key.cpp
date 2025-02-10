@@ -164,7 +164,7 @@ vector<TKeyItem*> items1000 = {
     new TKeyItem(53, 0, 2,3, "跳出", "AC", NULL, {SDLK_ESCAPE}),     // P03, P12
     new TKeyItem(54, 0, 2,4, "符\n号", "0", "继续", {SDLK_0}),           // P04, P12
     new TKeyItem(55, 0, 2,5, ".", ".", "-", {SDLK_PERIOD}),      // P05, P12
-    new TKeyItem(56, 0, 2,6, "空格", "=", "✓", {SDLK_EQUALS}),       // P06, P12
+    new TKeyItem(56, 0, 2,6, "空格", "=", "✓", {SDLK_EQUALS,SDLK_SPACE}),       // P06, P12
     new TKeyItem(57, 0, 2,7, "←", "", NULL, {SDLK_LEFT,SDLK_BACKSPACE}),     // P07, P12
     
     new TKeyItem(40, 0, 3,0, "Z", "(", ")",{SDLK_z}),           // P00, P13

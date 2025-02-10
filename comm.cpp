@@ -32,15 +32,15 @@ void rom_switcher(){
         nc1020_rom.norFlashPath = "./1020/nc1020ch.fls.half";
     }
     if(nc2000mode){
-        nc1020_rom.nandFlashPath = "./2000/phy_ggvsimformat_2000.nand";
-        nc1020_rom.norFlashPath = "./2000/phy_ggvsimformat_2000.nor";  
+        nc1020_rom.nandFlashPath = "./2000rom/phy_ggvsimformat_2000.nand";
+        nc1020_rom.norFlashPath = "./2000rom/phy_ggvsimformat_2000.nor";  
 
         if (nc2000_use_2600_rom){
-                nc1020_rom.nandFlashPath = "./2600/phy_ggvsimformat_2600.nand";
-                nc1020_rom.norFlashPath = "./2600/phy_ggvsimformat_2600.nor";  
+                nc1020_rom.nandFlashPath = "./2600rom/phy_ggvsimformat_2600.nand";
+                nc1020_rom.norFlashPath = "./2600rom/phy_ggvsimformat_2600.nor";  
                 if(nc2600_rom_use_ggvsim){
-                    nc1020_rom.nandFlashPath = "./2600/2600nand.bin";
-                    nc1020_rom.norFlashPath = "./2600/2600nor.bin";  
+                    nc1020_rom.nandFlashPath = "./2600rom/2600nand.bin";
+                    nc1020_rom.norFlashPath = "./2600rom/2600nor.bin";  
                 }
 
         }
@@ -53,7 +53,8 @@ void rom_switcher(){
 
     if(pc1000mode){
         nc1020_rom.romPath = "./cc800/brom.bin";
-        nc1020_rom.norFlashPath = "./cc800/pc1000emux.fls"; 
+        //nc1020_rom.norFlashPath = "./cc800/pc1000emux.fls";
+        nc1020_rom.norFlashPath = "./cc800/pc1000.fls";
     }
 }
 
