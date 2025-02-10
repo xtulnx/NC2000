@@ -67,7 +67,7 @@ uint8_t Load(uint16_t addr) {
 		return ram_40[addr-0x40];
 	}
 
-	if(nc1020mode)
+	/*if(nc1020mode)
 	{
 		bool& wake_up_pending = nc1020_states.pending_wake_up;
 		uint8_t& wake_up_key = nc1020_states.wake_up_flags;
@@ -75,7 +75,7 @@ uint8_t Load(uint16_t addr) {
 			wake_up_pending = false;
 			memmap[0][0x45F] = wake_up_key;
 		}
-	}
+	}*/
 	return Peek16(addr);
 }
 void Store(uint16_t addr, uint8_t value) {

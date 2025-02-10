@@ -27,6 +27,8 @@ void rom_switcher(){
     if(nc1020mode){
         nc1020_rom.romPath = "./1020/obj_lu.bin";
         nc1020_rom.norFlashPath = "./1020/nc1020.fls";
+        //nc1020_rom.norFlashPath = "./1020/nc1020.fls2";
+        //nc1020_rom.norFlashPath = "./1020/flash.ini";
         nc1020_rom.norFlashPath = "./1020/nc1020ch.fls.half";
     }
     if(nc2000mode){
