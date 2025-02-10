@@ -165,8 +165,12 @@ void callback(void* userdata, Uint8* stream, int len) {
 
 	}
 }*/
-
+const int dsp_busy_len=10000;
 void dsp_call_back(unsigned char *p,int len){
+    if(SDL_GetQueuedAudioSize( dsp_deviceId )>dsp_busy_len*1.5) {
+        //printf("drop!!!\n");
+        return ;
+    }
     SDL_QueueAudio(dsp_deviceId, p,len );
 }
 
@@ -219,7 +223,7 @@ bool sound_busy(){
 
 	//the default value 8000/2 (equivalently 44100/2) is too small
 	//have to use large value here
-	if(SDL_GetQueuedAudioSize( dsp_deviceId )>10000) {
+	if(SDL_GetQueuedAudioSize( dsp_deviceId )>dsp_busy_len) {
 		//printf("busy!!!\n");
 		return true;
 	}
