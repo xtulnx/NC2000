@@ -29,7 +29,7 @@ void rom_switcher(){
         nc1020_rom.norFlashPath = "./1020/nc1020.fls";
         //nc1020_rom.norFlashPath = "./1020/nc1020.fls2";
         //nc1020_rom.norFlashPath = "./1020/flash.ini";
-        nc1020_rom.norFlashPath = "./1020/nc1020ch.fls.half";
+        //nc1020_rom.norFlashPath = "./1020/nc1020ch.fls.half";
     }
     if(nc2000mode){
         nc1020_rom.nandFlashPath = "./2000rom/phy_ggvsimformat_2000.nand";
