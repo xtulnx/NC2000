@@ -9,6 +9,7 @@ uint8_t* rom_volume1[0x100];
 uint8_t* rom_volume2[0x100];
 
 void LoadRom(const string romPath){
+	assert(sizeof(rom_buff) >= ROM_SIZE);
 
 	int rom_size=-1;
 
@@ -16,8 +17,10 @@ void LoadRom(const string romPath){
 		rom_size=ROM_SIZE;
 	}
 	if(pc1000mode) {
+		//for pc1000, becausing of remapping, the file size is not equal to sizeof(rom_buff)
 		rom_size=0x8000*128*3;
 	}
+
 	uint8_t* temp_buff = (uint8_t*)malloc(rom_size);
 	FILE* file = fopen(romPath.c_str(), "rb");
 	if(file==0) {

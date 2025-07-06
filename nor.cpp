@@ -34,6 +34,7 @@ enum NOR_CMD{
     INFO_PAGE_PROGRAM=9
 };
 void LoadNor(){
+	assert(sizeof(nor_buff) >= NOR_SIZE);
 	uint8_t* temp_buff = (uint8_t*)malloc(NOR_SIZE);
 	FILE* file = fopen(nc1020_rom.norFlashPath.c_str(), "rb");
 	if(file==0){
