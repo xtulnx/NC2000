@@ -20,6 +20,8 @@ void process_args(int argc, char *argv[])
     static struct option long_options[] =
       {
 		{"port", required_argument, 0, 1},
+		{"loop", required_argument, 0, 1},
+		{"io", required_argument, 0, 1},
 		{"nc1020", no_argument,    0, 1},
         {"pc1000", no_argument,    0, 1},
         {"nc2000", no_argument,    0, 1},
@@ -86,6 +88,14 @@ void process_args(int argc, char *argv[])
 			else if(strcmp(long_options[option_index].name,"nc3000")==0)
 			{
 				nc3000mode = true;
+			}
+			else if(strcmp(long_options[option_index].name,"loop")==0)
+			{
+				cpu_loop_version = (CpuLoopVersion)stoi(optarg);
+			}
+			else if(strcmp(long_options[option_index].name,"io")==0)
+			{
+				io_version = (IoVersion)stoi(optarg);
 			}
 			else
 			{

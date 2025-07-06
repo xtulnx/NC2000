@@ -10,6 +10,8 @@ bool nc2000mode = false;
 bool nc3000mode = false;
 bool pc1000mode = false;
 
+CpuLoopVersion cpu_loop_version = CPU_RUN3;
+IoVersion io_version = IO_V2;
 /*
 ===================
 debug related

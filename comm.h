@@ -66,8 +66,8 @@ extern bool nc2000mode;
 extern bool nc3000mode;
 extern bool pc1000mode;
 
-const CpuLoopVersion cpu_loop_version = CPU_RUN3;
-const IoVersion io_version = IO_V2;
+extern CpuLoopVersion cpu_loop_version;
+extern IoVersion io_version;
 
 const bool forced_erase_before_write = true;
 
