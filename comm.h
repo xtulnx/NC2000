@@ -52,7 +52,8 @@ enum CpuLoopVersion {
 
 enum IoVersion {
     IO_V1 = 1,
-    IO_EMUX_BUS = 2, // use emux bus
+    IO_V2 = 2,
+    IO_EMUX_BUS = 3, // use emux bus
 };
 
 /*
@@ -67,7 +68,7 @@ extern bool nc3000mode;
 extern bool pc1000mode;
 
 const CpuLoopVersion cpu_loop_version = CPU_RUN3;
-const IoVersion io_version = IO_EMUX_BUS;
+const IoVersion io_version = IO_V2;
 
 const bool forced_erase_before_write = true;
 

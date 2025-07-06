@@ -5,6 +5,7 @@
 #include "nor.h"
 #include "rom.h"
 #include "io.h"
+#include "io_new.h"
 #include <cassert>
 
 #include "bus.h"
@@ -58,7 +59,9 @@ uint8_t Load(uint16_t addr) {
 	if (addr < IO_LIMIT) {
 		if(io_version== IO_V1){
 			return io_read[addr](addr);
-		}else if(io_version== IO_EMUX_BUS){
+		} else if (io_version == IO_V2) {
+			return io_v2_read(addr);
+		} else if(io_version== IO_EMUX_BUS){
 			return bus->in(addr);
 		}else{
 			assert(false);
@@ -97,7 +100,10 @@ void Store(uint16_t addr, uint8_t value) {
 	if (addr < IO_LIMIT) {
 		if(io_version== IO_V1){
 			io_write[addr](addr, value);
-		}else if(io_version== IO_EMUX_BUS){
+		}else if (io_version == IO_V2) {
+			io_v2_write(addr, value);
+		}
+		else if(io_version== IO_EMUX_BUS){
 			bus->out(addr, value);
 		}else {
 			assert(false);

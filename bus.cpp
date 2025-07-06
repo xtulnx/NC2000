@@ -13,8 +13,6 @@
 extern nc1020_states_t nc1020_states;
 extern Dsp dsp;
 
-static uint8_t * rtc_reg=nc1020_states.rtc_reg;
-static uint8_t& interr_flag = nc1020_states.interr_flag;
 
 long long recTick=0,lastDac=0,recTotal=0;
 
@@ -60,62 +58,6 @@ uint8_t IO_API Read3B(uint8_t addr);
 uint8_t IO_API Read3F(uint8_t addr);
 
 int BusPC1000::in(int address) {
-    if(nc1020mode||nc2000mode||nc3000mode){
-        if(address==0x04) return Read04StopTimer0(address);
-        if(address==0x05) return Read05StartTimer0(address);
-        if(address==0x06) return Read06StopTimer1(address);
-        if(address==0x07) return Read07StartTimer1(address);
-
-        if(address==0x08){
-            return ReadPort0(address);
-        }
-        if(address==0x09){
-            return ReadPort1(address);
-        }
-        if(address==0x18){
-            return Read18Port4(address);//not important? seems like hotlink only
-        }
-        if(address==0x3b){
-            if((ioReg[0x3d]&3)==0){
-                return rtc_reg[0x3b]&0xfe;
-            }else{
-                return ioReg[0x3b];
-            }
-           //return Read3B(address);
-        }
-        if(address==0x3f){
-            return rtc_reg[ioReg[0x3e]];
-            //return Read3F(address);
-        }
-
-    }
-    if(nc1020mode) {
-        switch(address){
-            case 0x20:
-                return dspStat();
-            case 0x21:
-                return dspRetData();
-        }
-    }
-    if(nc3000mode){
-        if(address==0x39) {
-            return read_nand();
-        }
-        if(address==0x1e){
-            return ReadPort6EXP(address);
-        }
-    } 
-    if(nc2000mode){
-        if(address==0x29) {
-            return read_nand();
-        }
-        switch(address){
-            case 0x30:
-                return dspStat();
-            case 0x31:
-                return dspRetData();
-        }
-    }
     if(pc1000mode){
         switch(address){
             case IO_STOP_TIMER0://0x04
@@ -158,190 +100,6 @@ extern unsigned short lcdbuffaddrmask;
 void Write23(uint8_t addr, uint8_t value);
 void Write3F(uint8_t addr, uint8_t value);
 void BusPC1000::out(int address, int value) {
-    if(nc3000mode){
-        if(address==0x05){
-            uint8_t cks=value>>5;
-            if (cks!=ram_io[0x05]>>5){
-                //the defintion is not same as spdc1024
-                switch(cks){
-                    case 0: speed_slowdown=32;break;
-                    case 1: speed_slowdown=4;break;
-                    case 2: speed_slowdown=2;break;
-                    case 3: speed_slowdown=1;break;
-                    case 4: speed_slowdown=512;break;
-                    case 5: speed_slowdown=256;break;
-                    case 6: speed_slowdown=64;break;
-                    case 7: printf("oops clk off\n");speed_slowdown=999999;break;
-                    default:assert(false);
-                }
-                //printf("<cks=%d slowdown=%d>\n",cks,speed_slowdown);
-            }
-             //purposely not return
-        }
-        if(address==0x39) {
-            return nand_write(value);
-        } 
-    }
-    if(nc2000mode||nc1020mode) {
-        if(address==0x05){
-            uint8_t cks=value>>5;
-            if (cks!=ram_io[0x05]>>5){
-                switch(cks){
-                    case 0: speed_slowdown=8;break;
-                    case 1: speed_slowdown=4;break;
-                    case 2: speed_slowdown=2;break;
-                    case 3: speed_slowdown=1;break;
-                    case 4: speed_slowdown=64;break;
-                    case 5: speed_slowdown=32;break;
-                    case 6: speed_slowdown=16;break;
-                    case 7: printf("oops clk off\n");speed_slowdown=99999;break;
-                    default:assert(false);
-                }
-                //printf("<cks=%d slowdown=%d>\n",cks,speed_slowdown);
-            }
-            //purposely not return
-        }
-        if(address==0x29) {
-            return nand_write(value);
-        }
-
-    }
-
-    if(nc2000mode||nc3000mode){
-        if(false){
-            if(address==0x32) {
-                printf("<w %02x>",value);
-            }
-            if(address==0x33){
-                printf("[w %02x]\n",value);
-            }
-        }
-        switch(address){
-            case 0x30:
-                //printf("dsp reset\n");
-                if (value == DSP_RESET_FLAG || value == DSP_WAKEUP_FLAG) {
-                    dspSleep = false;
-                    dsp->reset();
-                }
-                return;
-            case 0x33:
-                ioReg[0x33] = value;
-                dspCmd(ioReg[0x33] * 256 + ioReg[0x32]);
-                if(dspTrans){
-                    dspData = ioReg[0x32];
-                }else{
-                    dsp->write(value,ioReg[0x32]);
-                }
-                return;
-        }
-    }
-    if(nc1020mode){
-        if(false){
-            if(address==0x22) {
-                printf("<w %02x>",value);
-            }
-            if(address==0x23){
-                printf("[w %02x]\n",value);
-            }
-        }
-        switch (address) {
-            case IO_DSP_STAT://0x20
-                if (value == DSP_RESET_FLAG || value == DSP_WAKEUP_FLAG) {
-                    dspSleep = false;
-                    dsp->reset();
-                }
-                return;
-            case IO_DSP_DATA_HI://0x23
-                ioReg[IO_DSP_DATA_HI] = value;
-                dspCmd(ioReg[IO_DSP_DATA_HI] * 256 + ioReg[IO_DSP_DATA_LOW]);
-                if(dspTrans){
-                    dspData = ioReg[IO_DSP_DATA_LOW];
-                }else{
-                    dsp->write(value,ioReg[IO_DSP_DATA_LOW]);
-                }
-                return;
-        }
-    }
-    if(nc1020mode||nc2000mode||nc3000mode){
-        if(address==0x04){
-            Write04GeneralCtrl(address,value);
-            //Write09Port1(0x09, ram_io[0x09]);//reapply after PTYPE changed??
-            return;
-        }
-        if(address==0x05){
-            return Write05ClockCtrl(address, value);
-        }
-        if(address==0x06){
-            return Write06LCDStartAddr(address, value);
-        }
-        if(address==0x07){
-            return Write07PortConfig(address,value);//not important? seems like only hotlink inside
-        }
-        if(address==0x08){
-            return Write08Port0(address, value);
-        }
-        if(address==0x09){
-            return Write09Port1(address,value);
-        }
-        if(address==0x0b){
-            return Write0BPort3LCDStartAddr(address,value);
-        }
-        if(address==0x0c){
-            return Write0CTimer01Control(address,value);
-        }
-        if(address==0x0d){
-            ioReg[0x0d] = value;
-            super_switch();
-            return;
-        }
-        if(address==0x0f){
-            return Write0F(address,value);
-        }
-        if(address==0x15){
-            return Write15Dir1(address, value);
-        }
-        if(address==0x18){
-            return Write18Port4(address, value);
-        }
-        if(address==0x19){
-            return Write19CkvSelect(address, value);//not important? seems like only hotlink inside
-        }
-        /*
-        if(address==0x20){
-            return Write20JG(address, value);
-        }
-        if(address==0x23){
-            return Write23(address,value);
-        }*/
-        if(address==0x3d){
-            ioReg[0x3d]= ioReg[0x3d] &0xf8 |value &7;
-            return;
-        }
-        if(address==0x3f){
-            int index=ioReg[0x3e];
-            ioReg[0x3f]=value;
-            if(index<7){
-                if((signed char)rtc_reg[0x0b]<0) return;
-            }else{
-                if(index==10){
-                    rtc_reg[10]=value;
-                    interr_flag= interr_flag|value&7;
-                    return;
-                }
-                if(index==0x0b){
-                    if((value&1)==0){
-                        return ;
-                    }
-                    ioReg[0x3d]=0xf8;
-                    return;
-                }
-            }
-            rtc_reg[index]=value;
-            return;
-            //return Write3F(address,value);
-        }
-    }
-
     if(pc1000mode){
         switch(address){
             case IO_TIMER0_VAL://0x02
@@ -516,11 +274,6 @@ void BusPC1000::setIrqTimer1() {
 
 int BusPC1000::dspStat() {
     int value = 0;
-    if(nc2000mode||nc3000mode){
-        //value=ram_io[0x30];
-        //value &=~DSP_SLEEP_FLAG;
-        //value &=~0x30;
-    }
     if (dspSleep)
         value |= DSP_SLEEP_FLAG;
     /*********** 
