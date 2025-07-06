@@ -97,53 +97,6 @@ void SaveNC1020(){
 	//SaveStates();
 }*/
 
-void SetKey(uint8_t key_id, bool down_or_up){
-	uint8_t row = key_id % 8;
-	uint8_t col = key_id / 8;
-	uint8_t bits = 1 << col;
-	if (key_id == 0x0F) {
-		bits = 0xFE;
-	}
-	extern uint8_t* ram_io;
-	if (down_or_up) {
-		keypad_matrix[row] |= bits;
-		//hack for now
-		if(key_id==0x25){
-			ram_io[0x8]=0x55;
-		}else if (key_id==0x35){
-			ram_io[0x8]=0x45;
-		}
-	} else {
-		//hack for now
-		ram_io[0x8]=0;
-		keypad_matrix[row] &= ~bits;
-	}
-
-	if (down_or_up) {
-
-		if (slept) {
-			if (key_id >= 0x08 && key_id <= 0x0F && key_id != 0x0E) {
-				switch (key_id) {
-				case 0x08: wake_up_key = 0x00; break;
-				case 0x09: wake_up_key = 0x0A; break;
-				case 0x0A: wake_up_key = 0x08; break;
-				case 0x0B: wake_up_key = 0x06; break;
-				case 0x0C: wake_up_key = 0x04; break;
-				case 0x0D: wake_up_key = 0x02; break;
-				case 0x0E: wake_up_key = 0x0C; break;
-				case 0x0F: wake_up_key = 0x00; break;
-				}
-				should_wake_up = true;
-				wake_up_pending = true;
-				slept = false;
-			}
-		} else {
-			if (key_id == 0x0F) {
-				slept = true;
-			}
-		}
-	}
-}
 bool is_grey_mode(){
     extern unsigned short lcdbuffaddr;
     extern unsigned short lcdbuffaddrmask;
