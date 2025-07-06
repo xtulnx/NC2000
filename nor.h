@@ -1,7 +1,7 @@
 #include "comm.h"
 
 extern uint8_t* nor_banks[0x20];
-extern uint8_t nor_buff[NOR_SIZE];
+extern uint8_t* nor_buff;
 
 void SaveNor();
 

@@ -7,8 +7,8 @@
 extern nc1020_states_t nc1020_states;
 extern WqxRom nc1020_rom;
 
-uint8_t nor_buff[NOR_SIZE];
-uint8_t* nor_banks[num_nor_pages];
+uint8_t nor_buff[1024*1024];
+uint8_t* nor_banks[0x20];
 extern uint8_t* memmap[8];
 
 static uint8_t& fp_step = nc1020_states.fp_step;
@@ -80,7 +80,7 @@ void SaveNor(){
 }
 
 void init_nor(){
-    memset(&nor_buff,0xff,sizeof(nor_buff));
+    memset(&nor_buff,0xff,NOR_SIZE);
     LoadNor();
     for (uint32_t i=0; i<num_nor_pages; i++) {
 		nor_banks[i] = nor_buff + (0x8000 * i);
@@ -88,7 +88,7 @@ void init_nor(){
 }
 bool in_nor_range(uint16_t addr){
     uint8_t* page = memmap[addr >> 13];
-    if(page< nor_buff || page>= nor_buff +sizeof(nor_buff)){
+    if(page< nor_buff || page>= nor_buff +NOR_SIZE){
         return false;
     }
     return true;

@@ -44,10 +44,10 @@ global switch
 ===================
 */
 
-const bool nc1020mode = false;
-const bool nc2000mode = true;
-const bool nc3000mode = false;
-const bool pc1000mode = false;
+extern bool nc1020mode;
+extern bool nc2000mode;
+extern bool nc3000mode;
+extern bool pc1000mode;
 
 const bool use_emux_cpu =true;
 const bool use_emux_bus = true;
@@ -117,27 +117,20 @@ const uint32_t LCD_REFRESH_INTERVAL=10; //refresh every 10ms
 cycles related
 ===================
 */
-const uint32_t static_multipler=1; //tmp fix for speed and crash
 
-// cpu cycles per second (cpu freq).
-const uint32_t CYCLES_SECOND = 3686400*(pc1000mode) + 5120000*(nc1020mode||nc2000mode)+10240000*nc3000mode;
-const uint32_t UNKNOWN_TIMER0_FREQ = 2;
-const uint32_t TIMER0_FREQ = 2; //not used now
-const uint32_t TIMER1_FREQ = 200;//not used now
-const uint32_t TIMEBASE_FREQ = 250;
-const uint32_t CYCLES_UNKNOWN_TIMER = CYCLES_SECOND / UNKNOWN_TIMER0_FREQ;
-// cpu cycles per timer0 period (1/2 s).
-const uint32_t CYCLES_TIMER0 = CYCLES_SECOND / TIMER0_FREQ;
-// cpu cycles per timer1 period (1/256 s).
-const uint32_t CYCLES_TIMER1 = CYCLES_SECOND / TIMER1_FREQ;
-const uint32_t CYCLES_TIMEBASE = CYCLES_SECOND / TIMEBASE_FREQ;
-// speed up
-const uint32_t CYCLES_TIMER1_SPEED_UP = CYCLES_SECOND / TIMER1_FREQ / 20;
-// cpu cycles per ms (1/1000 s).
-const uint32_t CYCLES_NMI = CYCLES_SECOND / 2;
-
-
-const uint32_t CYCLES_MS = CYCLES_SECOND / 1000;
+extern uint32_t static_multipler;
+extern uint32_t CYCLES_SECOND;
+extern uint32_t UNKNOWN_TIMER0_FREQ;
+extern uint32_t TIMER0_FREQ;
+extern uint32_t TIMER1_FREQ;
+extern uint32_t TIMEBASE_FREQ;
+extern uint32_t CYCLES_UNKNOWN_TIMER;
+extern uint32_t CYCLES_TIMER0;
+extern uint32_t CYCLES_TIMER1;
+extern uint32_t CYCLES_TIMEBASE;
+extern uint32_t CYCLES_TIMER1_SPEED_UP;
+extern uint32_t CYCLES_NMI;
+extern uint32_t CYCLES_MS;
 
 const uint32_t DSP_AUDIO_HZ = 8000;
 const uint32_t BEEPER_AUDIO_HZ = 44100;
@@ -147,15 +140,11 @@ const uint32_t BEEPER_AUDIO_HZ = 44100;
 rom related
 ===================
 */
-const uint32_t num_nor_pages =0x10+uint32_t(nc1020mode&&nc1020_use_1024k_rom)*0x10+uint32_t(nc3000mode)*0x10;
-
-//this is the nand pages of 528byte each
-const uint32_t num_nand_pages = 0+ uint32_t(nc2000mode)*65536  + uint32_t(nc3000mode)*65536*2;
-
-//const uint32_t num_nor_pages =0x20;
-const uint32_t num_rom_pages =0x300;
-static const uint32_t ROM_SIZE = 0x8000 * num_rom_pages;
-static const uint32_t NOR_SIZE = 0x8000 * num_nor_pages;
+extern uint32_t num_nor_pages;
+extern uint32_t num_nand_pages;
+extern uint32_t num_rom_pages;
+extern uint32_t ROM_SIZE;
+extern uint32_t NOR_SIZE;
 
 /*
 ===================
