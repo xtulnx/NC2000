@@ -74,7 +74,7 @@ void LoadNC1020(){
 		init_cpu2();
 	}
 
-	rom_switcher();
+	//rom_switcher();
 	init_nor();
 	if(pc1000mode||nc1020mode) {
 		init_rom();

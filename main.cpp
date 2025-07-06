@@ -9,6 +9,8 @@
 #include "sound.h"
 #include "udp_server.h"
 #include "wayback_key.h"
+#include "settings.h"
+
 using namespace std;
 
 static int enable_debug_key_shoot=false;
@@ -384,12 +386,10 @@ void RunGame() {
     //SDL_Delay(FRAME_INTERVAL < tick ? 0 : FRAME_INTERVAL - tick);
   }
 }
+
 int main(int argc, char* args[]) {
-  int listen_port=9000;
-  if(argc>1){
-    sscanf(args[1],"%d",&listen_port);
-  }
-  init_udp_server(listen_port);
+  process_args(argc, args);
+  if(listen_port>0) init_udp_server(listen_port);
   init_keyitems();
   if (!InitEverything())
     return -1;
