@@ -88,7 +88,7 @@ void init_parameters(){
     rom related
     ===================
     */
-    num_nor_pages =0x10+uint32_t(nc1020mode&&nc1020_use_1024k_rom)*0x10+uint32_t(nc3000mode)*0x10;
+    num_nor_pages =0x10+uint32_t(nc1020mode&&nc1020_use_1024k_nor)*0x10+uint32_t(nc3000mode)*0x10;
 
     //this is the nand pages of 528byte each
     num_nand_pages = 0+ uint32_t(nc2000mode)*65536  + uint32_t(nc3000mode)*65536*2;
@@ -99,7 +99,7 @@ void init_parameters(){
     NOR_SIZE = 0x8000 * num_nor_pages;
 }
 
-void rom_switcher(){
+/*void rom_switcher(){
     if(nc1020mode){
         nc1020_rom.romPath = "./1020/obj_lu.bin";
         nc1020_rom.norFlashPath = "./1020/nc1020.fls";
@@ -132,7 +132,7 @@ void rom_switcher(){
         //nc1020_rom.norFlashPath = "./cc800/pc1000emux.fls";
         nc1020_rom.norFlashPath = "./cc800/pc1000.fls";
     }
-}
+}*/
 
 void ProcessBinaryRev(uint8_t* dest, uint8_t* src, uint32_t size){
 	uint32_t offset = 0;

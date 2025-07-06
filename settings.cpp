@@ -118,6 +118,7 @@ void process_args(int argc, char *argv[])
 			rom_path = "roms/nc2600";
 		}
   	    nc1020_rom.nandFlashPath = rom_path + ".nand";
+		nc1020_rom.nand0Path = rom_path + ".nand0";
         nc1020_rom.norFlashPath = rom_path + ".nor";
     }
 	if(nc1020mode){
@@ -139,6 +140,7 @@ void process_args(int argc, char *argv[])
 		if(rom_path.empty()){
 			rom_path = "roms/nc3000";
 		}
+		nc1020_rom.nand0Path = rom_path + ".nand0";
 		nc1020_rom.nandFlashPath = rom_path + ".nand";
 		nc1020_rom.norFlashPath = rom_path + ".nor";
 	}

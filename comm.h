@@ -55,8 +55,8 @@ const bool use_legacy_cpu_loop = false;
 
 const bool correct_non_erased_nand_write = true;
 
-const bool nc2000_use_2600_rom = true;
-const bool nc1020_use_1024k_rom = false;
+//const bool nc2000_use_2600_rom = true;
+const bool nc1020_use_1024k_nor = false;
 
 
 const bool use_legacy_key_io = false;
@@ -176,6 +176,7 @@ struct WqxRom {
     std::string romPath;
     std::string norFlashPath;
     std::string nandFlashPath;
+    std::string nand0Path;
     std::string statesPath;
 };
 void rom_switcher();

@@ -15,9 +15,17 @@ extern "C" {
 #include "bus.h"
 extern nc1020_states_t nc1020_states;
 extern BusPC1000 *bus;
+extern string nand_magic;
 
 deque<string> udp_msgs;
 std::mutex g_mutex;
+
+bool is_nc2600_rom(){
+	if(nand_magic=="ggv nc2010"){
+		return true;
+	}
+	return false;
+}
 
 void push_message(string msg){
 	if(msg.empty()) return;
@@ -141,6 +149,7 @@ void handle_cmd(string str){
 	fflush(stdout);
 	if(cmds.size()==0) return;
 	if(cmds[0]=="save_flash"){
+		write_nand0_file();
 		write_nand_file();
 		SaveNor();
 		printf("flash saved to file!!\n");
@@ -174,7 +183,7 @@ void handle_cmd(string str){
 		}*/
 		
 		if(nc2000mode){
-			if(nc2000_use_2600_rom){
+			if(is_nc2600_rom()){
 				uint8_t buf[]={0x00,0x27,0x05,0x18,0x90,0xfa};
 				copy_to_addr(0x3000, buf, sizeof buf);
 			}else{
@@ -209,7 +218,7 @@ void handle_cmd(string str){
 				copy_to_addr(0x3000, buf, sizeof buf);
 			}
 			if(nc2000mode){
-				if(nc2000_use_2600_rom){
+				if(is_nc2600_rom()){
 					copy_to_addr(0x08d6, (uint8_t*)dir_name.c_str(), dir_name.size()+1);
 					//Peek16(0x0912)=0x02; //not really useful?
 					uint8_t buf[]={0x00,0x0b,0x05,0x00,0x27,0x05,0x18,0x90,0xfa};
@@ -264,7 +273,7 @@ void handle_cmd(string str){
 			file_name_for_write=target;
 			dummy_io_write_cnt = 0;
 			if(nc2000mode){
-				if(nc2000_use_2600_rom){
+				if(is_nc2600_rom()){
 					copy_to_addr(0x08d6, (uint8_t*)src.c_str(), src.size()+1);
 					uint8_t buf[]={0xA9,0x80,0x8D,0x12,0x09,0xA9,0xEF,0x8D,0x13,0x09,0x8D,0x14,0x09,0x00,0x14,0x05,
 		0xA9,0x00,0x8D,0xF6,0x03,0xA9,0x00,0x85,0xDD,0xA9,0x32,0x85,0xDE,0xA9,0x01,0x8D,
@@ -309,7 +318,7 @@ void handle_cmd(string str){
 			}
 
 			if(nc2000mode){
-				if(nc2000_use_2600_rom){
+				if(is_nc2600_rom()){
 					copy_to_addr(0x08d6, (uint8_t*)target.c_str(), target.size()+1);
 
 					/*

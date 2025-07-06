@@ -19,9 +19,32 @@ static int nand_read_cnt=0;
 char nand[65536*2+64][528];
 //char nand_spare[65536+64][16];
 
+string nand_magic;
+
+void read_nand0_file(){
+    memset(nand,0xff, 64*528);
+    char *p0= &nand[0][0];
+    FILE *f = fopen(nc1020_rom.nand0Path.c_str(), "rb");
+    if(f==0) {
+        printf("file %s not exist!\n",nc1020_rom.nand0Path.c_str());
+        exit(-1);
+    }
+    fseek(f, 0, SEEK_END);
+    long fsize = ftell(f);
+    fseek(f, 0, SEEK_SET);  /* same as rewind(f); */
+    fread(p0, fsize, 1, f);
+    fclose(f);
+    printf("<nand0_file_size=%lu>\n",fsize);
+    assert(fsize<= 64*528);
+    for(int i=0;i<10;i++){
+        nand_magic.push_back(p0[0x200+0x10+i]);
+    }
+    printf("nand magic: %s\n",nand_magic.c_str());
+}
+
 void read_nand_file(){
-    memset(nand,0xff,sizeof(nand));
     char *p0= &nand[64][0];
+    memset(p0,0xff,sizeof(nand)-64*528);
     FILE *f = fopen(nc1020_rom.nandFlashPath.c_str(), "rb");
     if(f==0) {
         printf("file %s not exist!\n",nc1020_rom.nandFlashPath.c_str());
@@ -35,6 +58,7 @@ void read_nand_file(){
     printf("<nand_file_size=%lu>\n",fsize);
     assert(fsize + 64*528 <= sizeof(nand));
 
+#if 0
     if(nc2000mode){
         if(!nc2000_use_2600_rom){
             //if it's not 2600 rom, then it should always be this
@@ -53,13 +77,20 @@ void read_nand_file(){
     if(nc3000mode){
         memcpy(&nand[0][0]+0x200+0x10 /*512+16=528*/,"ggv nc3000",strlen("ggv nc3000"));
     }
+#endif
 
+}
+
+void write_nand0_file(){
+     FILE *f = fopen(nc1020_rom.nand0Path.c_str(), "wb");
+    fwrite(&nand[0][0], 64*528 , 1 , f);
+    fclose(f);
 }
 
 void write_nand_file(){
     FILE *f = fopen(nc1020_rom.nandFlashPath.c_str(), "wb");
-    fwrite(&nand[0][0]+ 64*528, num_nand_pages*528, 1 , f);
     assert(num_nand_pages*528 + 64*528 <= sizeof(nand));
+    fwrite(&nand[0][0]+ 64*528, num_nand_pages*528, 1 , f);
     fclose(f);
 }
 void clear_nand_status(){

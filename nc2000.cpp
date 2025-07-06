@@ -80,6 +80,7 @@ void LoadNC1020(){
 		init_rom();
 	}
 	if(nc2000mode||nc3000mode) {
+		read_nand0_file();
 		read_nand_file();
 	}
 	ResetStates();
