@@ -56,6 +56,7 @@ void Reset() {
 	ResetStates();
 }*/
 
+#if 0
 void LoadStates(){
 	FILE* file = fopen(nc1020_rom.statesPath.c_str(), "rb");
 	if (file == NULL) {
@@ -76,6 +77,7 @@ void SaveStates(){
 	fflush(file);
 	fclose(file);
 }
+#endif
 
 void LoadNC1020(){
 	init_io();
