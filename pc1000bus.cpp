@@ -1,4 +1,4 @@
-#include "bus.h"
+#include "pc1000bus.h"
 #include <cassert>
 #include <memory.h>
 #include <stdio.h>

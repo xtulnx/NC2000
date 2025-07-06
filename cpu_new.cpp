@@ -5,7 +5,7 @@
 #include "ram.h"
 #include "state.h"
 #include "disassembler.h"
-#include "bus.h"
+#include "pc1000bus.h"
 #include "io_new.h"
 
 #define qDebug(...)

@@ -2,7 +2,7 @@
 #include "comm.h"
 #include <SDL_keycode.h>
 #include <map>
-#include "bus.h"
+#include "pc1000bus.h"
 using namespace std;
 extern BusPC1000 *bus_pc1000;
 

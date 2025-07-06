@@ -8,7 +8,7 @@
 #include "io_new.h"
 #include <cassert>
 
-#include "bus.h"
+#include "pc1000bus.h"
 
 extern BusPC1000 *bus_pc1000;
 uint8_t* memmap[8];
