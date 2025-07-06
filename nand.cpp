@@ -318,7 +318,7 @@ void nand_write(uint8_t value){
                     if(p[final+i]!=0xff){
                         warn=true;
                         //this is allowed, but wqx's software always erase before write
-                        if(correct_non_erased_nand_write) p[final+i]=0xff;
+                        if(forced_erase_before_write) p[final+i]=0xff;
                     }
                     p[final+i]&=nand_data[i];
                 }
@@ -350,7 +350,7 @@ void nand_write(uint8_t value){
                     if(p[final+i]!=0xff){
                         warn=true;
                         //this is allowed, but wqx's software always erase before write
-                        if(correct_non_erased_nand_write) p[final+i]=0xff;
+                        if(forced_erase_before_write) p[final+i]=0xff;
                     }
                     p[final+i]&=nand_data[i];
                 }

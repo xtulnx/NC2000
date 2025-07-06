@@ -53,7 +53,7 @@ const bool use_emux_cpu =true;
 const bool use_emux_bus = true;
 const bool use_legacy_cpu_loop = false;
 
-const bool correct_non_erased_nand_write = true;
+const bool forced_erase_before_write = true;
 
 //const bool nc2000_use_2600_rom = true;
 const bool nc1020_use_1024k_nor = false;
