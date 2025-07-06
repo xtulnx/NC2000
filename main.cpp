@@ -389,6 +389,7 @@ void RunGame() {
 
 int main(int argc, char* args[]) {
   process_args(argc, args);
+  init_parameters();
   if(listen_port>0) init_udp_server(listen_port);
   init_keyitems();
   if (!InitEverything())

@@ -1,7 +1,7 @@
 #include "comm.h"
 
 bool nc1020mode = false;
-bool nc2000mode = true;
+bool nc2000mode = false;
 bool nc3000mode = false;
 bool pc1000mode = false;
 
@@ -10,40 +10,29 @@ bool pc1000mode = false;
 cycles related
 ===================
 */
-uint32_t static_multipler=1; //tmp fix for speed and crash
-
-// cpu cycles per second (cpu freq).
-uint32_t CYCLES_SECOND = 3686400*(pc1000mode) + 5120000*(nc1020mode||nc2000mode)+10240000*nc3000mode;
-uint32_t UNKNOWN_TIMER0_FREQ = 2;
-uint32_t TIMER0_FREQ = 2; //not used now
-uint32_t TIMER1_FREQ = 200;//not used now
-uint32_t TIMEBASE_FREQ = 250;
-uint32_t CYCLES_UNKNOWN_TIMER = CYCLES_SECOND / UNKNOWN_TIMER0_FREQ;
-// cpu cycles per timer0 period (1/2 s).
-uint32_t CYCLES_TIMER0 = CYCLES_SECOND / TIMER0_FREQ;
-// cpu cycles per timer1 period (1/256 s).
-uint32_t CYCLES_TIMER1 = CYCLES_SECOND / TIMER1_FREQ;
-uint32_t CYCLES_TIMEBASE = CYCLES_SECOND / TIMEBASE_FREQ;
-// speed up
-uint32_t CYCLES_TIMER1_SPEED_UP = CYCLES_SECOND / TIMER1_FREQ / 20;
-// cpu cycles per ms (1/1000 s).
-uint32_t CYCLES_NMI = CYCLES_SECOND / 2;
-uint32_t CYCLES_MS = CYCLES_SECOND / 1000;
-
+uint32_t static_multipler;
+uint32_t CYCLES_SECOND;
+uint32_t UNKNOWN_TIMER0_FREQ;
+uint32_t TIMER0_FREQ;
+uint32_t TIMER1_FREQ;
+uint32_t TIMEBASE_FREQ;
+uint32_t CYCLES_UNKNOWN_TIMER;
+uint32_t CYCLES_TIMER0;
+uint32_t CYCLES_TIMER1;
+uint32_t CYCLES_TIMEBASE;
+uint32_t CYCLES_TIMER1_SPEED_UP;
+uint32_t CYCLES_NMI;
+uint32_t CYCLES_MS;
 /*
 ===================
 rom related
 ===================
 */
-uint32_t num_nor_pages =0x10+uint32_t(nc1020mode&&nc1020_use_1024k_rom)*0x10+uint32_t(nc3000mode)*0x10;
-
-//this is the nand pages of 528byte each
-uint32_t num_nand_pages = 0+ uint32_t(nc2000mode)*65536  + uint32_t(nc3000mode)*65536*2;
-
-//const uint32_t num_nor_pages =0x20;
-uint32_t num_rom_pages =0x300;
-uint32_t ROM_SIZE = 0x8000 * num_rom_pages;
-uint32_t NOR_SIZE = 0x8000 * num_nor_pages;
+uint32_t num_nor_pages;
+uint32_t num_nand_pages;
+uint32_t num_rom_pages;
+uint32_t ROM_SIZE;
+uint32_t NOR_SIZE;
 
 
 string inject_code;
@@ -68,6 +57,47 @@ WqxRom nc1020_rom = {
     //.statesPath = "./nc1020.sts", //not used at all
 };
 
+void init_parameters(){
+    /*
+    ===================
+    cycles related
+    ===================
+    */
+    static_multipler=1; //tmp fix for speed and crash
+
+    // cpu cycles per second (cpu freq).
+    CYCLES_SECOND = 3686400*(pc1000mode) + 5120000*(nc1020mode||nc2000mode)+10240000*nc3000mode;
+    UNKNOWN_TIMER0_FREQ = 2;
+    TIMER0_FREQ = 2; //not used now
+    TIMER1_FREQ = 200;//not used now
+    TIMEBASE_FREQ = 250;
+    CYCLES_UNKNOWN_TIMER = CYCLES_SECOND / UNKNOWN_TIMER0_FREQ;
+    // cpu cycles per timer0 period (1/2 s).
+    CYCLES_TIMER0 = CYCLES_SECOND / TIMER0_FREQ;
+    // cpu cycles per timer1 period (1/256 s).
+    CYCLES_TIMER1 = CYCLES_SECOND / TIMER1_FREQ;
+    CYCLES_TIMEBASE = CYCLES_SECOND / TIMEBASE_FREQ;
+    // speed up
+    CYCLES_TIMER1_SPEED_UP = CYCLES_SECOND / TIMER1_FREQ / 20;
+    // cpu cycles per ms (1/1000 s).
+    CYCLES_NMI = CYCLES_SECOND / 2;
+    CYCLES_MS = CYCLES_SECOND / 1000;
+
+    /*
+    ===================
+    rom related
+    ===================
+    */
+    num_nor_pages =0x10+uint32_t(nc1020mode&&nc1020_use_1024k_rom)*0x10+uint32_t(nc3000mode)*0x10;
+
+    //this is the nand pages of 528byte each
+    num_nand_pages = 0+ uint32_t(nc2000mode)*65536  + uint32_t(nc3000mode)*65536*2;
+
+    //const uint32_t num_nor_pages =0x20;
+    num_rom_pages =0x300;
+    ROM_SIZE = 0x8000 * num_rom_pages;
+    NOR_SIZE = 0x8000 * num_nor_pages;
+}
 
 void rom_switcher(){
     if(nc1020mode){

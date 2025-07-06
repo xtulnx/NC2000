@@ -179,6 +179,7 @@ struct WqxRom {
     std::string statesPath;
 };
 void rom_switcher();
+void init_parameters();
 
 inline vector<string> split_s(const string &str, const string &sp) {
     vector<string> res;

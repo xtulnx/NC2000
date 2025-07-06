@@ -71,6 +71,22 @@ void process_args(int argc, char *argv[])
 			{
                 listen_port = atoi(optarg);
 			}
+			else if(strcmp(long_options[option_index].name,"nc1020")==0)
+			{
+				nc1020mode = true;
+			}
+			else if(strcmp(long_options[option_index].name,"pc1000")==0)
+			{
+				pc1000mode = true;
+			}
+			else if(strcmp(long_options[option_index].name,"nc2000")==0)
+			{
+				nc2000mode = true;
+			}
+			else if(strcmp(long_options[option_index].name,"nc3000")==0)
+			{
+				nc3000mode = true;
+			}
 			else
 			{
 				printf("unknown option\n");
@@ -83,9 +99,48 @@ void process_args(int argc, char *argv[])
 		}
 	}
 
-    if(nc2000mode){
-        nc1020_rom.nandFlashPath = rom_path + ".nand";
+	int mode_cnt=0;
+	mode_cnt+= nc1020mode;
+	mode_cnt+= pc1000mode;
+	mode_cnt+= nc2000mode;
+	mode_cnt+= nc3000mode;
+	if(mode_cnt==0){
+		printf("no mode specified, default to nc2000\n");
+		nc2000mode = true;
+	}
+	if(mode_cnt>1){
+		printf("only one of --nc1020, --pc1000, --nc2000, --nc3000 can be specified\n");
+		exit(-1);
+	}
+
+	if(nc2000mode){
+		if(rom_path.empty()){
+			rom_path = "roms/nc2600";
+		}
+  	    nc1020_rom.nandFlashPath = rom_path + ".nand";
         nc1020_rom.norFlashPath = rom_path + ".nor";
     }
+	if(nc1020mode){
+		if(rom_path.empty()){
+			rom_path = "roms/nc1020";
+		}
+		nc1020_rom.romPath = rom_path + ".rom";
+		nc1020_rom.norFlashPath = rom_path + ".nor";
+	}
+	if(pc1000mode){
+		if(rom_path.empty()){
+			rom_path = "roms/pc1000";
+		}
+		nc1020_rom.romPath = rom_path + ".rom";
+		nc1020_rom.norFlashPath = rom_path + ".nor";
+	}
+
+	if(nc3000mode){
+		if(rom_path.empty()){
+			rom_path = "roms/nc3000";
+		}
+		nc1020_rom.nandFlashPath = rom_path + ".nand";
+		nc1020_rom.norFlashPath = rom_path + ".nor";
+	}
 
 }
