@@ -23,20 +23,26 @@ using std::vector;
 
 #define IO_API
 
+/*
+===================
+common types
+===================
+*/
+typedef uint8_t (IO_API *io_read_func_t)(uint8_t);
+typedef void (IO_API *io_write_func_t)(uint8_t, uint8_t);
+struct WqxRom {
+    std::string romPath;
+    std::string norFlashPath;
+    std::string nandFlashPath;
+    std::string nand0Path;
+    std::string statesPath;
+};
 
-extern string inject_code;
-extern uint64_t tick;
-
-extern bool enable_dyn_debug;
-extern int enable_dyn_debug_next_n;
-extern bool enable_debug_nand;
-extern bool enable_debug_switch;
-extern bool enable_debug_pc;
-extern bool enable_oops;
-extern bool enable_inject;
-
-extern bool wanna_inject;
-extern bool injected;
+enum NorFormat{
+    INVALID,
+    PHYSICAL_ORDER,
+    WQX2KUTIL
+};
 
 /*
 ===================
@@ -55,27 +61,36 @@ const bool use_legacy_cpu_loop = false;
 
 const bool forced_erase_before_write = true;
 
-//const bool nc2000_use_2600_rom = true;
 const bool nc1020_use_1024k_nor = false;
-
 
 const bool use_legacy_key_io = false;
 
-// note: 2600 ggvsim rom need different nand magic
-const bool nc2600_rom_use_ggvsim = false;
-
-enum NorFormat{
-    INVALID,
-    PHYSICAL_ORDER,
-    WQX2KUTIL
-};
 const NorFormat nor_read_format = NorFormat::PHYSICAL_ORDER;
 const NorFormat nor_write_format = NorFormat::PHYSICAL_ORDER;
 
+/*
+===================
+debug related
+===================
+*/
+
+extern string inject_code;
+extern uint64_t tick;
+
+extern bool enable_dyn_debug;
+extern int enable_dyn_debug_next_n;
+extern bool enable_debug_nand;
+extern bool enable_debug_switch;
+extern bool enable_debug_pc;
+extern bool enable_oops;
+extern bool enable_inject;
+
+extern bool wanna_inject;
+extern bool injected;
+
+
 const bool enabled_dsp=true;
 const bool enable_beeper=true;
-//const bool dsp_only=false;
-const bool enable_dsp_test=true;
 
 const bool enable_debug_beeper=false;
 /*
@@ -151,7 +166,6 @@ extern uint32_t NOR_SIZE;
 misc
 ===================
 */
-extern bool enable_dyn_debug;
 const int int_inf=10*10000*10000;
 /*
 ===================
@@ -165,20 +179,8 @@ void ProcessBinaryLinear(uint8_t* dest, uint8_t* src, uint32_t size);
 //use vector char since string cannot store \0 well on mingw
 void read_file(string name,vector<char> &v);
 int read_file_noexit(string name,vector<char> &v);
-/*
-===================
-common types
-===================
-*/
-typedef uint8_t (IO_API *io_read_func_t)(uint8_t);
-typedef void (IO_API *io_write_func_t)(uint8_t, uint8_t);
-struct WqxRom {
-    std::string romPath;
-    std::string norFlashPath;
-    std::string nandFlashPath;
-    std::string nand0Path;
-    std::string statesPath;
-};
+
+
 void rom_switcher();
 void init_parameters();
 

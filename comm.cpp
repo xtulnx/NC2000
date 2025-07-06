@@ -1,9 +1,36 @@
 #include "comm.h"
 
+/*
+===================
+global switch
+===================
+*/
 bool nc1020mode = false;
 bool nc2000mode = false;
 bool nc3000mode = false;
 bool pc1000mode = false;
+
+/*
+===================
+debug related
+===================
+*/
+
+string inject_code;
+uint64_t tick=0;  //tick is mostly for debug
+
+bool enable_dyn_debug=false;
+int enable_dyn_debug_next_n=100;
+
+bool enable_debug_nand=false;
+
+bool enable_debug_switch=false;
+bool enable_debug_pc=false;
+bool enable_oops=false;
+bool enable_inject=false;
+
+bool wanna_inject=false;
+bool injected=false;
 
 /*
 ===================
@@ -35,27 +62,7 @@ uint32_t ROM_SIZE;
 uint32_t NOR_SIZE;
 
 
-string inject_code;
-uint64_t tick=0;
-
-bool enable_dyn_debug=false;
-int enable_dyn_debug_next_n=100;
-
-bool enable_debug_nand=false;
-
-bool enable_debug_switch=false;
-bool enable_debug_pc=false;
-bool enable_oops=false;
-bool enable_inject=false;
-
-bool wanna_inject=false;
-bool injected=false;
-
-WqxRom nc1020_rom = {
-    //.romPath = "./obj_lu.bin",
-    //.norFlashPath = "./nc1020.fls",
-    //.statesPath = "./nc1020.sts", //not used at all
-};
+WqxRom nc1020_rom;
 
 void init_parameters(){
     /*

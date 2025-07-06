@@ -207,14 +207,15 @@ void init_audio(){
 	SDL_PauseAudioDevice(beeper_deviceId, 0);
     SDL_PauseAudioDevice(dsp_deviceId, 0);
 
+	/*
 	extern void dsp_test();
 	extern void dsp_test2();
 	extern void dsp_test3();
 	if(enable_dsp_test){
-		//dsp_test();
-		//dsp_test2();
-		//dsp_test3();
-	}
+		dsp_test();
+		dsp_test2();
+		dsp_test3();
+	}*/
 }
 
 bool sound_busy(){
