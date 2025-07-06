@@ -115,7 +115,7 @@ void process_args(int argc, char *argv[])
 
 	if(nc2000mode){
 		if(rom_path.empty()){
-			rom_path = "roms/nc2600";
+			rom_path = "roms/nc2000";
 		}
   	    nc1020_rom.nandFlashPath = rom_path + ".nand";
 		nc1020_rom.nand0Path = rom_path + ".nand0";
