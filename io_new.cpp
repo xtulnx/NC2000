@@ -6,6 +6,7 @@
 #include "dsp/dsp.h"
 #include "mem.h"
 #include "io.h"
+#include <cassert>
 
 extern nc1020_states_t nc1020_states;
 extern Dsp dsp;
@@ -28,9 +29,13 @@ const int DSP_SLEEP_FLAG = 0x80;
 const int IO_BANK_SWITCH = 0;
 const int IO_INT_ENABLE = 1;
 const int IO_INT_STATUS = 1;
+const int IO_GENERAL_CTRL = 4;
 const int IO_BIOS_BSW = 0xa;
 const int IO_TIMERA_VAL_L = 0x10;
 const int IO_TIMERA_VAL_H = 0x11;
+const int IO_TIMERAB_CTRL = 0x14;
+
+const int INT_TIME_BASE = 8;
 
 const int O_INT_ENABLE = 0x40;
 const int O_PORT0 = 0x41;
@@ -91,6 +96,40 @@ void dspCmd(int cmd) {
         dspTrans=false;
     }
 }
+
+void setTimer() {
+    int temp = ioReg[IO_TIMERAB_CTRL] >> 4;
+    if (temp != 0) {
+        tmaValue += (256 >> temp);
+        if (tmaValue >= 0x10000) {
+            tmaValue = tmaReload;
+            if ((ioReg[O_INT_ENABLE] & 1) != 0)
+                ioReg[IO_INT_STATUS] |= 1;
+        }
+    }
+}
+
+void setIrqTimeBase() {
+    ioReg[IO_INT_STATUS] |= INT_TIME_BASE;
+}
+
+bool nmiEnable() {
+    return (ioReg[O_INT_ENABLE] & 0x10) == 0;
+}
+
+bool timeBaseEnable() {
+    if(nc1020mode||nc2000mode||nc3000mode){
+        if((ioReg[O_INT_ENABLE] & 8)) return false;
+        /*
+        // todo fix this
+        if (this->field_0x96d4ac != '\0') {
+            return true;
+        }*/
+        return (ioReg[IO_GENERAL_CTRL] & 0xf)!=0;
+    }
+    assert(false);
+}
+
 
 int io_v2_read(int address) {
     if(nc1020mode||nc2000mode||nc3000mode){

@@ -458,14 +458,5 @@ boolean BusPC1000::nmiEnable() {
 }
 
 boolean BusPC1000::timeBaseEnable() {
-    if(nc1020mode||nc2000mode||nc3000mode){
-        if((ioReg[O_INT_ENABLE] & 8)) return false;
-        /*
-        // todo fix this
-        if (this->field_0x96d4ac != '\0') {
-            return true;
-        }*/
-        return (ioReg[IO_GENERAL_CTRL] & 0xf)!=0;
-    }
     return (ioReg[O_INT_ENABLE] & 8) == 0 && (ioReg[IO_GENERAL_CTRL] & 0xf) > 0;
 }

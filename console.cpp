@@ -14,7 +14,7 @@ extern "C" {
 }
 #include "bus.h"
 extern nc1020_states_t nc1020_states;
-extern BusPC1000 *bus;
+extern C6502 *cpu;
 extern string nand_magic;
 
 deque<string> udp_msgs;
@@ -176,7 +176,7 @@ void handle_cmd(string str){
 
 	if(cmds[0]=="file_manager"){
 		mPC = 0x3000;
-		bus->cpu->PC=0x3000;
+		cpu->PC=0x3000;
 		/*if(nc1020mode){
 			uint8_t buf[]={0x00,0x2d,0x93,0x18,0x90,0xfa};
 			copy_to_addr(0x3000, buf, sizeof buf);
@@ -201,7 +201,7 @@ void handle_cmd(string str){
 	if(cmds[0]=="create_dir" || cmds[0]=="create_dir_hex"){
 			printf("<pc=%x>\n",mPC);
 			mPC = 0x3000;
-			bus->cpu->PC=0x3000;
+			cpu->PC=0x3000;
 			string dir_name=cmds[1];
 			if(cmds[0]=="create_dir_hex"){
 				dir_name=HexToBytes(dir_name);
@@ -247,7 +247,7 @@ void handle_cmd(string str){
 			ram_io[0x0a]=0x80;
 			super_switch();
 			mPC=0x4018;
-			bus->cpu->PC=0x4018;
+			cpu->PC=0x4018;
 			return;
 	}
 	if(cmds[0]=="speed"){
@@ -286,7 +286,7 @@ void handle_cmd(string str){
 				}
 			}
 			mPC=0x3000;
-			bus->cpu->PC=0x3000;
+			cpu->PC=0x3000;
 			//enable_dyn_debug=true;
 			return;
 	}
@@ -360,7 +360,7 @@ void handle_cmd(string str){
 			}
 
 			mPC=0x3000;
-			bus->cpu->PC=0x3000;
+			cpu->PC=0x3000;
 
 			
 			return;

@@ -10,7 +10,7 @@
 
 #include "bus.h"
 
-extern BusPC1000 *bus;
+extern BusPC1000 *bus_pc1000;
 uint8_t* memmap[8];
 
 
@@ -60,10 +60,9 @@ uint8_t Load(uint16_t addr) {
 		if(io_version== IO_V1){
 			return io_read[addr](addr);
 		} else if (io_version == IO_V2) {
-			return io_v2_read(addr);
-		} else if(io_version== IO_EMUX_BUS){
-			return bus->in(addr);
-		}else{
+			if(bus_pc1000) return bus_pc1000->in(addr);
+			else return io_v2_read(addr);
+		} else{
 			assert(false);
 		}
 	}
@@ -101,10 +100,8 @@ void Store(uint16_t addr, uint8_t value) {
 		if(io_version== IO_V1){
 			io_write[addr](addr, value);
 		}else if (io_version == IO_V2) {
-			io_v2_write(addr, value);
-		}
-		else if(io_version== IO_EMUX_BUS){
-			bus->out(addr, value);
+			if(bus_pc1000) bus_pc1000->out(addr, value);
+			else io_v2_write(addr, value);
 		}else {
 			assert(false);
 		}

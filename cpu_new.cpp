@@ -6,6 +6,7 @@
 #include "state.h"
 #include "disassembler.h"
 #include "bus.h"
+#include "io_new.h"
 
 #define qDebug(...)
 
@@ -16,15 +17,23 @@ static uint64_t& cycles = nc1020_states.cycles;
 static uint64_t& last_cycles = nc1020_states.last_cycles;
 static uint8_t * rtc_reg=nc1020_states.rtc_reg;
 static uint8_t& interr_flag = nc1020_states.interr_flag;
-struct BusPC1000 *bus=0;
+struct BusPC1000 *bus_pc1000=0;
+extern IBus6502 *dummy_bus;
 extern C6502* cpu;
 
-void init_emux_cpu_and_emux_bus(){
+void init_emux_cpu_and_bus(){
 	//assert(use_emux_cpu);
 	// assert(use_emux_bus);
-	bus=new BusPC1000();
-	cpu=new C6502(bus);
-	bus->cpu=cpu;
+	if(pc1000mode) {
+		bus_pc1000=new BusPC1000();
+		cpu=new C6502(bus_pc1000);
+		bus_pc1000->cpu=cpu;
+		dummy_bus=0;
+	}else{
+		cpu=new C6502(dummy_bus);
+	}
+	
+
 	// now in resetStates()
 	//cpu->reset();
 }
@@ -46,8 +55,8 @@ void setTime1000() {
     const int ADDR_HOUR = 0x469;
     const int ADDR_YEAR = 0x46c;
 
-    bus->write(ADDR_IDLESEC, 0); //设置idlesec为0，禁止自动关机
-    int year = bus->read(ADDR_YEAR) + 1881;
+    bus_pc1000->write(ADDR_IDLESEC, 0); //设置idlesec为0，禁止自动关机
+    int year = bus_pc1000->read(ADDR_YEAR) + 1881;
     if (year == 2000) {
 		/*SYSTEMTIME sys;
 		GetLocalTime(&sys);
@@ -168,7 +177,7 @@ void sync_time_2000(){
 }
 bool soft_reset=0;
 void try_soft_reset(){
-	if(bus->speed_slowdown>512){
+	if(speed_slowdown>512){
 		soft_reset=1;
 		printf("soft reset!!\n");
 	}
@@ -197,7 +206,7 @@ void cpu_run3(){
 		cpu->reset();
 		//nc1020_states.last_cycles=0;
 		//nc1020_states.cycles=0;
-		bus->speed_slowdown=1;
+		speed_slowdown=1;
 	}
 	//assert(cycles==cpu->getTotalCycles()/12);
 	char *peeked_msg=peek_message();
@@ -212,7 +221,7 @@ void cpu_run3(){
 		if(!need_wait||(cpu->P&4)==0)
 		{
 			if(cmd=="file_manager"||cmd=="put"||cmd=="get"){
-				bus->speed_slowdown=1;
+				speed_slowdown=1;
 				printf("set cks to highest\n");
 			}
 			string msg=get_message();
@@ -248,9 +257,9 @@ void cpu_run3(){
 	uint32_t CpuTicks;
 	if(false){
 		//TODO FIX ME
-		target_cycles/=bus->speed_slowdown;
+		target_cycles/=speed_slowdown;
 		CpuTicks=cpu->exec2(target_cycles)/12;
-		CpuTicks*=bus->speed_slowdown;
+		CpuTicks*=speed_slowdown;
 	}
 	else{
 		CpuTicks=cpu->exec2(target_cycles)/12;
@@ -261,17 +270,20 @@ void cpu_run3(){
 	//magic number to fit timer0 and timer1's code
 	if(trigger_x_times_per_s(576*50)){
 		//printf("trigger1!\n");
-		bus->setTimer();
+		if(nc1020mode||nc2000mode||nc3000mode){
+			setTimer();
+		}
 		if(pc1000mode){
-			if (bus->setTimer0()) {
+			bus_pc1000->setTimer();
+			if (bus_pc1000->setTimer0()) {
 				//timer0用于录放音，蜂鸣器音乐
-				bus->setIrqTimer0();
+				bus_pc1000->setIrqTimer0();
 				//printf("irq1!\n");
 				cpu->IRQ();
 			}
-			if (bus->setTimer1()) {
+			if (bus_pc1000->setTimer1()) {
 				//timer1用于秒表的百分之一秒，每秒200次
-				bus->setIrqTimer1();
+				bus_pc1000->setIrqTimer1();
 				cpu->IRQ();
 				//printf("irq2!\n");
 			}
@@ -293,11 +305,20 @@ void cpu_run3(){
 	}
 
 	if(trigger_x_times_per_s(250)){
-		if (bus->timeBaseEnable()) {
-            //timebase中断为4ms一次，主要用于键盘扫描
-            bus->setIrqTimeBase();
-            cpu->IRQ();
-        }
+		if(nc1020mode||nc2000mode||nc3000mode){
+			if (timeBaseEnable()) {
+				//timebase中断为4ms一次，主要用于键盘扫描
+				setIrqTimeBase();
+				cpu->IRQ();
+			}
+		}
+		if(pc1000mode){
+			if (bus_pc1000->timeBaseEnable()) {
+				//timebase中断为4ms一次，主要用于键盘扫描
+				bus_pc1000->setIrqTimeBase();
+				cpu->IRQ();
+			}
+		}
 	}
 
 	if(trigger256){
@@ -315,7 +336,7 @@ void cpu_run3(){
 				}
 			}
 			if(trigger256_cnt%128==64){ //avoid nmi triggerd at same time as rtc irq
-				if (bus->nmiEnable()){
+				if (nmiEnable()){
 					printf("nmi!\n");
 					cpu->NMI();
 				}
@@ -333,7 +354,7 @@ void cpu_run3(){
 
 	if(pc1000mode&&trigger_x_times_per_s(2)){
 		setTime1000();
-		if (bus->nmiEnable()){
+		if (bus_pc1000->nmiEnable()){
 			cpu->NMI();
 		}
 	}

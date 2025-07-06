@@ -46,14 +46,13 @@ enum NorFormat{
 
 enum CpuLoopVersion {
     CPU_RUN1 = 1, // cpu_run,    only IO_V1
-    CPU_RUN2 = 2, // cpu_run2,   both IO_V1 and IO_EMUX_BUS
-    CPU_RUN3 = 3, // cpu_run3,   only IO_EMUX_BUS
+    CPU_RUN2 = 2, // cpu_run2,   both IO_V1 and IO_V2
+    CPU_RUN3 = 3, // cpu_run3,   only IO_V2
 };
 
 enum IoVersion {
     IO_V1 = 1,
     IO_V2 = 2,
-    IO_EMUX_BUS = 3, // use emux bus
 };
 
 /*

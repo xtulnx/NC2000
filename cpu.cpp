@@ -385,19 +385,10 @@ void cpu_run(){
 
 }
 
-static struct Bus:IBus6502{
-	Bus(){
-	}
-	int read(int address){
-		return Load(address);
-	}
-    void write(int address, int value){
-		Store(address,value);
-	}
-}dummy_bus;
+extern IBus6502 *dummy_bus;
 extern C6502 *cpu;
 void init_emux_cpu_with_dummy_bus(){
-	cpu = new C6502(&dummy_bus);
+	cpu = new C6502(dummy_bus);
 	// now in resetStates()
 	//cpu->reset();
 }

@@ -20,6 +20,16 @@ extern WqxRom nc1020_rom;
 
 nc1020_states_t nc1020_states;
 C6502 *cpu;
+struct DummyBus:IBus6502{
+	DummyBus(){
+	}
+	int read(int address){
+		return Load(address);
+	}
+    void write(int address, int value){
+		Store(address,value);
+	}
+}*dummy_bus;
 
 //static uint32_t& version = nc1020_states.version;
 
@@ -69,6 +79,7 @@ void SaveStates(){
 
 void LoadNC1020(){
 	init_io();
+	dummy_bus= new DummyBus();
 	if(cpu_loop_version==CPU_RUN1) {
 		init_emux_cpu_with_dummy_bus();
 	}
@@ -76,13 +87,13 @@ void LoadNC1020(){
 		if(io_version==IO_V1) {
 			init_emux_cpu_with_dummy_bus();
 		}else if(io_version) {
-			init_emux_cpu_and_emux_bus();
+			init_emux_cpu_and_bus();
 		} else {
 			assert(false);
 		}
 	}
 	if(cpu_loop_version==CPU_RUN3) { 
-		init_emux_cpu_and_emux_bus();
+		init_emux_cpu_and_bus();
 	}
 
 	//rom_switcher();
