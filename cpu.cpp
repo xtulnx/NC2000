@@ -394,16 +394,16 @@ static struct Bus:IBus6502{
     void write(int address, int value){
 		Store(address,value);
 	}
-}bus;
+}dummy_bus;
 extern C6502 *cpu;
-void init_cpu2(){
-	cpu=new C6502(&bus);
+void init_emux_cpu_with_dummy_bus(){
+	cpu = new C6502(&dummy_bus);
 	// now in resetStates()
 	//cpu->reset();
 }
 void cpu_run2(){
-	assert(use_emux_cpu);
-	assert(!use_emux_bus||use_legacy_cpu_loop);
+	//assert(use_emux_cpu);
+	//assert(!use_emux_bus||use_legacy_cpu_loop);
 
 	assert(cycles==cpu->getTotalCycles()/12);
 

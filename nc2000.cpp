@@ -12,6 +12,7 @@
 #include <SDL_timer.h>
 #include <cassert>
 #include <cstdio>
+#include <cstdlib>
 #include <deque>
 #include "sound.h"
 #include "ansi/c6502.h"
@@ -68,10 +69,20 @@ void SaveStates(){
 
 void LoadNC1020(){
 	init_io();
-	cpu_init_emux();
-	if(use_emux_cpu&&!use_emux_bus){
-		void init_cpu2();
-		init_cpu2();
+	if(cpu_loop_version==CPU_RUN1) {
+		init_emux_cpu_with_dummy_bus();
+	}
+	if(cpu_loop_version==CPU_RUN2) {
+		if(io_version==IO_V1) {
+			init_emux_cpu_with_dummy_bus();
+		}else if(io_version) {
+			init_emux_cpu_and_emux_bus();
+		} else {
+			assert(false);
+		}
+	}
+	if(cpu_loop_version==CPU_RUN3) { 
+		init_emux_cpu_and_emux_bus();
 	}
 
 	//rom_switcher();
@@ -147,14 +158,14 @@ void RunTimeSlice(uint32_t time_slice, bool speed_up) {
 	//auto old=sound_stream.size();
 	//printf("<%u,%u, %lld>",cycles,end_cycles,SDL_GetTicks64());
 	while (nc1020_states.cycles < target_cycles) {
-		if(use_emux_cpu){
-			if(use_emux_bus){
-				cpu_run_emux();
-			}else{
-				cpu_run2();
-			}
-		}else{
+		if(cpu_loop_version == CPU_RUN1){
 			cpu_run();
+		}else if (cpu_loop_version == CPU_RUN2){
+			cpu_run2();
+		}else if (cpu_loop_version == CPU_RUN3){
+			cpu_run3();
+		}else{
+			assert(false);
 		}
 	}
 

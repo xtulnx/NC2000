@@ -285,12 +285,14 @@ void handle_key_wayback(signed int sym, bool key_down){
         }*/
         auto value=map_key_wayback(sym);
         if(value.first!=-1 && value.second!=-1){
-           SetKeyWayback(value.first,value.second, key_down);
-           if(key_down){
-            bus->keyDown2(value.first, value.second);
-           }else{
-            bus->keyUp();
-           }
+          SetKeyWayback(value.first,value.second, key_down);
+          if(bus){
+            if(key_down){
+              bus->keyDown2(value.first, value.second);
+            }else{
+              bus->keyUp();
+            }
+          }
         }
         switch ( sym) {
           case SDLK_BACKQUOTE:

@@ -56,10 +56,12 @@ uint8_t Load(uint16_t addr) {
 	}
 
 	if (addr < IO_LIMIT) {
-		if(use_emux_bus){
-			return bus->in(addr);
-		}else {
+		if(io_version== IO_V1){
 			return io_read[addr](addr);
+		}else if(io_version== IO_EMUX_BUS){
+			return bus->in(addr);
+		}else{
+			assert(false);
 		}
 	}
 
@@ -93,10 +95,12 @@ void Store(uint16_t addr, uint8_t value) {
 	}
 
 	if (addr < IO_LIMIT) {
-		if(use_emux_bus){
-			return bus->out(addr, value);
-		}else {
+		if(io_version== IO_V1){
 			io_write[addr](addr, value);
+		}else if(io_version== IO_EMUX_BUS){
+			bus->out(addr, value);
+		}else {
+			assert(false);
 		}
 
 		return;

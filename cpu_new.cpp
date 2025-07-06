@@ -16,10 +16,10 @@ static uint64_t& cycles = nc1020_states.cycles;
 static uint64_t& last_cycles = nc1020_states.last_cycles;
 static uint8_t * rtc_reg=nc1020_states.rtc_reg;
 static uint8_t& interr_flag = nc1020_states.interr_flag;
-struct BusPC1000 *bus;
+struct BusPC1000 *bus=0;
 extern C6502* cpu;
 
-void cpu_init_emux(){
+void init_emux_cpu_and_emux_bus(){
 	//assert(use_emux_cpu);
 	// assert(use_emux_bus);
 	bus=new BusPC1000();
@@ -189,11 +189,7 @@ void debug_pc(){
 		//getchar();
 	}
 }
-void cpu_run_emux(){
-	if(use_legacy_cpu_loop){
-		void cpu_run2();
-		return cpu_run2();
-	}
+void cpu_run3(){
 	if(soft_reset){
 		soft_reset=0;
 		ram_io[2]=1;

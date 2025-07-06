@@ -44,6 +44,17 @@ enum NorFormat{
     WQX2KUTIL
 };
 
+enum CpuLoopVersion {
+    CPU_RUN1 = 1, // cpu_run,    only IO_V1
+    CPU_RUN2 = 2, // cpu_run2,   both IO_V1 and IO_EMUX_BUS
+    CPU_RUN3 = 3, // cpu_run3,   only IO_EMUX_BUS
+};
+
+enum IoVersion {
+    IO_V1 = 1,
+    IO_EMUX_BUS = 2, // use emux bus
+};
+
 /*
 ===================
 global switch
@@ -55,9 +66,8 @@ extern bool nc2000mode;
 extern bool nc3000mode;
 extern bool pc1000mode;
 
-const bool use_emux_cpu =true;
-const bool use_emux_bus = true;
-const bool use_legacy_cpu_loop = false;
+const CpuLoopVersion cpu_loop_version = CPU_RUN3;
+const IoVersion io_version = IO_EMUX_BUS;
 
 const bool forced_erase_before_write = true;
 
