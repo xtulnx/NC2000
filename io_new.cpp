@@ -7,6 +7,7 @@
 #include "mem.h"
 #include "io.h"
 #include <cassert>
+#include "CC800IOName.h"
 
 extern nc1020_states_t nc1020_states;
 extern Dsp dsp;
@@ -18,19 +19,10 @@ static bool dspSleep;
 static int tmaValue;
 static int tmaReload;
 
-const int IO_DSP_STAT = 0x20;
-const int IO_DSP_RET_DATA = 0x21;
-const int IO_DSP_DATA_LOW = 0x22;
-const int IO_DSP_DATA_HI = 0x23;
 const int DSP_WAKEUP_FLAG = 0x80;
 const int DSP_RESET_FLAG = 0x40;
 const int DSP_SLEEP_FLAG = 0x80;
 
-const int IO_BANK_SWITCH = 0;
-const int IO_INT_ENABLE = 1;
-const int IO_INT_STATUS = 1;
-const int IO_GENERAL_CTRL = 4;
-const int IO_BIOS_BSW = 0xa;
 const int IO_TIMERA_VAL_L = 0x10;
 const int IO_TIMERA_VAL_H = 0x11;
 const int IO_TIMERAB_CTRL = 0x14;
@@ -38,7 +30,6 @@ const int IO_TIMERAB_CTRL = 0x14;
 const int INT_TIME_BASE = 8;
 
 const int O_INT_ENABLE = 0x40;
-const int O_PORT0 = 0x41;
 
 unsigned int speed_slowdown=1;
 
@@ -104,13 +95,13 @@ void setTimer() {
         if (tmaValue >= 0x10000) {
             tmaValue = tmaReload;
             if ((ioReg[O_INT_ENABLE] & 1) != 0)
-                ioReg[IO_INT_STATUS] |= 1;
+                ioReg[io01_int_status] |= 1;
         }
     }
 }
 
 void setIrqTimeBase() {
-    ioReg[IO_INT_STATUS] |= INT_TIME_BASE;
+    ioReg[io01_int_status] |= INT_TIME_BASE;
 }
 
 bool nmiEnable() {
@@ -125,7 +116,7 @@ bool timeBaseEnable() {
         if (this->field_0x96d4ac != '\0') {
             return true;
         }*/
-        return (ioReg[IO_GENERAL_CTRL] & 0xf)!=0;
+        return (ioReg[io04_general_ctrl] & 0xf)!=0;
     }
     assert(false);
 }
@@ -189,11 +180,11 @@ int io_v2_read(int address) {
         }
     }
     switch (address) {
-        case IO_INT_STATUS://0x01
+        case io01_int_status://0x01
         {
             int t;
-            t = ioReg[IO_INT_STATUS];
-            ioReg[IO_INT_STATUS] &= 0xc0;
+            t = ioReg[io01_int_status];
+            ioReg[io01_int_status] &= 0xc0;
             return t;
         }
         default:
@@ -289,19 +280,19 @@ void io_v2_write(int address, int value) {
             }
         }
         switch (address) {
-            case IO_DSP_STAT://0x20
+            case 0x20://0x20
                 if (value == DSP_RESET_FLAG || value == DSP_WAKEUP_FLAG) {
                     dspSleep = false;
                     dsp.reset();
                 }
                 return;
-            case IO_DSP_DATA_HI://0x23
-                ioReg[IO_DSP_DATA_HI] = value;
-                dspCmd(ioReg[IO_DSP_DATA_HI] * 256 + ioReg[IO_DSP_DATA_LOW]);
+            case 0x23://0x23
+                ioReg[0x23] = value;
+                dspCmd(ioReg[0x23] * 256 + ioReg[0x22]);
                 if(dspTrans){
-                    dspData = ioReg[IO_DSP_DATA_LOW];
+                    dspData = ioReg[0x22];
                 }else{
-                    dsp.write(value,ioReg[IO_DSP_DATA_LOW]);
+                    dsp.write(value,ioReg[0x22]);
                 }
                 return;
         }
@@ -386,16 +377,16 @@ void io_v2_write(int address, int value) {
         }
     }
     switch (address) {
-        case IO_BANK_SWITCH://0x00
-            ioReg[IO_BANK_SWITCH] = value;
+        case io00_bank_switch://0x00
+            ioReg[io00_bank_switch] = value;
             super_switch();
             /////////////bankSwitch();
             return;
-        case IO_INT_ENABLE://0x01
+        case io01_int_enable://0x01
             ioReg[O_INT_ENABLE] = value;
             return;
-        case IO_BIOS_BSW://0x0a
-            ioReg[IO_BIOS_BSW] = value;
+        case io0A_bios_bsw://0x0a
+            ioReg[io0A_bios_bsw] = value;
             super_switch();
             /////////////biosBankSwitch();
             /////////////bankSwitch();
