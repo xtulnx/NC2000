@@ -135,7 +135,7 @@ const int pixel_size=4;
 const int gap_size=1;
 const int total_size=pixel_size+gap_size;
 
-const uint32_t LCD_REFRESH_INTERVAL=10; //refresh every 10ms
+const uint32_t LCD_REFRESH_INTERVAL=8; //refresh every 10ms
 //const uint32_t FRAME_RATE=40;   //how many frames in a second
 //const uint32_t FRAME_FACTOR=SLICE_RATE/FRAME_RATE;
 
