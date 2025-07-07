@@ -140,9 +140,11 @@ void Render() {
     }
   }*/
   SDL_UnlockTexture(texture);
+
+  static const SDL_Rect source2 = { 1*total_size, 0, (SCREEN_WIDTH-1)*total_size, SCREEN_HEIGHT*total_size };
   static const SDL_Rect destination =
-    { LEFT_GAP* LINE_SIZE *total_size, 0, SCREEN_WIDTH * LINE_SIZE *total_size, SCREEN_HEIGHT * LINE_SIZE *total_size };
-  SDL_RenderCopy(renderer, texture, &source, &destination);
+    { LEFT_GAP* LINE_SIZE *total_size, 0, (SCREEN_WIDTH -1)* LINE_SIZE *total_size, SCREEN_HEIGHT * LINE_SIZE *total_size };
+  SDL_RenderCopy(renderer, texture, &source2, &destination);
   SDL_RenderPresent(renderer);
   SDL_DestroyTexture(texture);
 }
