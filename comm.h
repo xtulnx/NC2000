@@ -127,11 +127,11 @@ display related
 */
 const uint32_t SCREEN_WIDTH=160;
 const uint32_t SCREEN_HEIGHT=80;
-const uint32_t LEFT_GAP=20;
-const uint32_t RIGHT_GAP=9;
+const uint32_t LEFT_GAP=21;
+const uint32_t RIGHT_GAP=7;
 const uint32_t LINE_SIZE=1;
 
-const int pixel_size=5;
+const int pixel_size=4;
 const int gap_size=1;
 const int total_size=pixel_size+gap_size;
 

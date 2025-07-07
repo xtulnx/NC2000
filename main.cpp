@@ -37,7 +37,7 @@ bool InitEverything() {
     std::cout << "Failed to create renderer : " << SDL_GetError() << std::endl;
     return false;
   }
-  SDL_RenderSetLogicalSize(renderer, (SCREEN_WIDTH +LEFT_GAP +RIGHT_GAP-1) * LINE_SIZE *total_size, SCREEN_HEIGHT * LINE_SIZE *total_size);
+  init_lcd_stripe();
 
   LoadNC1020();
   

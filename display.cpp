@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include "comm.h"
 #include "nc2000.h"
+#include "lcdstripe/lcdpainter.h"
 
 SDL_Renderer* renderer;
 
@@ -8,6 +9,12 @@ const bool simulate_lcd_delay=true;
 
 uint8_t lcd_buf[SCREEN_WIDTH * SCREEN_HEIGHT / 8*2];
 unsigned char p[80*total_size][160*total_size][4] ;
+MyLCDView*  lcdview;
+
+void init_lcd_stripe(){
+   lcdview = new MyLCDView("lcdstripe_slice_w1313.json");
+   lcdview->loadStripeTexture("lcdstripe_w1313.bmp", renderer);
+}
 
 inline void handle_pixel(int u,int v,const unsigned char * color_arr[], int idx){
     if(!simulate_lcd_delay){
@@ -42,8 +49,11 @@ void Render() {
   if (!CopyLcdBuffer(lcd_buf)) {
     std::cout << "Failed to copy buffer renderer." << std::endl;
   }
+  SDL_RenderSetLogicalSize(renderer, lcdview->getLCDWidth(), lcdview->getLCDHeight());
+  lcdview->paint(renderer, true);
 
-  SDL_RenderClear(renderer);
+  SDL_RenderSetLogicalSize(renderer, (SCREEN_WIDTH +LEFT_GAP +RIGHT_GAP-1) * LINE_SIZE *total_size, SCREEN_HEIGHT * LINE_SIZE *total_size);
+  //SDL_RenderClear(renderer);
   SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
     SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH*total_size, SCREEN_HEIGHT*total_size);
 
@@ -84,6 +94,9 @@ void Render() {
         int value= pixel? 3:0;
         int r=pos/160;
         int c=pos%160;
+        if(c==0){
+          lcdview->setPixel(0, r, value >0);
+        }
         for(int u=r*total_size;u<r*total_size+total_size;u++){
           for(int v=c*total_size;v<c*total_size+total_size;v++){
               if(u-r*total_size<pixel_size && v-c*total_size<pixel_size){
@@ -111,6 +124,9 @@ void Render() {
         int pos=(i*8+j*2)/2;
         int r=pos/160;
         int c=pos%160;
+        if(c==0){
+          lcdview->setPixel(0, r, value >0);
+        }
         //memcpy(p[r][c],index[value],color_size);
         for(int u=r*total_size;u<r*total_size+total_size;u++){
           for(int v=c*total_size;v<c*total_size+total_size;v++){
