@@ -2,6 +2,7 @@
 //#include <gdiplus.h>
 #include <cstdio>
 #include <fcntl.h>
+#include <assert.h>
 //#include <io.h>
 
 #include "lcdpainter.h"
