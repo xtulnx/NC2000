@@ -21,10 +21,10 @@ private:
     SDL_Texture* fLCDTexture;
     int fTextureWidth, fTextureHeight;
     int fLCDWidth, fLCDHeight;
-    bool fPixel[160*80]; // TODO: bit or gray
+    unsigned char fPixel[160*80]; // TODO: bit or gray
 public:
     void loadStripeTexture(const char * texpath, SDL_Renderer* render);
-    void setPixel(int x, int y, bool on);
+    void setPixel(int x, int y, unsigned char);
     void paint(SDL_Renderer* render, bool lcdon);
     int getLCDWidth();
     int getLCDHeight();

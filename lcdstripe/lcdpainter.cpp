@@ -282,9 +282,9 @@ void MyLCDView::initLCDStripe(const char* jsonpath)
     fLCDPixelPoint.y = Pixel.top;
 }
 
-void MyLCDView::setPixel(int x, int y, bool on)
+void MyLCDView::setPixel(int x, int y, unsigned char value)
 {
-    fPixel[y * 160 + x] = on;
+    fPixel[y * 160 + x] = value;
 }
 
 void MyLCDView::paint(SDL_Renderer* render, bool lcdon)
@@ -299,11 +299,25 @@ void MyLCDView::paint(SDL_Renderer* render, bool lcdon)
         SDL_RenderCopy(render, fLCDTexture, &fLCDEmpty, &a);
     }
     for (int y = 79; y >= 0; y--) {
-        bool pixel = fPixel[160 * y];
+        unsigned char pixel = fPixel[160 * y];
+        int alpha =0;
+        if(pixel==3) {
+            alpha = 255;
+        } else if (pixel==2) {
+            alpha = 170;
+        } else if (pixel==1) {
+            alpha = 85;
+        }else if (pixel==0) {
+            alpha = 0;
+        }else{
+            assert(false);
+        }
         if (pixel) {
+            SDL_SetTextureAlphaMod(fLCDTexture, alpha); 
             TLCDStripe* item = &fLCDStripes[y];
             auto a=SDL_Rect{item->left,item->top,item->texture.w,item->texture.h};
             SDL_RenderCopy(render, fLCDTexture, &item->texture, &a);
+            SDL_SetTextureAlphaMod(fLCDTexture, 255); //in case forget restore
         }
     }
     SDL_Rect dest{ fLCDPixelPoint.x, fLCDPixelPoint.y, fLCDPixel.w, fLCDPixel.h };

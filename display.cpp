@@ -95,7 +95,7 @@ void Render() {
         int r=pos/160;
         int c=pos%160;
         if(c==0){
-          lcdview->setPixel(0, r, value >0);
+          lcdview->setPixel(0, r, value );
         }
         for(int u=r*total_size;u<r*total_size+total_size;u++){
           for(int v=c*total_size;v<c*total_size+total_size;v++){
@@ -125,7 +125,7 @@ void Render() {
         int r=pos/160;
         int c=pos%160;
         if(c==0){
-          lcdview->setPixel(0, r, value >0);
+          lcdview->setPixel(0, r, value );
         }
         //memcpy(p[r][c],index[value],color_size);
         for(int u=r*total_size;u<r*total_size+total_size;u++){
