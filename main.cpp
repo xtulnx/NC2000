@@ -27,7 +27,7 @@ bool InitEverything() {
   init_audio();
 
   SDL_Window* window =
-    SDL_CreateWindow("WQX", 0, 40, LINE_SIZE * SCREEN_WIDTH *total_size, LINE_SIZE * SCREEN_HEIGHT *total_size, 0);
+    SDL_CreateWindow("WQX", 0, 40, LINE_SIZE * (SCREEN_WIDTH +LEFT_GAP +RIGHT_GAP-1) *total_size, LINE_SIZE * SCREEN_HEIGHT *total_size, 0);
   if (!window) {
     std::cout << "Failed to create window : " << SDL_GetError() << std::endl;
     return false;
@@ -37,7 +37,7 @@ bool InitEverything() {
     std::cout << "Failed to create renderer : " << SDL_GetError() << std::endl;
     return false;
   }
-  SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH * LINE_SIZE *total_size, SCREEN_HEIGHT * LINE_SIZE *total_size);
+  SDL_RenderSetLogicalSize(renderer, (SCREEN_WIDTH +LEFT_GAP +RIGHT_GAP-1) * LINE_SIZE *total_size, SCREEN_HEIGHT * LINE_SIZE *total_size);
 
   LoadNC1020();
   

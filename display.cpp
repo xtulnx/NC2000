@@ -141,7 +141,7 @@ void Render() {
   }*/
   SDL_UnlockTexture(texture);
   static const SDL_Rect destination =
-    { 0, 0, SCREEN_WIDTH * LINE_SIZE *total_size, SCREEN_HEIGHT * LINE_SIZE *total_size };
+    { LEFT_GAP* LINE_SIZE *total_size, 0, SCREEN_WIDTH * LINE_SIZE *total_size, SCREEN_HEIGHT * LINE_SIZE *total_size };
   SDL_RenderCopy(renderer, texture, &source, &destination);
   SDL_RenderPresent(renderer);
   SDL_DestroyTexture(texture);

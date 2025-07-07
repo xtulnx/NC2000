@@ -127,6 +127,8 @@ display related
 */
 const uint32_t SCREEN_WIDTH=160;
 const uint32_t SCREEN_HEIGHT=80;
+const uint32_t LEFT_GAP=20;
+const uint32_t RIGHT_GAP=9;
 const uint32_t LINE_SIZE=1;
 
 const int pixel_size=5;
