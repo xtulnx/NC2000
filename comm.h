@@ -118,7 +118,7 @@ const uint32_t VERSION = 0x06;
 emulation parameter
 ===================
 */
-const uint32_t SLICE_INTERVAL= 10;  //10ms
+const uint32_t SLICE_INTERVAL= 5;  //10ms
 
 /*
 ===================
@@ -129,7 +129,7 @@ const uint32_t SCREEN_WIDTH=160;
 const uint32_t SCREEN_HEIGHT=80;
 const uint32_t LINE_SIZE=1;
 
-const int pixel_size=3;
+const int pixel_size=5;
 const int gap_size=1;
 const int total_size=pixel_size+gap_size;
 

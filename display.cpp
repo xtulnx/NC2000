@@ -52,7 +52,7 @@ void Render() {
   static const SDL_Rect source = { 0, 0, SCREEN_WIDTH*total_size, SCREEN_HEIGHT*total_size };
   SDL_LockTexture(texture, &source, reinterpret_cast<void**>(&bytes), &pitch);
   
-  static const unsigned char colors[4]={255,180,105,0};
+  static const unsigned char colors[4]={245,180,105,0};
   static const unsigned char shadows[4]={255,
         (unsigned char)(colors[1]+(255-colors[1])/8),
         (unsigned char)(colors[2]+(255-colors[2])/4),
@@ -70,7 +70,7 @@ void Render() {
   static const unsigned char black_color_shadow[4] = { 0, shadows[3], shadows[3], shadows[3] };
 
   static const unsigned char * index[4]={white_color,near_white_color,near_black_color,black_color};
-  static const unsigned char * index_shadow[4]={white_color, near_white_color_shadow, near_black_color_shadow, black_color_shadow};
+  static const unsigned char * index_shadow[4]={white_color_shadow, near_white_color_shadow, near_black_color_shadow, black_color_shadow};
   static const size_t color_size = sizeof(black_color);
   //unsigned char lcd[80*(pixel_size+gap_zize)][160*(pixel_size+gap_zize)][color_size] ;
   //unsigned char lcd[80*(pixel_size+gap_zize)][160*(pixel_size+gap_zize)][color_size] ;
