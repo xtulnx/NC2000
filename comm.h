@@ -131,7 +131,7 @@ const uint32_t LEFT_GAP=21;
 const uint32_t RIGHT_GAP=7;
 const uint32_t LINE_SIZE=1;
 
-const int pixel_size=4;
+const int pixel_size=3;
 const int gap_size=1;
 const int total_size=pixel_size+gap_size;
 
