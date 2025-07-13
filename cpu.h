@@ -32,6 +32,7 @@ public:
     };
     CPUInterface(C6502 *cpu) :A(cpu->A), X(cpu->X), Y(cpu->Y), SP(cpu->SP), PC(cpu->PC) {
         cpu_impl_emux = cpu;
+	    cpu->reset();
     };
 
     void reset();
