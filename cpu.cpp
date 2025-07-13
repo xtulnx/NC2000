@@ -19,8 +19,6 @@ int CPUInterface::emux_exec_helper(int max_cycles) {
 	auto &nmiPending=cpu_impl_emux->nmiPending;
 	auto &irqPending=cpu_impl_emux->irqPending;
 
-	int initial_clk = clk;
-
 	if(nmiPending){
 		nmiPending = false;
 		cpu_impl_emux->doNMI();
@@ -35,29 +33,21 @@ int CPUInterface::emux_exec_helper(int max_cycles) {
 		cpu_impl_emux->doCode(cpu_impl_emux->getCode());//allow one cycle anyway
 	}while(clk<max_cycles);
 	
-	int res=clk - initial_clk;
+	int res=clk;// - initial_clk;
 	lineclk += clk;
 	total_cycles += clk;
-	//clk=0;
-	clk-=max_cycles; //if cycle remains positive, next call will compensate it
+	clk=0; //set to 0, instead of clk-= max_cycles. this the way how the new cpu loop works, this isn't abug.
+
 	return res;
 }
 
 int CPUInterface::execute(int max_cycles){
 	if(cpu_impl_emux) {
-		if(max_cycles!=0){
-			//assert(cpu_impl_emux->clk < max_cycles);
-		}
 		return emux_exec_helper(max_cycles*12)/12;
 	}
 
-	int initial_cycle = cycle;
+	//note: cycle can be non-zero, since IRQ can be called from outside 
 
-	if(max_cycles!=0){
-		assert(cycle < max_cycles);
-	}
-
-	//int cycle =0;
     if(g_nmi){
         g_nmi = false;
         cycle+=CpuExecuteNMI();
@@ -74,9 +64,8 @@ int CPUInterface::execute(int max_cycles){
 		cycle += CpuExecuteOP();
     }while(cycle<max_cycles);
 
-	int res=cycle - initial_cycle;
-
-	cycle -= max_cycles; // if cycle remains positive, next call will compensate it
+	int res=cycle;
+	cycle=0;
     
     return res;
 }
