@@ -245,4 +245,7 @@ extern int mBCDTable[2][256];
 int PS();
 void setPS(int ps);
 
+DWORD   CpuExecuteOP();
+DWORD   CpuExecuteNMI();
+DWORD   CpuExecuteIRQ();
 #endif

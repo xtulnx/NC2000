@@ -14,7 +14,7 @@ extern "C" {
 
 void xILLEGAL(void);
 
-DWORD CpuExecuteOp(void)
+DWORD CpuExecuteOP(void)
 {
     DWORD cycle = 0;
 //
@@ -1568,7 +1568,7 @@ DWORD CpuExecuteUnused(void) {
 }
 
 DWORD CpuExecute(void){
-    DWORD cycle = CpuExecuteOp();
+    DWORD cycle = CpuExecuteOP();
     if (g_nmi) {
         g_nmi = FALSE; // Clear NMI
         cycle += CpuExecuteNMI();

@@ -3,6 +3,9 @@
 #include "ansi/c6502.h"
 #include "comm.h"
 
+extern "C" {
+#include "ansi/w65c02.h"
+}
 
 extern double speed_multiplier;
 
@@ -19,11 +22,15 @@ public:
 	int &A;
     int &X;
     int &Y;
-    int &P;
+    //int &P;
     int &SP;
     int &PC;
 
-    CPUInterface(C6502 *cpu) :A(cpu->A), X(cpu->X), Y(cpu->Y), P(cpu->P), SP(cpu->SP), PC(cpu->PC) {
+    CPUInterface():A(mA), X(mX), Y(mY), SP(mSP), PC(mPC) {
+        //no need, already initialized from outside
+        //CpuInitialize();
+    };
+    CPUInterface(C6502 *cpu) :A(cpu->A), X(cpu->X), Y(cpu->Y), SP(cpu->SP), PC(cpu->PC) {
         cpu_impl_emux = cpu;
     };
 
@@ -31,6 +38,9 @@ public:
     int exec2(int max_cycles);
     void NMI();
 	void IRQ();
+    int P();
 
-    C6502 *cpu_impl_emux;
+    C6502 *cpu_impl_emux = NULL;
+
+    bool irq_pending = false;
 };

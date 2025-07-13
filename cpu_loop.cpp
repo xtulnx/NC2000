@@ -389,7 +389,7 @@ extern IBus6502 *dummy_bus;
 extern CPUInterface *cpu;
 void init_emux_cpu_with_dummy_bus(){
 	auto cpu_impl = new C6502(dummy_bus);
-	cpu=new CPUInterface(cpu_impl);
+	cpu=new CPUInterface();
 	// now in resetStates()
 	//cpu->reset();
 }
@@ -441,14 +441,14 @@ void cpu_run2(){
 		buf[3]=0;
 		printf("tick=%lld ",tick /*, reg_pc*/);
 		printf("%02x %02x %02x %02x; ",Peek16Debug(cpu->PC), Peek16Debug(cpu->PC+1),Peek16Debug(cpu->PC+2),Peek16Debug(cpu->PC+3));
-		printf("bs=%02x roa_bbs=%02x ramb=%02x zp=%02x reg=%02x,%02x,%02x,%02x,%03o  pc=%s",ram_io[0x00], ram_io[0x0a], ram_io[0x0d], ram_io[0x0f],cpu->A,cpu->X,cpu->Y,cpu->SP,cpu->P,disassemble_next(buf,cpu->PC).c_str());
+		printf("bs=%02x roa_bbs=%02x ramb=%02x zp=%02x reg=%02x,%02x,%02x,%02x,%03o  pc=%s",ram_io[0x00], ram_io[0x0a], ram_io[0x0d], ram_io[0x0f],cpu->A,cpu->X,cpu->Y,cpu->SP,cpu->P(),disassemble_next(buf,cpu->PC).c_str());
 		printf("\n");
 
 		//getchar();		
 	}
 
 	
-	uint32_t CpuTicks=cpu->exec2(0)/12;
+	uint32_t CpuTicks=cpu->exec2(0);
 	cycles+=CpuTicks;
 
 	gDeadlockCounter++;

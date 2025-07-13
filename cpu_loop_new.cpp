@@ -29,12 +29,12 @@ void init_emux_cpu_and_bus(){
 		assert(pc1000mode);
 		bus_pc1000=new BusPC1000();
 		auto cpu_impl=new C6502(bus_pc1000);
-		CPUInterface* cpu_wrapper = new CPUInterface(cpu_impl);
+		cpu = new CPUInterface(cpu_impl);
 		bus_pc1000->cpu=cpu_impl;
 		dummy_bus=0;
 	}else{
 		auto cpu_impl=new C6502(dummy_bus);
-		cpu=new CPUInterface(cpu_impl);
+		cpu=new CPUInterface();
 		//cpu=new C6502(dummy_bus);
 	}
 	
@@ -197,7 +197,7 @@ void debug_pc(){
 		buf[3]=0;
 		printf("tick=%lld ",tick /*, reg_pc*/);
 		printf("%02x %02x %02x %02x; ",Peek16Debug(cpu->PC), Peek16Debug(cpu->PC+1),Peek16Debug(cpu->PC+2),Peek16Debug(cpu->PC+3));
-		printf("bs=%02x roa_bbs=%02x ramb=%02x zp=%02x reg=%02x,%02x,%02x,%02x,%03o  pc=%s",ram_io[0x00], ram_io[0x0a], ram_io[0x0d], ram_io[0x0f],cpu->A,cpu->X,cpu->Y,cpu->SP,cpu->P,disassemble_next(buf,cpu->PC).c_str());
+		printf("bs=%02x roa_bbs=%02x ramb=%02x zp=%02x reg=%02x,%02x,%02x,%02x,%03o  pc=%s",ram_io[0x00], ram_io[0x0a], ram_io[0x0d], ram_io[0x0f],cpu->A,cpu->X,cpu->Y,cpu->SP,cpu->P(),disassemble_next(buf,cpu->PC).c_str());
 		printf("\n");
 		if(enable_dyn_debug_next_n>0) enable_dyn_debug_next_n--;
 		//getchar();
@@ -223,7 +223,7 @@ void cpu_run3(){
 			need_wait=true;
 			//printf("need wait!!\n");
 		}
-		if(!need_wait||(cpu->P&4)==0)
+		if(!need_wait||(cpu->P()&4)==0)
 		{
 			if(cmd=="file_manager"||cmd=="put"||cmd=="get"){
 				speed_slowdown=1;
@@ -272,11 +272,11 @@ void cpu_run3(){
 	if(false){
 		//TODO FIX ME
 		target_cycles/=speed_slowdown;
-		CpuTicks=cpu->exec2(target_cycles)/12;
+		CpuTicks=cpu->exec2(target_cycles);
 		CpuTicks*=speed_slowdown;
 	}
 	else{
-		CpuTicks=cpu->exec2(target_cycles)/12;
+		CpuTicks=cpu->exec2(target_cycles);
 	}
 	last_cycles=cycles;
 	cycles+=CpuTicks;
