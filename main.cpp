@@ -19,7 +19,7 @@ extern SDL_Renderer* renderer;
 
 bool fast_forward=false;
 
-bool InitEverything() {
+bool InitAudioVideo() {
   if (SDL_Init(SDL_INIT_EVERYTHING) == -1) {
     std::cout << " Failed to initialize SDL : " << SDL_GetError() << std::endl;
     return false;
@@ -37,9 +37,6 @@ bool InitEverything() {
     std::cout << "Failed to create renderer : " << SDL_GetError() << std::endl;
     return false;
   }
-  init_lcd_stripe();
-
-  LoadNC1020();
   
   return true;
 }
@@ -140,9 +137,11 @@ int main(int argc, char* args[]) {
   init_parameters();
   if(listen_port>0) init_udp_server(listen_port);
   init_keyitems();
-  if (!InitEverything())
+  init_lcd_stripe();
+  LoadNC1020();
+  if (!InitAudioVideo())
     return -1;
-  
+
   //SDL_SetThreadPriority(SDL_THREAD_PRIORITY_HIGH);
   //SDL_SetThreadPriority(SDL_THREAD_PRIORITY_TIME_CRITICAL);
   main_loop();
