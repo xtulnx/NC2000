@@ -454,7 +454,7 @@ void cpu_run2(){
 	}
 
 	
-	uint32_t CpuTicks=cpu->exec2(0);
+	uint32_t CpuTicks=cpu->execute(0);
 	cycles+=CpuTicks;
 
 	gDeadlockCounter++;

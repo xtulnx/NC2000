@@ -277,11 +277,11 @@ void cpu_run3(){
 	if(false){
 		//TODO FIX ME
 		target_cycles/=speed_slowdown;
-		CpuTicks=cpu->exec2(target_cycles);
+		CpuTicks=cpu->execute(target_cycles);
 		CpuTicks*=speed_slowdown;
 	}
 	else{
-		CpuTicks=cpu->exec2(target_cycles);
+		CpuTicks=cpu->execute(target_cycles);
 	}
 	last_cycles=cycles;
 	cycles+=CpuTicks;

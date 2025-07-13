@@ -35,13 +35,17 @@ public:
     };
 
     void reset();
-    int exec2(int max_cycles);
+    int execute(int max_cycles);
     void NMI();
 	void IRQ();
     int P();
 
+
+    private:
+
     //only for emux cpu
     C6502 *cpu_impl_emux = NULL;
+    int emux_exec_helper(int max_cycles);
 
     //only for w65c02
     int cycle=0;

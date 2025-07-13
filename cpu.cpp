@@ -11,8 +11,45 @@ void CPUInterface::reset(){
 	CpuInitialize();
 	
 }
-int CPUInterface::exec2(int max_cycles){
-	if(cpu_impl_emux) return cpu_impl_emux->exec2(max_cycles*12)/12;
+
+int CPUInterface::emux_exec_helper(int max_cycles) {
+	auto &clk=cpu_impl_emux->clk;
+	auto &lineclk=cpu_impl_emux->lineclk;
+	auto &total_cycles=cpu_impl_emux->total_cycles;
+	auto &nmiPending=cpu_impl_emux->nmiPending;
+	auto &irqPending=cpu_impl_emux->irqPending;
+
+	int initial_clk = clk;
+
+	if(nmiPending){
+		nmiPending = false;
+		cpu_impl_emux->doNMI();
+	}
+	if (irqPending && (P() & 4) == 0) {
+		irqPending = false;
+		cpu_impl_emux->doIRQ();
+	}
+	do{
+		void debug_pc();
+		debug_pc();
+		cpu_impl_emux->doCode(cpu_impl_emux->getCode());//allow one cycle anyway
+	}while(clk<max_cycles);
+	
+	int res=clk - initial_clk;
+	lineclk += clk;
+	total_cycles += clk;
+	//clk=0;
+	clk-=max_cycles; //if cycle remains positive, next call will compensate it
+	return res;
+}
+
+int CPUInterface::execute(int max_cycles){
+	if(cpu_impl_emux) {
+		if(max_cycles!=0){
+			//assert(cpu_impl_emux->clk < max_cycles);
+		}
+		return emux_exec_helper(max_cycles*12)/12;
+	}
 
 	int initial_cycle = cycle;
 

@@ -27,17 +27,18 @@ public:
 	C6502(IBus6502* bus);
 	void reset();
 	void exec(int cycle);
-	int exec2(int max_cycles);
 	void NMI();
 	void IRQ();
 	long long getTotalCycles();
 	void getInfo(char info[]);
 	int dasm(int address,char *s);
 
-private:
+public:
 	void doNMI();
 	void doIRQ();
 	int getCode();
+	void doCode(int code);
+private:
 	int getCodeW();
 	int readAddress(int address);
 	void XXX_xx();
@@ -209,7 +210,6 @@ private:
 	void pushW(int value);
 	int pop();
 	int popW();
-	void doCode(int code);
 
 	void toSei();
 	void toCli();
