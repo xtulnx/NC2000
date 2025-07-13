@@ -8,9 +8,8 @@ public:
     virtual void write(int address, int value)=0;
 };
 
-
-struct DummyBus:IBus6502{
-	DummyBus(){
+struct BusWrapper:IBus6502{
+	BusWrapper(){
 	}
 	int read(int address){
         uint8_t Load(uint16_t addr);

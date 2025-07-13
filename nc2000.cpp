@@ -20,7 +20,7 @@ extern WqxRom nc1020_rom;
 
 nc1020_states_t nc1020_states;
 CPUInterface *cpu;
-DummyBus *dummy_bus = nullptr;
+BusWrapper *dummy_bus = nullptr;
 
 //static uint32_t& version = nc1020_states.version;
 
@@ -72,7 +72,7 @@ void SaveStates(){
 
 void LoadNC1020(){
 	memset(&nc1020_states,0,sizeof(nc1020_states_t));
-	dummy_bus= new DummyBus();
+	dummy_bus= new BusWrapper();
 
 	init_io();
 	

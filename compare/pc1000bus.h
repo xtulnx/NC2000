@@ -1,3 +1,4 @@
+// this file is a highly trimmed down verison of of pc1000emux bus, for comparing with waybay's io
 #pragma once
 
 #include "ibus6502.h"

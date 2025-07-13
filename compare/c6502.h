@@ -1,5 +1,7 @@
-#pragma once
+// this file is the cpu implementation from pc1000 emux
+// it's mainly used for comparing with handpsp's cpu
 
+#pragma once
 #include "ibus6502.h"
 
 typedef bool boolean;

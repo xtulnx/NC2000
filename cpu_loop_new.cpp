@@ -287,7 +287,7 @@ void cpu_run3(){
 	last_cycles=cycles;
 	cycles+=CycleDelta;
 
-	//magic number to fit timer0 and timer1's code
+	//magic number to fit timerA and pc1000emux's timer0 and timer1 code
 	if(trigger_x_times_per_s(576*50)){
 		//printf("trigger1!\n");
 		if(nc1020mode||nc2000mode||nc3000mode||(pc1000mode && io_version != IO_EMUX)) {

@@ -1,3 +1,6 @@
+// this file is the cpu implementation from pc1000 emux
+// it's mainly used for comparing with handpsp's cpu
+
 #include "c6502.h"
 #include <cassert>
 #include <cstdio>

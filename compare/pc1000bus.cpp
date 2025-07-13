@@ -1,3 +1,5 @@
+// this file is a highly trimmed down verison of of pc1000emux bus, for comparing with waybay's io
+
 #include "pc1000bus.h"
 #include <cassert>
 #include <memory.h>

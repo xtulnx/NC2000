@@ -38,6 +38,7 @@ static uint8_t& interr_flag = nc1020_states.interr_flag;
 
 static unsigned char* ioReg=nc1020_states.ram_io;
 
+// dsp functions adapted from pc1000emux
 int dspRetData() {
 	int ret=dspData;
 	if (ret==0x5a)
@@ -88,6 +89,7 @@ void dspCmd(int cmd) {
     }
 }
 
+//timerA from pc1000emux
 void setTimerA() {
     int temp = ioReg[IO_TIMERAB_CTRL] >> 4;
     if (temp != 0) {
@@ -118,7 +120,7 @@ bool timeBaseEnable() {
         }*/
         return (ioReg[io04_general_ctrl] & 0xf)!=0;
     //}
-    assert(false);
+    //assert(false);
 }
 
 
