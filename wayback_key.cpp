@@ -37,6 +37,8 @@ TKeyItem::TKeyItem( int ID, int keycode, int code_y, int code_x, const char* gra
 }
 
 extern unsigned /*char*/ keypadmatrix[8][8];
+
+//the comments e.g. P00, P30 has no meaning for nc1020/2000/3000, they are copied from wayback and not changed.
 vector<TKeyItem*> items2000_1020 = {
         new TKeyItem(18, 0x02,0,0,  NULL, NULL, "ON/OFF", {SDLK_F12}),        // GND, P30
     //    new TKeyItem(0, 0x01, 1,0, NULL, NULL, "infra_red", {SDLK_BACKQUOTE}), 

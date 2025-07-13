@@ -385,7 +385,6 @@ void cpu_run(){
 
 }
 
-extern IBus6502 *dummy_bus;
 extern CPUInterface *cpu;
 /*void init_cpu(){
 	if(cpu_version== CPU1) {

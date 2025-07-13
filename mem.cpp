@@ -29,6 +29,7 @@ uint8_t & Peek16(uint16_t addr) {
 	return memmap[addr >> 13][addr & 0x1FFF];
 }
 
+//note: io read can cause side effect, so cannot use real io read
 uint8_t & Peek16Debug(uint16_t addr) {
 	if(addr<0x40){
 		return ram_io[addr];
