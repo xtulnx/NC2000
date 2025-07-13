@@ -44,6 +44,11 @@ enum NorFormat{
     WQX2KUTIL
 };
 
+enum CpuVersion {
+    CPU1 = 1,
+    CPU_EMUX = 2,
+};
+
 enum CpuLoopVersion {
     CPU_RUN1 = 1, // cpu_run,    only IO_V1
     CPU_RUN2 = 2, // cpu_run2,   both IO_V1 and IO_V2
@@ -67,6 +72,7 @@ extern bool nc2000mode;
 extern bool nc3000mode;
 extern bool pc1000mode;
 
+extern CpuVersion cpu_version;
 extern CpuLoopVersion cpu_loop_version;
 extern IoVersion io_version;
 

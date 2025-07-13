@@ -16,7 +16,9 @@ int CPUInterface::exec2(int max_cycles){
 
 	int initial_cycle = cycle;
 
-	assert(cycle < max_cycles);
+	if(max_cycles!=0){
+		assert(cycle < max_cycles);
+	}
 
 	//int cycle =0;
     if(g_nmi){

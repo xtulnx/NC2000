@@ -82,21 +82,25 @@ void SaveStates(){
 void LoadNC1020(){
 	init_io();
 	dummy_bus= new DummyBus();
+
+	init_cpu_new();
+
+	/*
 	if(cpu_loop_version==CPU_RUN1) {
-		init_emux_cpu_with_dummy_bus();
+		init_cpu();
 	}
 	if(cpu_loop_version==CPU_RUN2) {
 		if(io_version==IO_V1) {
-			init_emux_cpu_with_dummy_bus();
-		}else if(io_version) {
-			init_emux_cpu_and_bus();
+			init_cpu();
+		}else if(io_version==IO_V2) {
+			init_cpu_new();
 		} else {
 			assert(false);
 		}
 	}
 	if(cpu_loop_version==CPU_RUN3) { 
-		init_emux_cpu_and_bus();
-	}
+		init_cpu_new();
+	}*/
 
 	//rom_switcher();
 	init_nor();

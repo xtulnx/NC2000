@@ -22,20 +22,26 @@ struct BusPC1000 *bus_pc1000=0;
 extern IBus6502 *dummy_bus;
 extern CPUInterface* cpu;
 
-void init_emux_cpu_and_bus(){
+void init_cpu_new(){
 	//assert(use_emux_cpu);
 	// assert(use_emux_bus);
-	if(io_version == IO_EMUX) {
+	if(io_version != IO_EMUX) {
+		if(cpu_version== CPU1) {
+			cpu=new CPUInterface();
+		} else if(cpu_version==CPU_EMUX) {
+			auto cpu_impl = new C6502(dummy_bus);
+			cpu = new CPUInterface(cpu_impl);
+		} else {
+			assert(false);
+		}
+	}else{
 		assert(pc1000mode);
+		assert(cpu_loop_version==CPU_RUN3);
 		bus_pc1000=new BusPC1000();
 		auto cpu_impl=new C6502(bus_pc1000);
 		cpu = new CPUInterface(cpu_impl);
 		bus_pc1000->cpu=cpu_impl;
 		dummy_bus=0;
-	}else{
-		auto cpu_impl=new C6502(dummy_bus);
-		cpu=new CPUInterface();
-		//cpu=new C6502(dummy_bus);
 	}
 	
 

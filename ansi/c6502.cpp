@@ -83,7 +83,9 @@ void C6502::exec(int cycle) {
 }
 
 int C6502::exec2(int max_cycles) {
-    assert(clk < max_cycles);
+    if(max_cycles!=0){
+        assert(clk < max_cycles);
+    }
     //this can be false since IRQ() can be called externally
     //assert(clk==0);
 

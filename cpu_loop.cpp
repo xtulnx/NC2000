@@ -387,12 +387,18 @@ void cpu_run(){
 
 extern IBus6502 *dummy_bus;
 extern CPUInterface *cpu;
-void init_emux_cpu_with_dummy_bus(){
-	auto cpu_impl = new C6502(dummy_bus);
-	cpu=new CPUInterface();
+/*void init_cpu(){
+	if(cpu_version== CPU1) {
+		cpu=new CPUInterface();
+	} else if(cpu_version==CPU_EMUX) {
+		auto cpu_impl = new C6502(dummy_bus);
+		cpu = new CPUInterface(cpu_impl);
+	} else {
+		assert(false);
+	}
 	// now in resetStates()
 	//cpu->reset();
-}
+}*/
 void cpu_run2(){
 	//assert(use_emux_cpu);
 	//assert(!use_emux_bus||use_legacy_cpu_loop);
