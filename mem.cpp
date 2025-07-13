@@ -60,9 +60,10 @@ uint8_t Load(uint16_t addr) {
 		if(io_version== IO_V1){
 			return io_read[addr](addr);
 		} else if (io_version == IO_V2) {
-			if(bus_pc1000) return bus_pc1000->in(addr);
-			else return io_v2_read(addr);
-		} else{
+			return io_v2_read(addr);
+		} else if (io_version == IO_EMUX) {
+			return bus_pc1000->in(addr);
+		}else{
 			assert(false);
 		}
 	}
@@ -100,8 +101,9 @@ void Store(uint16_t addr, uint8_t value) {
 		if(io_version== IO_V1){
 			io_write[addr](addr, value);
 		}else if (io_version == IO_V2) {
-			if(bus_pc1000) bus_pc1000->out(addr, value);
-			else io_v2_write(addr, value);
+			io_v2_write(addr, value);
+		}else if (io_version == IO_EMUX) {
+			bus_pc1000->out(addr, value);
 		}else {
 			assert(false);
 		}

@@ -109,7 +109,7 @@ bool nmiEnable() {
 }
 
 bool timeBaseEnable() {
-    if(nc1020mode||nc2000mode||nc3000mode){
+    //if(nc1020mode||nc2000mode||nc3000mode){
         if((ioReg[O_INT_ENABLE] & 8)) return false;
         /*
         // todo fix this
@@ -117,7 +117,7 @@ bool timeBaseEnable() {
             return true;
         }*/
         return (ioReg[io04_general_ctrl] & 0xf)!=0;
-    }
+    //}
     assert(false);
 }
 

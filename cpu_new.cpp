@@ -24,7 +24,8 @@ extern C6502* cpu;
 void init_emux_cpu_and_bus(){
 	//assert(use_emux_cpu);
 	// assert(use_emux_bus);
-	if(pc1000mode) {
+	if(io_version == IO_EMUX) {
+		assert(pc1000mode);
 		bus_pc1000=new BusPC1000();
 		cpu=new C6502(bus_pc1000);
 		bus_pc1000->cpu=cpu;
@@ -270,10 +271,10 @@ void cpu_run3(){
 	//magic number to fit timer0 and timer1's code
 	if(trigger_x_times_per_s(576*50)){
 		//printf("trigger1!\n");
-		if(nc1020mode||nc2000mode||nc3000mode){
+		if(nc1020mode||nc2000mode||nc3000mode||(pc1000mode && io_version != IO_EMUX)) {
 			setTimer();
 		}
-		if(pc1000mode){
+		if(pc1000mode && io_version == IO_EMUX) {
 			bus_pc1000->setTimer();
 			if (bus_pc1000->setTimer0()) {
 				//timer0用于录放音，蜂鸣器音乐
@@ -290,7 +291,7 @@ void cpu_run3(){
 		}
 	}
 
-	if(nc1020mode||nc2000mode||nc3000mode){
+	if(nc1020mode||nc2000mode||nc3000mode||(pc1000mode && io_version != IO_EMUX)) {
 		bool KeepTimer01( unsigned int cpuTick);
 		if(KeepTimer01(CpuTicks)){
 			//adapted from wayback
@@ -305,14 +306,13 @@ void cpu_run3(){
 	}
 
 	if(trigger_x_times_per_s(250)){
-		if(nc1020mode||nc2000mode||nc3000mode){
+		if(nc1020mode||nc2000mode||nc3000mode || (pc1000mode && io_version != IO_EMUX)) {
 			if (timeBaseEnable()) {
-				//timebase中断为4ms一次，主要用于键盘扫描
 				setIrqTimeBase();
 				cpu->IRQ();
 			}
 		}
-		if(pc1000mode){
+		if(pc1000mode && io_version == IO_EMUX) {
 			if (bus_pc1000->timeBaseEnable()) {
 				//timebase中断为4ms一次，主要用于键盘扫描
 				bus_pc1000->setIrqTimeBase();
@@ -335,9 +335,13 @@ void cpu_run3(){
 					}
 				}
 			}
+		}
+		if(nc1020mode||nc2000mode||nc3000mode|| (pc1000mode&&io_version!= IO_EMUX)) {
 			if(trigger256_cnt%128==64){ //avoid nmi triggerd at same time as rtc irq
 				if (nmiEnable()){
-					printf("nmi!\n");
+					if(nc1020mode||nc2000mode||nc3000mode){
+						printf("nmi!\n");
+					}
 					cpu->NMI();
 				}
 			}
@@ -352,7 +356,7 @@ void cpu_run3(){
 		}
 	}
 
-	if(pc1000mode&&trigger_x_times_per_s(2)){
+	if(pc1000mode&&io_version==IO_EMUX&&trigger_x_times_per_s(2)){
 		setTime1000();
 		if (bus_pc1000->nmiEnable()){
 			cpu->NMI();

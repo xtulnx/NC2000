@@ -53,6 +53,7 @@ enum CpuLoopVersion {
 enum IoVersion {
     IO_V1 = 1,
     IO_V2 = 2,
+    IO_EMUX = 3
 };
 
 /*
