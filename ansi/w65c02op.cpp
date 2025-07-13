@@ -14,7 +14,7 @@ extern "C" {
 
 void xILLEGAL(void);
 
-DWORD CpuExecute(void)
+DWORD CpuExecuteOp(void)
 {
     DWORD cycle = 0;
 //
@@ -1456,14 +1456,18 @@ DWORD CpuExecute(void)
         xILLEGAL();
         break;
     }
+    return cycle;
+}
 
 
+DWORD CpuExecuteNMI(void) {
+    DWORD cycle = 0;
     // FIXME: GET Latest GGV Simulator
     // NC3000 have same behavior
-    if (g_nmi) {
+    if (true || g_nmi) {
         //printf("NMI!!!\n");
         // Mark the NMI as services
-        g_nmi = FALSE;
+        //g_nmi = FALSE;
         cycle += 6; // NMI?
         //mProcessingInterrupt++;
 
@@ -1481,7 +1485,12 @@ DWORD CpuExecute(void)
         // Pick up the new PC
         mPC = CPU_PEEKW(NMI_VECTOR);
     }
-    if (g_irq && !mI) {
+    return cycle;
+}
+
+DWORD CpuExecuteIRQ(void) {
+    DWORD cycle = 0;
+    if ( true|| (g_irq && !mI)) {
         //printf("irq!!\n");
         TRACE_CPU1("Update() IRQ taken at PC=%04x", mPC);
         // IRQ signal clearance is handled by CMikie::Update() as this
@@ -1512,10 +1521,14 @@ DWORD CpuExecute(void)
         //gIRQEntryCycle = gSystemCycleCount;
 
         // Clear the interrupt status line
-        g_irq = FALSE;
+        //g_irq = FALSE;
         cycle += 6;
     }
+    return cycle;
+}
 
+DWORD CpuExecuteUnused(void) {
+    DWORD cycle = 0;
 #ifdef _LYNXDBG
 
     // Trigger breakpoint if required
@@ -1551,6 +1564,19 @@ DWORD CpuExecute(void)
         mDbgFlag = 0;
     }
 #endif
+    return cycle;
+}
+
+DWORD CpuExecute(void){
+    DWORD cycle = CpuExecuteOp();
+    if (g_nmi) {
+        g_nmi = FALSE; // Clear NMI
+        cycle += CpuExecuteNMI();
+    }
+    if(g_irq && !mI) {
+        cycle += CpuExecuteIRQ();
+        g_irq = FALSE;
+    }
     return cycle;
 }
 
