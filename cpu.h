@@ -40,7 +40,9 @@ public:
 	void IRQ();
     int P();
 
+    //only for emux cpu
     C6502 *cpu_impl_emux = NULL;
 
-    bool irq_pending = false;
+    //only for w65c02
+    int cycle=0;
 };

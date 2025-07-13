@@ -166,7 +166,6 @@ void setTimeRTC(){
     }
 }
 uint8_t trigger256_cnt=0;// uint8 here, will wrap back to 0
-int cpu_emux_target_cycles=128*12;
 
 bool time_adjusted;
 void sync_time_2000(){
@@ -267,7 +266,7 @@ void cpu_run3(){
 	}
 
 	//todo study datasheet of how speed affect timers
-	uint32_t target_cycles=cpu_emux_target_cycles;
+	uint32_t target_cycles=128;
 	uint32_t CpuTicks;
 	if(false){
 		//TODO FIX ME

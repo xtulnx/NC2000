@@ -83,8 +83,12 @@ void C6502::exec(int cycle) {
 }
 
 int C6502::exec2(int max_cycles) {
+    assert(clk < max_cycles);
     //this can be false since IRQ() can be called externally
     //assert(clk==0);
+
+    int initial_clk = clk;
+
     if(nmiPending){
         nmiPending = false;
         doNMI();
@@ -99,10 +103,11 @@ int C6502::exec2(int max_cycles) {
         doCode(getCode());//allow one cycle anyway
     }while(clk<max_cycles);
     
-    int res=clk;
+    int res=clk - initial_clk;
     lineclk += clk;
     total_cycles += clk;
-    clk=0;
+    //clk=0;
+    clk-=max_cycles; //if cycle remains positive, next call will compensate it
     return res;
 }
 

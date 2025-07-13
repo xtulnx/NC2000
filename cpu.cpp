@@ -12,9 +12,13 @@ void CPUInterface::reset(){
 	
 }
 int CPUInterface::exec2(int max_cycles){
-	if(cpu_impl_emux) return cpu_impl_emux->exec2(max_cycles)/12;
+	if(cpu_impl_emux) return cpu_impl_emux->exec2(max_cycles*12)/12;
 
-	int cycle =0;
+	int initial_cycle = cycle;
+
+	assert(cycle < max_cycles);
+
+	//int cycle =0;
     if(g_nmi){
         g_nmi = false;
         cycle+=CpuExecuteNMI();
@@ -30,8 +34,12 @@ int CPUInterface::exec2(int max_cycles){
         //doCode(getCode());//allow one cycle anyway
 		cycle += CpuExecuteOP();
     }while(cycle<max_cycles);
+
+	int res=cycle - initial_cycle;
+
+	cycle -= max_cycles; // if cycle remains positive, next call will compensate it
     
-    return cycle;
+    return res;
 }
 
 void CPUInterface::NMI() {
@@ -44,7 +52,7 @@ void CPUInterface::IRQ() {
 	if(cpu_impl_emux) return cpu_impl_emux->IRQ();
 
 	if(!mI) {
-		CpuExecuteIRQ();
+		cycle+=CpuExecuteIRQ();
 	}
 	g_irq = true;
 }
