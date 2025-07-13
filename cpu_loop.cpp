@@ -386,9 +386,10 @@ void cpu_run(){
 }
 
 extern IBus6502 *dummy_bus;
-extern C6502 *cpu;
+extern CPUInterface *cpu;
 void init_emux_cpu_with_dummy_bus(){
-	cpu = new C6502(dummy_bus);
+	auto cpu_impl = new C6502(dummy_bus);
+	cpu=new CPUInterface(cpu_impl);
 	// now in resetStates()
 	//cpu->reset();
 }
@@ -396,7 +397,7 @@ void cpu_run2(){
 	//assert(use_emux_cpu);
 	//assert(!use_emux_bus||use_legacy_cpu_loop);
 
-	assert(cycles==cpu->getTotalCycles()/12);
+	//assert(cycles==cpu->getTotalCycles()/12);
 
 	string msg=get_message();
 	if(!msg.empty()){

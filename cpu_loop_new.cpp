@@ -1,5 +1,6 @@
 #include "ansi/c6502.h"
 #include "comm.h"
+#include "cpu.h"
 #include "mem.h"
 #include "console.h"
 #include "ram.h"
@@ -19,7 +20,7 @@ static uint8_t * rtc_reg=nc1020_states.rtc_reg;
 static uint8_t& interr_flag = nc1020_states.interr_flag;
 struct BusPC1000 *bus_pc1000=0;
 extern IBus6502 *dummy_bus;
-extern C6502* cpu;
+extern CPUInterface* cpu;
 
 void init_emux_cpu_and_bus(){
 	//assert(use_emux_cpu);
@@ -27,11 +28,14 @@ void init_emux_cpu_and_bus(){
 	if(io_version == IO_EMUX) {
 		assert(pc1000mode);
 		bus_pc1000=new BusPC1000();
-		cpu=new C6502(bus_pc1000);
-		bus_pc1000->cpu=cpu;
+		auto cpu_impl=new C6502(bus_pc1000);
+		CPUInterface* cpu_wrapper = new CPUInterface(cpu_impl);
+		bus_pc1000->cpu=cpu_impl;
 		dummy_bus=0;
 	}else{
-		cpu=new C6502(dummy_bus);
+		auto cpu_impl=new C6502(dummy_bus);
+		cpu=new CPUInterface(cpu_impl);
+		//cpu=new C6502(dummy_bus);
 	}
 	
 

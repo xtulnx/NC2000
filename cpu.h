@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ansi/c6502.h"
 #include "comm.h"
 
 
@@ -13,3 +14,23 @@ void cpu_run3();
 void init_emux_cpu_with_dummy_bus();
 void init_emux_cpu_and_bus();
 
+class CPUInterface{
+public:
+	int &A;
+    int &X;
+    int &Y;
+    int &P;
+    int &SP;
+    int &PC;
+
+    CPUInterface(C6502 *cpu) :A(cpu->A), X(cpu->X), Y(cpu->Y), P(cpu->P), SP(cpu->SP), PC(cpu->PC) {
+        cpu_impl_emux = cpu;
+    };
+
+    void reset();
+    int exec2(int max_cycles);
+    void NMI();
+	void IRQ();
+
+    C6502 *cpu_impl_emux;
+};

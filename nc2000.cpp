@@ -19,7 +19,7 @@
 extern WqxRom nc1020_rom;
 
 nc1020_states_t nc1020_states;
-C6502 *cpu;
+CPUInterface *cpu;
 struct DummyBus:IBus6502{
 	DummyBus(){
 	}
