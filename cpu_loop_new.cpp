@@ -187,7 +187,7 @@ void sync_time_2000(){
 }
 bool soft_reset=0;
 void try_soft_reset(){
-	if(speed_slowdown>512){
+	if(speed_scaledown>512){
 		soft_reset=1;
 		printf("soft reset!!\n");
 	}
@@ -216,7 +216,7 @@ void cpu_run3(){
 		cpu->reset();
 		//nc1020_states.last_cycles=0;
 		//nc1020_states.cycles=0;
-		speed_slowdown=1;
+		speed_scaledown=1;
 	}
 	//assert(cycles==cpu->getTotalCycles()/12);
 	char *peeked_msg=peek_message();
@@ -231,7 +231,7 @@ void cpu_run3(){
 		if(!need_wait||(cpu->P()&4)==0)
 		{
 			if(cmd=="file_manager"||cmd=="put"||cmd=="get"){
-				speed_slowdown=1;
+				speed_scaledown=1;
 				printf("set cks to highest\n");
 			}
 			string msg=get_message();
@@ -274,19 +274,19 @@ void cpu_run3(){
 	//todo study datasheet of how speed affect timers
 	//uint32_t target_cycles=128;  //note: 128 affect beeper sound quality for w65c02
 	uint32_t target_cycles=0;
-	
-	uint32_t CpuTicks;
+
+	uint32_t CycleDelta;
 	if(false){
 		//TODO FIX ME
-		target_cycles/=speed_slowdown;
-		CpuTicks=cpu->execute(target_cycles);
-		CpuTicks*=speed_slowdown;
+		target_cycles/=speed_scaledown;
+		CycleDelta=cpu->execute(target_cycles);
+		CycleDelta*=speed_scaledown;
 	}
 	else{
-		CpuTicks=cpu->execute(target_cycles);
+		CycleDelta=cpu->execute(target_cycles);
 	}
 	last_cycles=cycles;
-	cycles+=CpuTicks;
+	cycles+=CycleDelta;
 
 	//magic number to fit timer0 and timer1's code
 	if(trigger_x_times_per_s(576*50)){
@@ -313,7 +313,7 @@ void cpu_run3(){
 
 	if(nc1020mode||nc2000mode||nc3000mode||(pc1000mode && io_version != IO_EMUX)) {
 		bool KeepTimer01( unsigned int cpuTick);
-		if(KeepTimer01(CpuTicks)){
+		if(KeepTimer01(CycleDelta)){
 			//adapted from wayback
 			if ( ram_io[0x04] & 0x0F ) {
 				//why only set flag for timer0? why not set 0x20

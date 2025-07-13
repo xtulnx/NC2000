@@ -31,7 +31,7 @@ const int INT_TIME_BASE = 8;
 
 const int O_INT_ENABLE = 0x40;
 
-unsigned int speed_slowdown=1;
+unsigned int speed_scaledown=1;
 
 static uint8_t * rtc_reg=nc1020_states.rtc_reg;
 static uint8_t& interr_flag = nc1020_states.interr_flag;
@@ -200,14 +200,14 @@ void io_v2_write(int address, int value) {
             if (cks!=ram_io[0x05]>>5){
                 //the defintion is not same as spdc1024
                 switch(cks){
-                    case 0: speed_slowdown=32;break;
-                    case 1: speed_slowdown=4;break;
-                    case 2: speed_slowdown=2;break;
-                    case 3: speed_slowdown=1;break;
-                    case 4: speed_slowdown=512;break;
-                    case 5: speed_slowdown=256;break;
-                    case 6: speed_slowdown=64;break;
-                    case 7: printf("oops clk off\n");speed_slowdown=999999;break;
+                    case 0: speed_scaledown=32;break;
+                    case 1: speed_scaledown=4;break;
+                    case 2: speed_scaledown=2;break;
+                    case 3: speed_scaledown=1;break;
+                    case 4: speed_scaledown=512;break;
+                    case 5: speed_scaledown=256;break;
+                    case 6: speed_scaledown=64;break;
+                    case 7: printf("oops clk off\n");speed_scaledown=999999;break;
                     default:assert(false);
                 }
                 //printf("<cks=%d slowdown=%d>\n",cks,speed_slowdown);
@@ -223,14 +223,14 @@ void io_v2_write(int address, int value) {
             uint8_t cks=value>>5;
             if (cks!=ram_io[0x05]>>5){
                 switch(cks){
-                    case 0: speed_slowdown=8;break;
-                    case 1: speed_slowdown=4;break;
-                    case 2: speed_slowdown=2;break;
-                    case 3: speed_slowdown=1;break;
-                    case 4: speed_slowdown=64;break;
-                    case 5: speed_slowdown=32;break;
-                    case 6: speed_slowdown=16;break;
-                    case 7: printf("oops clk off\n");speed_slowdown=99999;break;
+                    case 0: speed_scaledown=8;break;
+                    case 1: speed_scaledown=4;break;
+                    case 2: speed_scaledown=2;break;
+                    case 3: speed_scaledown=1;break;
+                    case 4: speed_scaledown=64;break;
+                    case 5: speed_scaledown=32;break;
+                    case 6: speed_scaledown=16;break;
+                    case 7: printf("oops clk off\n");speed_scaledown=99999;break;
                     default:assert(false);
                 }
                 //printf("<cks=%d slowdown=%d>\n",cks,speed_slowdown);
