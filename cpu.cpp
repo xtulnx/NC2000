@@ -1,4 +1,4 @@
-#include "ansi/c6502.h"
+#include "compare/c6502.h"
 extern "C" {
 #include "ansi/w65c02.h"
 }

@@ -13,8 +13,8 @@ extern "C" {
 #include "console.h"
 #include <thread>
 #include "CC800IOName.h"
-#include "ansi/ibus6502.h"
-#include "ansi/c6502.h"
+#include "compare/ibus6502.h"
+#include "compare/c6502.h"
 
 #define qDebug(...)
 

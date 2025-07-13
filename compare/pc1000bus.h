@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ansi/ibus6502.h"
-#include "ansi/c6502.h"
+#include "ibus6502.h"
+#include "c6502.h"
 #include "dsp/dsp.h"
 
 #define final const

@@ -12,7 +12,7 @@
 extern "C" {
 #include "ansi/w65c02.h"
 }
-#include "pc1000bus.h"
+#include "compare/pc1000bus.h"
 extern nc1020_states_t nc1020_states;
 extern CPUInterface *cpu;
 extern string nand_magic;

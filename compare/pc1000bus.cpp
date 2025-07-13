@@ -2,7 +2,7 @@
 #include <cassert>
 #include <memory.h>
 #include <stdio.h>
-#include "ansi/c6502.h"
+#include "c6502.h"
 #include "comm.h"
 #include "mem.h"
 #include "ram.h"

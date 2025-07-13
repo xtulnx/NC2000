@@ -1,4 +1,4 @@
-#include "ansi/c6502.h"
+#include "compare/c6502.h"
 #include "comm.h"
 #include "cpu.h"
 #include "mem.h"
@@ -6,7 +6,7 @@
 #include "ram.h"
 #include "state.h"
 #include "disassembler.h"
-#include "pc1000bus.h"
+#include "compare/pc1000bus.h"
 #include "io_new.h"
 
 #define qDebug(...)

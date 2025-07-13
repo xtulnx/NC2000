@@ -15,21 +15,12 @@
 #include <cstdlib>
 #include <deque>
 #include "sound.h"
-#include "ansi/c6502.h"
+#include "compare/c6502.h"
 extern WqxRom nc1020_rom;
 
 nc1020_states_t nc1020_states;
 CPUInterface *cpu;
-struct DummyBus:IBus6502{
-	DummyBus(){
-	}
-	int read(int address){
-		return Load(address);
-	}
-    void write(int address, int value){
-		Store(address,value);
-	}
-}*dummy_bus;
+DummyBus *dummy_bus = nullptr;
 
 //static uint32_t& version = nc1020_states.version;
 

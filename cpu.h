@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ansi/c6502.h"
+#include "compare/c6502.h"
 #include "comm.h"
 
 extern "C" {
