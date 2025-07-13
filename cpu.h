@@ -27,8 +27,8 @@ public:
     int &PC;
 
     CPUInterface():A(mA), X(mX), Y(mY), SP(mSP), PC(mPC) {
-        //no need, already initialized from outside
-        //CpuInitialize();
+        CpuInitialize();
+        setPS(0x24); // seems like no need?
     };
     CPUInterface(C6502 *cpu) :A(cpu->A), X(cpu->X), Y(cpu->Y), SP(cpu->SP), PC(cpu->PC) {
         cpu_impl_emux = cpu;

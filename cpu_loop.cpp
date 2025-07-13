@@ -52,6 +52,7 @@ static int& reg_pc = mPC;
 
 double speed_multiplier=1.0;
 
+#if 0
 void reset_cpu_states(){
 	//nc1020_states.should_irq = false;
 	nc1020_states.cycles = 0;
@@ -70,6 +71,7 @@ void reset_cpu_states(){
 	setPS(0x24);
 	CreateHotlinkMapping();
 }
+#endif
 void AdjustTime(){
 	uint8_t* clock_buff = nc1020_states.clock_buff;
     if (++ clock_buff[0] >= 60) {

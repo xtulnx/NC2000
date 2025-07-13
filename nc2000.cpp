@@ -33,13 +33,13 @@ static uint8_t* keypad_matrix = nc1020_states.keypad_matrix;
 static bool& wake_up_pending = nc1020_states.pending_wake_up;
 static uint8_t& wake_up_key = nc1020_states.wake_up_flags;
 
-void ResetStates(){
+/*void ResetStates(){
 	//version = VERSION;
 	memset(&nc1020_states,0,sizeof(nc1020_states_t));
 	init_mem();
 	reset_cpu_states();
-	cpu->reset();
-}
+	//cpu->reset();
+}*/
 
 /*
 void Reset() {
@@ -71,10 +71,13 @@ void SaveStates(){
 #endif
 
 void LoadNC1020(){
-	init_io();
+	memset(&nc1020_states,0,sizeof(nc1020_states_t));
 	dummy_bus= new DummyBus();
 
-	init_cpu_new();
+	init_io();
+	
+	void CreateHotlinkMapping();
+	CreateHotlinkMapping();
 
 	/*
 	if(cpu_loop_version==CPU_RUN1) {
@@ -102,7 +105,11 @@ void LoadNC1020(){
 		read_nand0_file();
 		read_nand_file();
 	}
-	ResetStates();
+
+	init_mem();
+
+	//reset_cpu_states();
+	init_cpu_new();
 
 	if(nc2000mode||nc3000mode){
 		//nc3000c-lee has it but seems like no need?

@@ -44,7 +44,6 @@ void init_cpu_new(){
 		dummy_bus=0;
 	}
 	
-
 	// now in resetStates()
 	//cpu->reset();
 }
