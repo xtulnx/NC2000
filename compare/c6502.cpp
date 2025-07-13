@@ -48,7 +48,9 @@ void C6502::reset() {
     nmiPending = false;
     nmiRequest = false;
 
-    //total_cycles = 0; //this has so many bad consequences...
+    if(false){ //this has so many bad consequences with new cpu loop
+        total_cycles = 0;
+    }
 }
 
 long long C6502::getTotalCycles() {
@@ -113,11 +115,7 @@ void C6502::doIRQ() {
 }
 
 int C6502::getCode() {
-    int a= bus->read(PC++);
-    /*if(a==0){
-        printf("<%02x %02x>\n", bus->read(PC),bus->read(PC+1));
-    }*/
-    return a;
+    return bus->read(PC++);
 }
 
 int C6502::getCodeW() {
