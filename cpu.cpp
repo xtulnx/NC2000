@@ -58,9 +58,8 @@ int CPUInterface::execute(int max_cycles){
     }
 
     do{
-        //void debug_pc();
-        //debug_pc();
-        //doCode(getCode());//allow one cycle anyway
+		void debug_pc();
+		debug_pc();
 		cycle += CpuExecuteOP();
     }while(cycle<max_cycles);
 
