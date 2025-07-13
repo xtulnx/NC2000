@@ -17,6 +17,7 @@ void init_lcd_stripe(){
 }
 
 inline void handle_pixel(int u,int v,const unsigned char * color_arr[], int idx){
+    //todo: inefficient, change to for each lcd tile use SDL_RenderCopy
     if(!simulate_lcd_delay){
         memcpy(p[u][v], color_arr[idx], 4);
     }else{

@@ -21,9 +21,10 @@ deque<string> udp_msgs;
 std::mutex g_mutex;
 
 bool is_nc2600_rom(){
-	if(nand_magic=="ggv nc2010"){
+	/*if(nand_magic=="ggv nc2010"){
 		return true;
-	}
+	}*/
+	if(nand_magic[8]=='1') return true;
 	return false;
 }
 

@@ -232,10 +232,19 @@ void cpu_run3(){
 		}
 	}
 	if(nc2000mode){
-		if(!time_adjusted && Peek16(0x3fa)==0x7a&&rtc_reg[0]==1){
-			time_adjusted=1;
-			sync_time_2000();
+		extern bool is_nc2600_rom();
+		if(is_nc2600_rom()){
+			if(!time_adjusted && Peek16(0x3fa)==0x7a &&rtc_reg[0]==1){
+				time_adjusted=1;
+				sync_time_2000();
+			}
+		}else{
+			if(!time_adjusted && Peek16(0x3fa)==0x79 &&rtc_reg[0]==1){
+				time_adjusted=1;
+				sync_time_2000();
+			}
 		}
+
 	}
 	tick++;
 
