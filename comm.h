@@ -39,13 +39,13 @@ struct WqxRom {
 };
 
 enum NorFormat{
-    INVALID,
-    PHYSICAL_ORDER,
-    WQX2KUTIL
+    INVALID=0,
+    PHYSICAL_ORDER=1,
+    WQX2KUTIL=2
 };
 
 enum CpuVersion {
-    CPU1 = 1,
+    CPU_HANDYPSP = 1,
     CPU_EMUX = 2,
 };
 
@@ -82,8 +82,8 @@ const bool nc1020_use_1024k_nor = false;
 
 const bool use_legacy_key_io = false;
 
-const NorFormat nor_read_format = NorFormat::PHYSICAL_ORDER;
-const NorFormat nor_write_format = NorFormat::PHYSICAL_ORDER;
+extern NorFormat nor_read_format;
+extern NorFormat nor_write_format;
 
 /*
 ===================

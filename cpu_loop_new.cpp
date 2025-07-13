@@ -26,7 +26,7 @@ void init_cpu_new(){
 	//assert(use_emux_cpu);
 	// assert(use_emux_bus);
 	if(io_version != IO_EMUX) {
-		if(cpu_version== CPU1) {
+		if(cpu_version== CPU_HANDYPSP) {
 			cpu=new CPUInterface();
 		} else if(cpu_version==CPU_EMUX) {
 			auto cpu_impl = new C6502(dummy_bus);

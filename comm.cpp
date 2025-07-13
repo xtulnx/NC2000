@@ -10,9 +10,12 @@ bool nc2000mode = false;
 bool nc3000mode = false;
 bool pc1000mode = false;
 
-CpuVersion cpu_version = CPU1;
+CpuVersion cpu_version = CPU_HANDYPSP;
 CpuLoopVersion cpu_loop_version = CPU_RUN3;
 IoVersion io_version = IO_V2;
+
+NorFormat nor_read_format = NorFormat::PHYSICAL_ORDER;
+NorFormat nor_write_format = NorFormat::PHYSICAL_ORDER;
 /*
 ===================
 debug related
