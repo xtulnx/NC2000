@@ -123,7 +123,7 @@ bool timeBaseEnable() {
 
 
 int io_v2_read(int address) {
-    if(nc1020mode||nc2000mode||nc3000mode){
+    if(nc1020mode||nc2000mode||nc3000mode||pc1000mode){
         if(address==0x04) return Read04StopTimer0(address);
         if(address==0x05) return Read05StartTimer0(address);
         if(address==0x06) return Read06StopTimer1(address);
@@ -138,6 +138,8 @@ int io_v2_read(int address) {
         if(address==0x18){
             return Read18Port4(address);//not important? seems like hotlink only
         }
+    }
+    if(nc1020mode||nc2000mode||nc3000mode){
         if(address==0x3b){
             if((ioReg[0x3d]&3)==0){
                 return rtc_reg[0x3b]&0xfe;
@@ -150,9 +152,8 @@ int io_v2_read(int address) {
             return rtc_reg[ioReg[0x3e]];
             //return Read3F(address);
         }
-
     }
-    if(nc1020mode) {
+    if(nc1020mode||pc1000mode) {
         switch(address){
             case 0x20:
                 return dspStat();
@@ -217,7 +218,7 @@ void io_v2_write(int address, int value) {
             return nand_write(value);
         } 
     }
-    if(nc2000mode||nc1020mode) {
+    if(nc2000mode||nc1020mode||pc1000mode) {
         if(address==0x05){
             uint8_t cks=value>>5;
             if (cks!=ram_io[0x05]>>5){
@@ -270,7 +271,7 @@ void io_v2_write(int address, int value) {
                 return;
         }
     }
-    if(nc1020mode){
+    if(nc1020mode||pc1000mode){
         if(false){
             if(address==0x22) {
                 printf("<w %02x>",value);
@@ -297,7 +298,7 @@ void io_v2_write(int address, int value) {
                 return;
         }
     }
-    if(nc1020mode||nc2000mode||nc3000mode){
+    if(nc1020mode||nc2000mode||nc3000mode||pc1000mode){
         if(address==0x04){
             Write04GeneralCtrl(address,value);
             //Write09Port1(0x09, ram_io[0x09]);//reapply after PTYPE changed??
@@ -348,6 +349,8 @@ void io_v2_write(int address, int value) {
         if(address==0x23){
             return Write23(address,value);
         }*/
+    }
+    if(nc1020mode||nc2000mode||nc3000mode){
         if(address==0x3d){
             ioReg[0x3d]= ioReg[0x3d] &0xf8 |value &7;
             return;
