@@ -88,7 +88,7 @@ void dspCmd(int cmd) {
     }
 }
 
-void setTimer() {
+void setTimerA() {
     int temp = ioReg[IO_TIMERAB_CTRL] >> 4;
     if (temp != 0) {
         tmaValue += (256 >> temp);

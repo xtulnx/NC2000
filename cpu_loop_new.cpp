@@ -285,7 +285,7 @@ void cpu_run3(){
 	if(trigger_x_times_per_s(576*50)){
 		//printf("trigger1!\n");
 		if(nc1020mode||nc2000mode||nc3000mode||(pc1000mode && io_version != IO_EMUX)) {
-			setTimer();
+			setTimerA();
 		}
 		if(pc1000mode && io_version == IO_EMUX) {
 			bus_pc1000->setTimer();
