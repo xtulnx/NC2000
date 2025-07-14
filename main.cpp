@@ -140,6 +140,10 @@ void main_loop() {
 int main(int argc, char* args[]) {
   process_args(argc, args);
   init_parameters();
+
+  int res1=SDL_SetThreadPriority(SDL_THREAD_PRIORITY_TIME_CRITICAL);
+  printf("SDL_SetThreadPriority returned %d\n", res1);
+
   if(listen_port>0) init_udp_server(listen_port);
   init_keyitems();
   LoadNC1020();
