@@ -1,5 +1,4 @@
 #include "comm.h"
-#include <unistd.h>
 #include <thread>
 #include "console.h"
 
@@ -11,6 +10,7 @@ typedef unsigned short u_int16_t;
 typedef unsigned int u_int32_t;
 typedef int socklen_t;
 #else
+#include <unistd.h>
 #include <sys/socket.h>    //for socket ofcourse
 #include <sys/types.h>
 #include <sys/ioctl.h>
