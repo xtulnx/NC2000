@@ -152,7 +152,9 @@ cycles related
 ===================
 */
 
-extern uint32_t static_multipler;
+extern double oc_factor;
+
+//extern uint32_t static_multipler;
 extern uint32_t CYCLES_SECOND;
 extern uint32_t UNKNOWN_TIMER0_FREQ;
 extern uint32_t TIMER0_FREQ;

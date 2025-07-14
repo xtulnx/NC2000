@@ -43,7 +43,10 @@ bool injected=false;
 cycles related
 ===================
 */
-uint32_t static_multipler;
+
+double oc_factor=1.0;
+
+//uint32_t static_multipler;
 uint32_t CYCLES_SECOND;
 uint32_t UNKNOWN_TIMER0_FREQ;
 uint32_t TIMER0_FREQ;
@@ -76,10 +79,12 @@ void init_parameters(){
     cycles related
     ===================
     */
-    static_multipler=1; //tmp fix for speed and crash
+    //static_multipler=1; //tmp fix for speed and crash
 
     // cpu cycles per second (cpu freq).
     CYCLES_SECOND = 3686400*(pc1000mode) + 5120000*(nc1020mode||nc2000mode)+10240000*nc3000mode;
+    CYCLES_SECOND *= oc_factor;
+    
     UNKNOWN_TIMER0_FREQ = 2;
     TIMER0_FREQ = 2; //not used now
     TIMER1_FREQ = 200;//not used now

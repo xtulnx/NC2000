@@ -23,6 +23,7 @@ void process_args(int argc, char *argv[])
 		{"cpu", required_argument, 0, 1},
 		{"loop", required_argument, 0, 1},
 		{"io", required_argument, 0, 1},
+		{"oc", required_argument, 0, 1},
 		{"nor-read", required_argument, 0, 1},
 		{"nor-write", required_argument, 0, 1},
 		{"nc1020", no_argument,    0, 1},
@@ -111,6 +112,10 @@ void process_args(int argc, char *argv[])
 			else if(strcmp(long_options[option_index].name,"io")==0)
 			{
 				io_version = (IoVersion)stoi(optarg);
+			}
+			else if(strcmp(long_options[option_index].name,"oc")==0)
+			{
+				oc_factor = stod(optarg);
 			}
 			else
 			{
