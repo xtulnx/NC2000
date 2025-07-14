@@ -277,13 +277,11 @@ void cpu_run3(){
 		}
 	}
 
-	//todo study datasheet of how speed affect timers
-	//uint32_t target_cycles=128;  //note: 128 affect beeper sound quality for w65c02
-	uint32_t target_cycles=0;
-
+	uint32_t target_cycles=cpu_batch;
 	uint32_t CycleDelta;
 	if(false){
 		//TODO FIX ME
+		//todo study datasheet of how speed affect timers
 		target_cycles/=speed_scaledown;
 		CycleDelta=cpu->execute(target_cycles);
 		CycleDelta*=speed_scaledown;

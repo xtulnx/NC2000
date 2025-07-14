@@ -75,7 +75,7 @@ void post_cpu_run_sound_handling(){
     manipulate_beeper(last_beeper.value);
 
 	long long current_time=SDL_GetTicks64();
-	if(current_time-last_audio_queue_check_time>1000*10){
+	if(current_time-last_audio_queue_check_time>1000*60){
 		//if(pop_cnt==0){
 		if(min_audio_queue_size_observed >DSP_AUDIO_HZ/100){
 			target_audio_queue_size -= min_audio_queue_size_observed-DSP_AUDIO_HZ/100;

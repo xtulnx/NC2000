@@ -51,10 +51,12 @@ int CPUInterface::execute(int max_cycles){
     if(g_nmi){
         g_nmi = false;
         cycle+=CpuExecuteNMI();
+		mI = true;     //todo: is this needed?
     }
     if (g_irq && !mI){
 		g_irq = false;
         cycle+=CpuExecuteIRQ();
+		cycle+=1;
     }
 
     do{
@@ -80,8 +82,12 @@ void CPUInterface::IRQ() {
 
 	if(!mI) {
 		cycle+=CpuExecuteIRQ();
+		cycle+=1;
+		g_irq =false; // is this needed?
+	}else{
+		g_irq = true;
 	}
-	g_irq = true;
+
 }
 
 int CPUInterface::P() {

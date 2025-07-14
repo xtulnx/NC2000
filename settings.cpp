@@ -37,6 +37,7 @@ void process_args(int argc, char *argv[])
 		{"gap-size", required_argument, 0, 1},
 		{"lcd-scale", required_argument, 0, 1},
 		{"slice", required_argument, 0, 1},
+		{"cpu-batch", required_argument, 0, 1},
 		{"lcd-refresh", required_argument, 0, 1},
 		{NULL, 0, 0, 0}
       };
@@ -156,6 +157,10 @@ void process_args(int argc, char *argv[])
 			{
 				LCD_REFRESH_INTERVAL = stoi(optarg);
 				if(LCD_REFRESH_INTERVAL<1) LCD_REFRESH_INTERVAL=1;
+			}
+			else if(strcmp(long_options[option_index].name,"cpu-batch")==0)
+			{
+				cpu_batch = stoi(optarg);
 			}
 			else
 			{
