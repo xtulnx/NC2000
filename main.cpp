@@ -15,12 +15,10 @@
 
 using namespace std;
 
-extern SDL_Renderer* renderer;
-
 bool fast_forward=false;
 
 bool InitAudioVideo() {
-
+  extern SDL_Renderer* renderer;
   extern unsigned char *lcd_effect_buffer;
   lcd_effect_buffer = new unsigned char[SCREEN_HEIGHT*total_size* SCREEN_WIDTH*total_size * 4];
   memset(lcd_effect_buffer, 0, SCREEN_HEIGHT*total_size* SCREEN_WIDTH*total_size * 4);
@@ -42,6 +40,8 @@ bool InitAudioVideo() {
     std::cout << "Failed to create renderer : " << SDL_GetError() << std::endl;
     return false;
   }
+
+  init_lcd_stripe();//need to call after renderer is created
   
   return true;
 }
@@ -142,7 +142,6 @@ int main(int argc, char* args[]) {
   init_parameters();
   if(listen_port>0) init_udp_server(listen_port);
   init_keyitems();
-  init_lcd_stripe();
   LoadNC1020();
   if (!InitAudioVideo())
     return -1;
