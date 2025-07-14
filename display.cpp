@@ -12,8 +12,8 @@ uint8_t lcd_buf[SCREEN_WIDTH * SCREEN_HEIGHT / 8*2];
 MyLCDView*  lcdview;
 
 void init_lcd_stripe(){
-   lcdview = new MyLCDView("lcdstripe_slice_w1313.json");
-   lcdview->loadStripeTexture("lcdstripe_w1313.bmp", renderer);
+   lcdview = new MyLCDView(("lcdstripe_slice_"+lcdstripe_suffix+".json").c_str());
+   lcdview->loadStripeTexture(("lcdstripe_"+lcdstripe_suffix+".bmp").c_str(), renderer);
 }
 
 unsigned char *lcd_effect_buffer = nullptr;
@@ -57,7 +57,7 @@ void Render() {
   SDL_RenderSetLogicalSize(renderer, lcdview->getLCDWidth(), lcdview->getLCDHeight());
   lcdview->paint(renderer, true);
 
-  SDL_RenderSetLogicalSize(renderer, (SCREEN_WIDTH +LEFT_GAP +RIGHT_GAP-1) * lcd_scale *total_size, SCREEN_HEIGHT * lcd_scale *total_size);
+  SDL_RenderSetLogicalSize(renderer, (SCREEN_WIDTH +LEFT_GAP +RIGHT_GAP-1) * lcd_scale *total_size+ (LEFT_GAP_EXTRA+RIGHT_GAP_EXTRA)*lcd_scale, SCREEN_HEIGHT * lcd_scale *total_size);
   //SDL_RenderClear(renderer);
   SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
     SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH*total_size, SCREEN_HEIGHT*total_size);
@@ -164,7 +164,7 @@ void Render() {
 
   static SDL_Rect source2 = { 1*total_size, 0, (SCREEN_WIDTH-1)*total_size, SCREEN_HEIGHT*total_size };
   static SDL_Rect destination =
-    { LEFT_GAP* lcd_scale *total_size, 0, (SCREEN_WIDTH -1)* lcd_scale *total_size, SCREEN_HEIGHT * lcd_scale *total_size };
+    { LEFT_GAP* lcd_scale *total_size + LEFT_GAP_EXTRA*lcd_scale, 0, (SCREEN_WIDTH -1)* lcd_scale *total_size, SCREEN_HEIGHT * lcd_scale *total_size };
   SDL_RenderCopy(renderer, texture, &source2, &destination);
   SDL_RenderPresent(renderer);
   SDL_DestroyTexture(texture);

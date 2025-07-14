@@ -30,7 +30,7 @@ bool InitAudioVideo() {
   init_audio();
 
   SDL_Window* window =
-    SDL_CreateWindow("WQX", 0, 40, lcd_scale * (SCREEN_WIDTH +LEFT_GAP +RIGHT_GAP-1) *total_size, lcd_scale * SCREEN_HEIGHT *total_size, 0);
+    SDL_CreateWindow("WQX", 0, 40, lcd_scale * (SCREEN_WIDTH +LEFT_GAP +RIGHT_GAP-1) *total_size +(LEFT_GAP_EXTRA+RIGHT_GAP_EXTRA)*lcd_scale, lcd_scale * SCREEN_HEIGHT *total_size, 0);
   if (!window) {
     std::cout << "Failed to create window : " << SDL_GetError() << std::endl;
     return false;

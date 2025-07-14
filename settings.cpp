@@ -39,6 +39,7 @@ void process_args(int argc, char *argv[])
 		{"slice", required_argument, 0, 1},
 		{"cpu-batch", required_argument, 0, 1},
 		{"lcd-refresh", required_argument, 0, 1},
+		{"stripe", required_argument, 0, 1},
 		{NULL, 0, 0, 0}
       };
     int option_index = 0;
@@ -161,6 +162,10 @@ void process_args(int argc, char *argv[])
 			else if(strcmp(long_options[option_index].name,"cpu-batch")==0)
 			{
 				cpu_batch = stoi(optarg);
+			}
+			else if(strcmp(long_options[option_index].name,"stripe")==0)
+			{
+				lcdstripe_suffix = optarg;
 			}
 			else
 			{

@@ -139,12 +139,17 @@ const int32_t SCREEN_HEIGHT=80;
 const int32_t LEFT_GAP=21;
 const int32_t RIGHT_GAP=7;
 
+const int32_t LEFT_GAP_EXTRA=0; //unit pixel
+const int32_t RIGHT_GAP_EXTRA=0;
+
 extern int pixel_size;
 extern int gap_size;
 extern int lcd_scale;
 extern int total_size;
 
 extern uint32_t LCD_REFRESH_INTERVAL;
+
+extern string lcdstripe_suffix;
 
 //const uint32_t FRAME_RATE=40;   //how many frames in a second
 //const uint32_t FRAME_FACTOR=SLICE_RATE/FRAME_RATE;
