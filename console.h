@@ -24,6 +24,7 @@ INT:.MACRO INT_PARAM
     .DW INT_PARAM
     .ENDM
  .ORG $3000
+   INT $051C
 CREATE:   
    LDA #$70
    STA $0912
@@ -109,6 +110,7 @@ INT:.MACRO INT_PARAM
     .DW INT_PARAM
     .ENDM
  .ORG $3000
+   INT $051D
 CREATE:   
    LDA #$70
    STA $08fa
