@@ -8,7 +8,7 @@ SDL_Renderer* renderer;
 const bool simulate_lcd_delay=true;
 
 uint8_t lcd_buf[SCREEN_WIDTH * SCREEN_HEIGHT / 8*2];
-unsigned char p[80*total_size][160*total_size][4] ;
+
 MyLCDView*  lcdview;
 
 void init_lcd_stripe(){
@@ -16,8 +16,12 @@ void init_lcd_stripe(){
    lcdview->loadStripeTexture("lcdstripe_w1313.bmp", renderer);
 }
 
+unsigned char *lcd_effect_buffer = nullptr;
+
 inline void handle_pixel(int u,int v,const unsigned char * color_arr[], int idx){
     //todo: inefficient, change to for each lcd tile use SDL_RenderCopy
+    unsigned char (*p)[SCREEN_WIDTH*total_size][4] ;
+    p = (decltype(p)) lcd_effect_buffer;
     if(!simulate_lcd_delay){
         memcpy(p[u][v], color_arr[idx], 4);
     }else{
@@ -53,14 +57,14 @@ void Render() {
   SDL_RenderSetLogicalSize(renderer, lcdview->getLCDWidth(), lcdview->getLCDHeight());
   lcdview->paint(renderer, true);
 
-  SDL_RenderSetLogicalSize(renderer, (SCREEN_WIDTH +LEFT_GAP +RIGHT_GAP-1) * LINE_SIZE *total_size, SCREEN_HEIGHT * LINE_SIZE *total_size);
+  SDL_RenderSetLogicalSize(renderer, (SCREEN_WIDTH +LEFT_GAP +RIGHT_GAP-1) * lcd_scale *total_size, SCREEN_HEIGHT * lcd_scale *total_size);
   //SDL_RenderClear(renderer);
   SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
     SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH*total_size, SCREEN_HEIGHT*total_size);
 
   unsigned char* bytes = nullptr;
   int pitch = 0;
-  static const SDL_Rect source = { 0, 0, SCREEN_WIDTH*total_size, SCREEN_HEIGHT*total_size };
+  static SDL_Rect source = { 0, 0, SCREEN_WIDTH*total_size, SCREEN_HEIGHT*total_size };
   SDL_LockTexture(texture, &source, reinterpret_cast<void**>(&bytes), &pitch);
   
   static const unsigned char colors[4]={245,180,105,0};
@@ -148,7 +152,7 @@ void Render() {
       }
     }
   }
-  memcpy(bytes,p,sizeof(p));
+  memcpy(bytes,lcd_effect_buffer,SCREEN_HEIGHT*total_size* SCREEN_WIDTH*total_size * 4);
   /*
   for(int i=0;i<80;i++){
     for(int j=0;j<160;j++){
@@ -158,9 +162,9 @@ void Render() {
   }*/
   SDL_UnlockTexture(texture);
 
-  static const SDL_Rect source2 = { 1*total_size, 0, (SCREEN_WIDTH-1)*total_size, SCREEN_HEIGHT*total_size };
-  static const SDL_Rect destination =
-    { LEFT_GAP* LINE_SIZE *total_size, 0, (SCREEN_WIDTH -1)* LINE_SIZE *total_size, SCREEN_HEIGHT * LINE_SIZE *total_size };
+  static SDL_Rect source2 = { 1*total_size, 0, (SCREEN_WIDTH-1)*total_size, SCREEN_HEIGHT*total_size };
+  static SDL_Rect destination =
+    { LEFT_GAP* lcd_scale *total_size, 0, (SCREEN_WIDTH -1)* lcd_scale *total_size, SCREEN_HEIGHT * lcd_scale *total_size };
   SDL_RenderCopy(renderer, texture, &source2, &destination);
   SDL_RenderPresent(renderer);
   SDL_DestroyTexture(texture);

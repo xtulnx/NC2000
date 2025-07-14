@@ -133,15 +133,15 @@ extern int power_save_interval;
 display related
 ===================
 */
-const uint32_t SCREEN_WIDTH=160;
-const uint32_t SCREEN_HEIGHT=80;
-const uint32_t LEFT_GAP=21;
-const uint32_t RIGHT_GAP=7;
-const uint32_t LINE_SIZE=1;
+const int32_t SCREEN_WIDTH=160;
+const int32_t SCREEN_HEIGHT=80;
+const int32_t LEFT_GAP=21;
+const int32_t RIGHT_GAP=7;
 
-const int pixel_size=3;
-const int gap_size=1;
-const int total_size=pixel_size+gap_size;
+extern int pixel_size;
+extern int gap_size;
+extern int lcd_scale;
+extern int total_size;
 
 const uint32_t LCD_REFRESH_INTERVAL=8; //refresh every 10ms
 //const uint32_t FRAME_RATE=40;   //how many frames in a second

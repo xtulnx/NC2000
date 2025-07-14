@@ -33,6 +33,9 @@ void process_args(int argc, char *argv[])
         {"debug-beeper", no_argument,    0, 1},
 		{"power-save", required_argument, 0, 1},
         {"rom", required_argument, 0, 1},
+		{"pixel-size", required_argument, 0, 1},
+		{"gap-size", required_argument, 0, 1},
+		{"lcd-scale", required_argument, 0, 1},
 		{NULL, 0, 0, 0}
       };
     int option_index = 0;
@@ -129,6 +132,18 @@ void process_args(int argc, char *argv[])
 			else if(strcmp(long_options[option_index].name,"oc")==0)
 			{
 				oc_factor = stod(optarg);
+			}
+			else if(strcmp(long_options[option_index].name,"pixel-size")==0)
+			{
+				pixel_size = stoi(optarg);
+			}
+			else if(strcmp(long_options[option_index].name,"gap-size")==0)
+			{
+				gap_size = stoi(optarg);
+			}
+			else if(strcmp(long_options[option_index].name,"lcd-scale")==0)
+			{
+				lcd_scale = stoi(optarg);
 			}
 			else
 			{

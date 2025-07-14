@@ -20,6 +20,11 @@ extern SDL_Renderer* renderer;
 bool fast_forward=false;
 
 bool InitAudioVideo() {
+
+  extern unsigned char *lcd_effect_buffer;
+  lcd_effect_buffer = new unsigned char[SCREEN_HEIGHT*total_size* SCREEN_WIDTH*total_size * 4];
+  memset(lcd_effect_buffer, 0, SCREEN_HEIGHT*total_size* SCREEN_WIDTH*total_size * 4);
+
   if (SDL_Init(SDL_INIT_EVERYTHING) == -1) {
     std::cout << " Failed to initialize SDL : " << SDL_GetError() << std::endl;
     return false;
@@ -27,7 +32,7 @@ bool InitAudioVideo() {
   init_audio();
 
   SDL_Window* window =
-    SDL_CreateWindow("WQX", 0, 40, LINE_SIZE * (SCREEN_WIDTH +LEFT_GAP +RIGHT_GAP-1) *total_size, LINE_SIZE * SCREEN_HEIGHT *total_size, 0);
+    SDL_CreateWindow("WQX", 0, 40, lcd_scale * (SCREEN_WIDTH +LEFT_GAP +RIGHT_GAP-1) *total_size, lcd_scale * SCREEN_HEIGHT *total_size, 0);
   if (!window) {
     std::cout << "Failed to create window : " << SDL_GetError() << std::endl;
     return false;

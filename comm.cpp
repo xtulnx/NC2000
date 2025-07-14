@@ -79,6 +79,16 @@ uint32_t num_rom_pages;
 uint32_t ROM_SIZE;
 uint32_t NOR_SIZE;
 
+/*
+===================
+display related
+===================
+*/
+int pixel_size=3;
+int gap_size=1;
+int lcd_scale=1;
+int total_size;
+
 
 WqxRom nc1020_rom;
 
@@ -124,6 +134,13 @@ void init_parameters(){
     num_rom_pages =0x300;
     ROM_SIZE = 0x8000 * num_rom_pages;
     NOR_SIZE = 0x8000 * num_nor_pages;
+
+    /*
+    ===================
+    display related
+    ===================
+    */
+    total_size=pixel_size+gap_size;
 }
 
 /*void rom_switcher(){
