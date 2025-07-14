@@ -86,13 +86,13 @@ uint32_t NOR_SIZE;
 display related
 ===================
 */
-int pixel_size=4;
+int pixel_size=3;
 int gap_size=1;
 int lcd_scale=1;
 int total_size;
 
 uint32_t LCD_REFRESH_INTERVAL=8; //refresh every 10ms
-string lcdstripe_suffix="w938";
+string lcdstripe_suffix="w1313";
 
 WqxRom nc1020_rom;
 
