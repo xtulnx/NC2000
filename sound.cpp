@@ -38,6 +38,7 @@ Dsp dsp; //make it non-static for dsp_test
 static deque<signed short> sound_stream_dsp;
 static long long last_audio_queue_check_time=0;
 static long long last_audio_queue_increase_time=0;
+static int target_audio_queue_size_shrink_thres=2000;
 static int target_audio_queue_size=10000;
 static int target_audio_queue_size_min=5000;
 static int target_audio_queue_size_max=20000;
@@ -75,10 +76,10 @@ void post_cpu_run_sound_handling(){
     manipulate_beeper(last_beeper.value);
 
 	long long current_time=SDL_GetTicks64();
-	if(current_time-last_audio_queue_check_time>1000*60){
+	if(current_time-last_audio_queue_check_time>1000*30){
 		//if(pop_cnt==0){
-		if(min_audio_queue_size_observed >DSP_AUDIO_HZ/100){
-			target_audio_queue_size -= min_audio_queue_size_observed-DSP_AUDIO_HZ/100;
+		if(min_audio_queue_size_observed >target_audio_queue_size_shrink_thres){
+			target_audio_queue_size -= min_audio_queue_size_observed-target_audio_queue_size_shrink_thres;
 			if(target_audio_queue_size<target_audio_queue_size_min) target_audio_queue_size=target_audio_queue_size_min;
             if(enable_debug_beeper){
 			    printf("shrink!!!!!!!!!!!!!!!target_queue=%d\n",target_audio_queue_size);
