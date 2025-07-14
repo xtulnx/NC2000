@@ -88,7 +88,7 @@ void main_loop() {
       last_key_pressed_tick = current_time;
     }
 
-    if(current_time - last_key_pressed_tick >1200*1000){
+    if(current_time - last_key_pressed_tick >power_save_interval*1000ll){
       if(power_save == false){
         power_save = true;
         printf("enter power save\n");

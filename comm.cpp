@@ -42,6 +42,13 @@ bool enable_debug_beeper=false;
 
 /*
 ===================
+emulation parameter
+===================
+*/
+int power_save_interval=1200;
+
+/*
+===================
 cycles related
 ===================
 */

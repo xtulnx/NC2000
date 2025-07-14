@@ -126,6 +126,7 @@ emulation parameter
 ===================
 */
 const uint32_t SLICE_INTERVAL= 5;  //10ms
+extern int power_save_interval;
 
 /*
 ===================

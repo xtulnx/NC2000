@@ -31,6 +31,7 @@ void process_args(int argc, char *argv[])
         {"nc2000", no_argument,    0, 1},
         {"nc3000", no_argument,    0, 1},
         {"debug-beeper", no_argument,    0, 1},
+		{"power-save", required_argument, 0, 1},
         {"rom", required_argument, 0, 1},
 		{NULL, 0, 0, 0}
       };
@@ -113,6 +114,13 @@ void process_args(int argc, char *argv[])
 			else if(strcmp(long_options[option_index].name,"nor-write")==0)
 			{
 				nor_write_format = (NorFormat)stoi(optarg);
+			}
+			else if(strcmp(long_options[option_index].name,"power-save")==0)
+			{
+				power_save_interval = stoi(optarg);
+				if (power_save_interval==0){
+					power_save_interval = int_inf;
+				}
 			}
 			else if(strcmp(long_options[option_index].name,"io")==0)
 			{
