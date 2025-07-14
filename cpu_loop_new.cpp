@@ -370,7 +370,7 @@ void cpu_run3(){
 				}
 			}
 		}
-		if(nc1020mode){ //not elegant, just trick the program to pass
+		if(nc1020mode){ //a hack to make nc1020 physical dumped nor work. todo:fixme
 			if(trigger256_cnt%20==10){
 					ram_io[0x0c]|=0x01;
 			}

@@ -38,6 +38,7 @@ static uint8_t& interr_flag = nc1020_states.interr_flag;
 
 static unsigned char* ioReg=nc1020_states.ram_io;
 
+bool dsp_0xd0=0;
 // dsp functions adapted from pc1000emux
 int dspRetData() {
 	int ret=dspData;
@@ -65,7 +66,7 @@ int dspStat() {
     if(!dspSleep && sound_busy()){
         value |= 0x30;
     }
-    if(pc1000mode||dspTrans){
+    if(pc1000mode||dspTrans||dsp_0xd0){
 	    value |= 0x40;
     }
     return value;
@@ -268,6 +269,12 @@ void io_v2_write(int address, int value) {
                 if(dspTrans){
                     dspData = ioReg[0x32];
                 }else{
+                    if(value==0xd0){
+                        printf("[DSP] got dsp cmd %02x %02x\n",value,ioReg[0x32]);
+                        dsp_0xd0=1;
+                    }else if(value >=0x60){
+                        dsp_0xd0=0;
+                    }
                     dsp.write(value,ioReg[0x32]);
                 }
                 return;
