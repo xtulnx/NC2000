@@ -65,19 +65,22 @@ void LoadNor(){
 	fclose(file);
 }
 
-void SaveNor(){
+void SaveNor(string file)
+{
+    if(file.empty()) { file = nc1020_rom.norFlashPath;}
+    else file+=+".nor";
 	uint8_t* temp_buff = (uint8_t*)malloc(NOR_SIZE);
-	FILE* file = fopen(nc1020_rom.norFlashPath.c_str(), "wb");
+	FILE* fp = fopen(file.c_str(), "wb");
     if(nor_write_format== PHYSICAL_ORDER){
 	    ProcessBinaryLinear(temp_buff, nor_buff, NOR_SIZE);
     }
     else if(nor_write_format== WQX2KUTIL){
         ProcessBinaryRev(temp_buff, nor_buff, NOR_SIZE);
     }else assert(false);
-	fwrite(temp_buff, 1, NOR_SIZE, file);
-	fflush(file);
+	fwrite(temp_buff, 1, NOR_SIZE, fp);
+	fflush(fp);
 	free(temp_buff);
-	fclose(file);
+	fclose(fp);
 }
 
 void init_nor(){

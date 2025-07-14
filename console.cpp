@@ -150,9 +150,13 @@ void handle_cmd(string str){
 	fflush(stdout);
 	if(cmds.size()==0) return;
 	if(cmds[0]=="save_flash"){
-		write_nand0_file();
-		write_nand_file();
-		SaveNor();
+		string file="";
+		if(cmds.size()>1){
+			file=cmds[1];	
+		}
+		write_nand0_file(file);
+		write_nand_file(file);
+		SaveNor(file);
 		printf("flash saved to file!!\n");
 		return;
 	}

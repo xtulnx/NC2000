@@ -3,8 +3,7 @@
 extern uint8_t* nor_banks[0x20];
 extern uint8_t* nor_buff;
 
-void SaveNor();
-
+void SaveNor(string file = "");
 bool read_nor(uint16_t addr, uint8_t &value);
 bool write_nor(uint16_t addr,uint8_t value);
 
