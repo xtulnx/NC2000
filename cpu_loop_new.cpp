@@ -205,6 +205,15 @@ void debug_pc(){
 		//getchar();
 	}
 }
+
+bool pc1000mode_normal(){
+	return pc1000mode && io_version!= IO_EMUX;
+}
+
+bool pc1000mode_emux(){
+	return pc1000mode && io_version== IO_EMUX;
+}
+
 void cpu_run3(){
 	if(soft_reset){
 		soft_reset=0;
@@ -288,10 +297,10 @@ void cpu_run3(){
 	//magic number to fit timerA and pc1000emux's timer0 and timer1 code
 	if(trigger_x_times_per_s(576*50)){
 		//printf("trigger1!\n");
-		if(nc1020mode||nc2000mode||nc3000mode||(pc1000mode && io_version != IO_EMUX)) {
+		if(nc1020mode||nc2000mode||nc3000mode||pc1000mode_normal()) {
 			setTimerA();
 		}
-		if(pc1000mode && io_version == IO_EMUX) {
+		if(pc1000mode_emux()) {
 			bus_pc1000->setTimer();
 			if (bus_pc1000->setTimer0()) {
 				//timer0用于录放音，蜂鸣器音乐
@@ -308,7 +317,7 @@ void cpu_run3(){
 		}
 	}
 
-	if(nc1020mode||nc2000mode||nc3000mode||(pc1000mode && io_version != IO_EMUX)) {
+	if(nc1020mode||nc2000mode||nc3000mode||(pc1000mode_normal())) {
 		bool KeepTimer01( unsigned int cpuTick);
 		if(KeepTimer01(CycleDelta)){
 			//adapted from wayback
@@ -323,13 +332,13 @@ void cpu_run3(){
 	}
 
 	if(trigger_x_times_per_s(250)){
-		if(nc1020mode||nc2000mode||nc3000mode || (pc1000mode && io_version != IO_EMUX)) {
+		if(nc1020mode||nc2000mode||nc3000mode || pc1000mode_normal()) {
 			if (timeBaseEnable()) {
 				setIrqTimeBase();
 				cpu->IRQ();
 			}
 		}
-		if(pc1000mode && io_version == IO_EMUX) {
+		if(pc1000mode_emux()) {
 			if (bus_pc1000->timeBaseEnable()) {
 				//timebase中断为4ms一次，主要用于键盘扫描
 				bus_pc1000->setIrqTimeBase();
@@ -353,7 +362,7 @@ void cpu_run3(){
 				}
 			}
 		}
-		if(nc1020mode||nc2000mode||nc3000mode|| (pc1000mode&&io_version!= IO_EMUX)) {
+		if(nc1020mode||nc2000mode||nc3000mode|| pc1000mode_normal()) {
 			if(trigger256_cnt%128==64){ //avoid nmi triggerd at same time as rtc irq
 				if (nmiEnable()){
 					if(nc1020mode||nc2000mode||nc3000mode){
@@ -373,7 +382,7 @@ void cpu_run3(){
 		}
 	}
 
-	if(pc1000mode&&io_version==IO_EMUX&&trigger_x_times_per_s(2)){
+	if(pc1000mode_emux()&&trigger_x_times_per_s(2)){
 		setTime1000();
 		if (bus_pc1000->nmiEnable()){
 			cpu->NMI();
