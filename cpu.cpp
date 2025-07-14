@@ -31,7 +31,7 @@ int CPUInterface::emux_exec_helper(int max_cycles) {
 		void debug_pc();
 		debug_pc();
 		cpu_impl_emux->doCode(cpu_impl_emux->getCode());//allow one cycle anyway
-	}while(clk<max_cycles);
+	}while(clk<=max_cycles);
 	
 	int res=clk;// - initial_clk;
 	lineclk += clk;
@@ -62,8 +62,9 @@ int CPUInterface::execute(int max_cycles){
     do{
 		void debug_pc();
 		debug_pc();
+		if(g_wai) {cycle=max_cycles;break;}
 		cycle += CpuExecuteOP();
-    }while(cycle<max_cycles);
+    }while(cycle<=max_cycles);
 
 	int res=cycle;
 	cycle=0;
