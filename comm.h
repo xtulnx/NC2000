@@ -125,7 +125,7 @@ const uint32_t VERSION = 0x06;
 emulation parameter
 ===================
 */
-const uint32_t SLICE_INTERVAL= 5;  //10ms
+extern uint32_t SLICE_INTERVAL;
 extern int power_save_interval;
 
 /*
@@ -143,7 +143,8 @@ extern int gap_size;
 extern int lcd_scale;
 extern int total_size;
 
-const uint32_t LCD_REFRESH_INTERVAL=8; //refresh every 10ms
+extern uint32_t LCD_REFRESH_INTERVAL;
+
 //const uint32_t FRAME_RATE=40;   //how many frames in a second
 //const uint32_t FRAME_FACTOR=SLICE_RATE/FRAME_RATE;
 

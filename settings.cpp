@@ -36,6 +36,8 @@ void process_args(int argc, char *argv[])
 		{"pixel-size", required_argument, 0, 1},
 		{"gap-size", required_argument, 0, 1},
 		{"lcd-scale", required_argument, 0, 1},
+		{"slice", required_argument, 0, 1},
+		{"lcd-refresh", required_argument, 0, 1},
 		{NULL, 0, 0, 0}
       };
     int option_index = 0;
@@ -144,6 +146,16 @@ void process_args(int argc, char *argv[])
 			else if(strcmp(long_options[option_index].name,"lcd-scale")==0)
 			{
 				lcd_scale = stoi(optarg);
+			}
+			else if(strcmp(long_options[option_index].name,"slice")==0)
+			{
+				SLICE_INTERVAL = stoi(optarg);
+				if(SLICE_INTERVAL<1) SLICE_INTERVAL=1;
+			}
+			else if(strcmp(long_options[option_index].name,"lcd-refresh")==0)
+			{
+				LCD_REFRESH_INTERVAL = stoi(optarg);
+				if(LCD_REFRESH_INTERVAL<1) LCD_REFRESH_INTERVAL=1;
 			}
 			else
 			{

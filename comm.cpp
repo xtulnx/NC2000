@@ -45,6 +45,7 @@ bool enable_debug_beeper=false;
 emulation parameter
 ===================
 */
+uint32_t SLICE_INTERVAL= 5;  //10ms
 int power_save_interval=1200;
 
 /*
@@ -89,6 +90,7 @@ int gap_size=1;
 int lcd_scale=1;
 int total_size;
 
+uint32_t LCD_REFRESH_INTERVAL=8; //refresh every 10ms
 
 WqxRom nc1020_rom;
 
