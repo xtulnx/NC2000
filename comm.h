@@ -109,7 +109,7 @@ extern bool injected;
 const bool enabled_dsp=true;
 const bool enable_beeper=true;
 
-const bool enable_debug_beeper=false;
+extern bool enable_debug_beeper;
 /*
 ===================
 cpu related

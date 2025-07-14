@@ -38,6 +38,8 @@ bool enable_inject=false;
 bool wanna_inject=false;
 bool injected=false;
 
+bool enable_debug_beeper=false;
+
 /*
 ===================
 cycles related

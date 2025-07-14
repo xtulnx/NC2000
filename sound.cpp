@@ -39,6 +39,8 @@ static deque<signed short> sound_stream_dsp;
 static long long last_audio_queue_check_time=0;
 static long long last_audio_queue_increase_time=0;
 static int target_audio_queue_size=10000;
+static int target_audio_queue_size_min=5000;
+static int target_audio_queue_size_max=20000;
 static int min_audio_queue_size_observed=int_inf;
 
 void manipulate_beeper(int a){
@@ -77,12 +79,13 @@ void post_cpu_run_sound_handling(){
 		//if(pop_cnt==0){
 		if(min_audio_queue_size_observed >DSP_AUDIO_HZ/100){
 			target_audio_queue_size -= min_audio_queue_size_observed-DSP_AUDIO_HZ/100;
+			if(target_audio_queue_size<target_audio_queue_size_min) target_audio_queue_size=target_audio_queue_size_min;
             if(enable_debug_beeper){
 			    printf("shrink!!!!!!!!!!!!!!!target_queue=%d\n",target_audio_queue_size);
             }
 		}
 		//pop_cnt=0;
-		min_audio_queue_size_observed=DSP_AUDIO_HZ*999;
+		min_audio_queue_size_observed=int_inf;
 		last_audio_queue_check_time=current_time;
 
 		//printf("dsp_audio_queue=%d\n",SDL_GetQueuedAudioSize(dsp_deviceId));
@@ -95,6 +98,7 @@ void post_cpu_run_sound_handling(){
 	if(queue_size==0 && current_time-last_audio_queue_increase_time>1000){
 		//pop_cnt++;;
 		target_audio_queue_size*=1.1;
+		if(target_audio_queue_size>target_audio_queue_size_max) target_audio_queue_size=target_audio_queue_size_max;
 		last_audio_queue_increase_time=current_time;
         if(enable_debug_beeper){
 		    printf("oops audio queue drained! target_queue=%d\n",target_audio_queue_size);

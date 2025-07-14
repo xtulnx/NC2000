@@ -30,6 +30,7 @@ void process_args(int argc, char *argv[])
         {"pc1000", no_argument,    0, 1},
         {"nc2000", no_argument,    0, 1},
         {"nc3000", no_argument,    0, 1},
+        {"debug-beeper", no_argument,    0, 1},
         {"rom", required_argument, 0, 1},
 		{NULL, 0, 0, 0}
       };
@@ -92,6 +93,10 @@ void process_args(int argc, char *argv[])
 			else if(strcmp(long_options[option_index].name,"nc3000")==0)
 			{
 				nc3000mode = true;
+			}
+			else if(strcmp(long_options[option_index].name,"debug-beeper")==0)
+			{
+				enable_debug_beeper = true;
 			}
 			else if(strcmp(long_options[option_index].name,"cpu")==0)
 			{
