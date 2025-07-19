@@ -59,7 +59,7 @@ int CPUInterface::execute(int max_cycles){
     if (g_irq && !mI){
 		g_irq = false;
         cycle+=CpuExecuteIRQ();
-		cycle+=1;
+		//cycle+=1;
     }
 
     do{
@@ -86,7 +86,7 @@ void CPUInterface::IRQ() {
 
 	if(!mI) {
 		cycle+=CpuExecuteIRQ();
-		cycle+=1;
+		//cycle+=1;
 		g_irq =false; // is this needed?
 	}else{
 		g_irq = true;

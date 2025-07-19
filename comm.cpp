@@ -48,7 +48,7 @@ emulation parameter
 */
 uint32_t SLICE_INTERVAL= 5;  //10ms
 int power_save_interval=1200;
-uint32_t cpu_batch=128;
+uint32_t cpu_batch=64;
 
 bool enable_keepon = true;
 bool enable_sync= true;
