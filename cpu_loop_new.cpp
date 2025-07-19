@@ -249,12 +249,12 @@ void cpu_run3(){
 		if(is_nc2600_rom()){
 			if(!time_adjusted && Peek16(0x3fa)==0x7a &&rtc_reg[0]==1){
 				time_adjusted=1;
-				sync_time_2000();
+				if(enable_sync) sync_time_2000();
 			}
 		}else{
 			if(!time_adjusted && Peek16(0x3fa)==0x79 &&rtc_reg[0]==1){
 				time_adjusted=1;
-				sync_time_2000();
+				if(enable_sync) sync_time_2000();
 			}
 		}
 
@@ -266,7 +266,7 @@ void cpu_run3(){
 	if(trigger256){
 		if(nc1020mode||nc2000mode||nc3000mode){
 			if(trigger256_cnt==0){
-				if(!nc1020mode) Store(1025, 0);//prevent sleep
+				if(!nc1020mode && enable_keepon) Store(1025, 0);//prevent sleep
 				//at the begin of every second
 				setTimeRTC();
 			}

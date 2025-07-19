@@ -16,6 +16,7 @@ IoVersion io_version = IO_V2;
 
 NorFormat nor_read_format = NorFormat::PHYSICAL_ORDER;
 NorFormat nor_write_format = NorFormat::PHYSICAL_ORDER;
+
 /*
 ===================
 debug related
@@ -48,6 +49,9 @@ emulation parameter
 uint32_t SLICE_INTERVAL= 5;  //10ms
 int power_save_interval=1200;
 uint32_t cpu_batch=128;
+
+bool enable_keepon = true;
+bool enable_sync= true;
 
 /*
 ===================

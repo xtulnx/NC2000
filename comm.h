@@ -128,6 +128,8 @@ emulation parameter
 extern uint32_t SLICE_INTERVAL;
 extern int power_save_interval;
 extern uint32_t cpu_batch;
+extern bool enable_keepon;
+extern bool enable_sync;
 
 /*
 ===================

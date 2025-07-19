@@ -30,6 +30,8 @@ void process_args(int argc, char *argv[])
         {"pc1000", no_argument,    0, 1},
         {"nc2000", no_argument,    0, 1},
         {"nc3000", no_argument,    0, 1},
+        {"no-keepon", no_argument,    0, 1},
+        {"no-sync", no_argument,    0, 1},
         {"debug-beeper", no_argument,    0, 1},
 		{"power-save", required_argument, 0, 1},
         {"rom", required_argument, 0, 1},
@@ -166,6 +168,14 @@ void process_args(int argc, char *argv[])
 			else if(strcmp(long_options[option_index].name,"stripe")==0)
 			{
 				lcdstripe_suffix = optarg;
+			}
+			else if(strcmp(long_options[option_index].name,"no-keepon")==0)
+			{
+				enable_keepon = false;
+			}
+			else if(strcmp(long_options[option_index].name,"no-sync")==0)
+			{
+				enable_sync = false;
 			}
 			else
 			{
