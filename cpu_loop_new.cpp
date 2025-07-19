@@ -20,7 +20,6 @@ static uint8_t * rtc_reg=nc1020_states.rtc_reg;
 static uint8_t& interr_flag = nc1020_states.interr_flag;
 struct BusPC1000 *bus_pc1000=0;
 extern IBus6502 *dummy_bus;
-extern CPUInterface* cpu;
 
 void init_cpu_new(){
 	//assert(use_emux_cpu);
@@ -217,8 +216,7 @@ bool pc1000mode_emux(){
 void cpu_run3(){
 	if(soft_reset){
 		soft_reset=0;
-		ram_io[2]=1;
-		ram_io[3]|=1;
+		prepare_soft_reset();
 		cpu->reset();
 		//nc1020_states.last_cycles=0;
 		//nc1020_states.cycles=0;

@@ -19,7 +19,6 @@
 extern WqxRom nc1020_rom;
 
 nc1020_states_t nc1020_states;
-CPUInterface *cpu;
 BusWrapper *dummy_bus = nullptr;
 
 //static uint32_t& version = nc1020_states.version;

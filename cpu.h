@@ -9,10 +9,10 @@ extern "C" {
 
 extern double speed_multiplier;
 
-void reset_cpu_states();
 void cpu_run();
 void cpu_run2();
 void cpu_run3();
+void prepare_soft_reset();
 
 //void init_cpu();
 void init_cpu_new();
@@ -53,3 +53,5 @@ public:
     //only for w65c02
     int cycle=0;
 };
+
+extern CPUInterface* cpu;

@@ -48,8 +48,6 @@ static uint8_t& reg_y = nc1020_states.cpu.reg_y;
 static uint8_t& reg_sp = nc1020_states.cpu.reg_sp;
 */
 
-static int& reg_pc = mPC;
-
 double speed_multiplier=1.0;
 
 #if 0
@@ -126,7 +124,7 @@ void inject(){
 	//Peek16(0xe3)=0x40;
 	//Peek16(0xe4)=0xb2;
 	//nc1020_states.ext_ram[0x17]=0x58;
-	reg_pc=0x4018;
+	cpu->PC=0x4018;
 }
 
 
@@ -301,6 +299,7 @@ void cpu_run(){
 		if(enable_debug_pc||enable_dyn_debug){
 			uint8_t & Peek16Debug(uint16_t addr);
 			unsigned char buf[10];
+			auto &reg_pc=cpu->PC;
 			buf[0]=Peek16Debug(reg_pc);
 			buf[1]=Peek16Debug(reg_pc+1);
 			buf[2]=Peek16Debug(reg_pc+2);
@@ -372,7 +371,7 @@ void cpu_run(){
 				should_wake_up = false;
 				ram_io[0x01] |= 0x01;
 				ram_io[0x02] |= 0x01;
-				reg_pc = PeekW(RESET_VEC);
+				cpu->PC = PeekW(RESET_VEC);
 			} else {
 				ram_io[0x01] |= 0x08;
 				////////////g_irq = true;
@@ -387,7 +386,6 @@ void cpu_run(){
 
 }
 
-extern CPUInterface *cpu;
 /*void init_cpu(){
 	if(cpu_version== CPU1) {
 		cpu=new CPUInterface();
@@ -518,7 +516,7 @@ void cpu_run2(){
 			should_wake_up = false;
 			ram_io[0x01] |= 0x01;
 			ram_io[0x02] |= 0x01;
-			reg_pc = PeekW(RESET_VEC);
+			cpu->PC = PeekW(RESET_VEC);
 		} else {
 			ram_io[0x01] |= 0x08;
 			////////////g_irq = true;

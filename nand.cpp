@@ -82,6 +82,7 @@ void read_nand_file(){
 }
 
 void write_nand0_file(string file){
+    if(!nc2000mode &&!nc3000mode) return;
     if(file.empty()) file=nc1020_rom.nand0Path;
     else file+=".nand0";
      FILE *f = fopen(file.c_str(), "wb");
@@ -90,6 +91,7 @@ void write_nand0_file(string file){
 }
 
 void write_nand_file(string file){
+    if(!nc2000mode &&!nc3000mode) return;
     if(file.empty()) file=nc1020_rom.nandFlashPath;
     else file+=".nand";
     FILE *f = fopen(file.c_str(), "wb");

@@ -4,6 +4,9 @@ extern "C" {
 }
 #include "comm.h"
 #include "cpu.h"
+#include "ram.h"
+
+CPUInterface *cpu;
 
 void CPUInterface::reset(){
 	if(cpu_impl_emux) return cpu_impl_emux->reset();
@@ -95,4 +98,15 @@ int CPUInterface::P() {
 	if(cpu_impl_emux) return cpu_impl_emux->P;
 
 	return PS();
+}
+
+void prepare_soft_reset(){
+/*
+    lda io_timer0_val
+    ora io_timer1_val
+    beq cold_start
+*/
+	//tmp code
+	ram_io[2]=1;
+	ram_io[3]|=1;
 }
