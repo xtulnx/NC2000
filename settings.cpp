@@ -33,6 +33,7 @@ void process_args(int argc, char *argv[])
         {"no-keepon", no_argument,    0, 1},
         {"no-sync", no_argument,    0, 1},
         {"debug-beeper", no_argument,    0, 1},
+		{"debug-dsp", no_argument,    0, 1},
 		{"power-save", required_argument, 0, 1},
         {"rom", required_argument, 0, 1},
 		{"pixel-size", required_argument, 0, 1},
@@ -42,6 +43,7 @@ void process_args(int argc, char *argv[])
 		{"cpu-batch", required_argument, 0, 1},
 		{"lcd-refresh", required_argument, 0, 1},
 		{"stripe", required_argument, 0, 1},
+		{"timer01-speed", required_argument, 0, 1},
 		{NULL, 0, 0, 0}
       };
     int option_index = 0;
@@ -107,6 +109,10 @@ void process_args(int argc, char *argv[])
 			else if(strcmp(long_options[option_index].name,"debug-beeper")==0)
 			{
 				enable_debug_beeper = true;
+			}
+			else if(strcmp(long_options[option_index].name,"debug-dsp")==0)
+			{
+				enable_debug_dsp = true;
 			}
 			else if(strcmp(long_options[option_index].name,"cpu")==0)
 			{
@@ -176,6 +182,10 @@ void process_args(int argc, char *argv[])
 			else if(strcmp(long_options[option_index].name,"no-sync")==0)
 			{
 				enable_sync = false;
+			}
+			else if(strcmp(long_options[option_index].name,"timer01-speed")==0)
+			{
+				timer01_speed_fix = stod(optarg);
 			}
 			else
 			{

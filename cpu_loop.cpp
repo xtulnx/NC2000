@@ -226,9 +226,16 @@ bool KeepTimer01( unsigned int cpuTick )
         timer1ticks += cpuTick;
         qDebug("timer1ticks: %d", timer1ticks);
 
-        int inc1 = timer1ticks >> (1 + w0c_b23_TM1S);
+        int inc1 = timer1ticks >> ((w0c_b23_TM1S+1)*2);
         if (inc1) {
-            timer1ticks -= inc1 << (1 + w0c_b23_TM1S);
+            timer1ticks -= inc1 << ((w0c_b23_TM1S+1)*2);
+        }
+
+        if(false){//originl wayback code. seems like it's wrong according to datasheet
+            int inc1 = timer1ticks >> (1 + w0c_b23_TM1S);
+            if (inc1) {
+                timer1ticks -= inc1 << (1 + w0c_b23_TM1S);
+            }
         }
         unsigned short newt = zpioregs[io03_timer1_val] + inc1;
         zpioregs[io03_timer1_val] = newt;

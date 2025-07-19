@@ -40,6 +40,7 @@ bool wanna_inject=false;
 bool injected=false;
 
 bool enable_debug_beeper=false;
+bool enable_debug_dsp=false;
 
 /*
 ===================
@@ -52,6 +53,8 @@ uint32_t cpu_batch=64;
 
 bool enable_keepon = true;
 bool enable_sync= true;
+
+double timer01_speed_fix=1.0;
 
 /*
 ===================
@@ -149,6 +152,10 @@ void init_parameters(){
     ===================
     */
     total_size=pixel_size+gap_size;
+
+
+
+    timer01_speed_fix/=oc_factor;
 }
 
 /*void rom_switcher(){

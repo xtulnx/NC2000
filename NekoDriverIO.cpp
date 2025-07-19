@@ -184,6 +184,7 @@ void __iocallconv Write0CTimer01Control( BYTE write, BYTE value ) // 0C
         // only 3bit
         w0c_b345_TMS = (value >> 3) & 7;
     }
+    printf("write io0c 0x%02x\n",value);
     zpioregs[io0C_lcd_config] = value;
     (void)write;
 }

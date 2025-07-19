@@ -315,7 +315,13 @@ void cpu_run3(){
 
 	if(nc1020mode||nc2000mode||nc3000mode||(pc1000mode_normal())) {
 		bool KeepTimer01( unsigned int cpuTick);
-		if(KeepTimer01(CycleDelta)){
+		int delta= CycleDelta;
+		if(nc1020mode||nc2000mode){
+			long long scaled_last_cycles = last_cycles*timer01_speed_fix;
+			long long scaled_cycles = cycles*timer01_speed_fix;
+			delta= scaled_cycles - scaled_last_cycles;
+		}
+		if(KeepTimer01(delta)){
 			//adapted from wayback
 			if ( ram_io[0x04] & 0x0F ) {
 				//why only set flag for timer0? why not set 0x20

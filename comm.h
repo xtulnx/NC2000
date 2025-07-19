@@ -110,6 +110,7 @@ const bool enabled_dsp=true;
 const bool enable_beeper=true;
 
 extern bool enable_debug_beeper;
+extern bool enable_debug_dsp;
 /*
 ===================
 cpu related
@@ -131,6 +132,7 @@ extern uint32_t cpu_batch;
 extern bool enable_keepon;
 extern bool enable_sync;
 
+extern double timer01_speed_fix;
 /*
 ===================
 display related

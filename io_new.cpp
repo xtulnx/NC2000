@@ -70,6 +70,7 @@ int dspStat() {
     if(pc1000mode||dspTrans||dsp_0xd0){
 	    value |= 0x40;
     }
+    if(enable_debug_dsp) printf("dspStat() return %02x\n",value);
     return value;
 }
 
@@ -220,7 +221,7 @@ void io_v2_write(int address, int value) {
                     case 7: printf("oops clk off\n");speed_scaledown=999999;break;
                     default:assert(false);
                 }
-                //printf("<cks=%d slowdown=%d>\n",cks,speed_slowdown);
+                //printf("<cks=%d scaledown=%d>\n",cks,speed_scaledown);
             }
              //purposely not return
         }
@@ -243,7 +244,7 @@ void io_v2_write(int address, int value) {
                     case 7: printf("oops clk off\n");speed_scaledown=99999;break;
                     default:assert(false);
                 }
-                //printf("<cks=%d slowdown=%d>\n",cks,speed_slowdown);
+                //printf("<cks=%d scaledown=%d>\n",cks,speed_scaledown);
             }
             //purposely not return
         }

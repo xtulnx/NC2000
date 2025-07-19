@@ -171,9 +171,22 @@ void callback(void* userdata, Uint8* stream, int len) {
 	}
 }*/
 const int dsp_busy_len=10000;
+
 void dsp_call_back(unsigned char *p,int len){
+	static int cnt=0;
+	cnt++;
+	if(enable_debug_dsp){
+		if(cnt%1000==0){
+			printf("queue_len=%d\n",SDL_GetQueuedAudioSize(dsp_deviceId));
+		}
+		if(SDL_GetQueuedAudioSize(dsp_deviceId)==0) {
+			printf("DDDDDDDDDDDDDDDDDDDDDDDDDDDrain\n");
+		}
+	}
     if(SDL_GetQueuedAudioSize( dsp_deviceId )>dsp_busy_len*1.5) {
-        //printf("drop!!!\n");
+		if(enable_debug_dsp){
+			printf("drop!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+		}
         return ;
     }
     SDL_QueueAudio(dsp_deviceId, p,len );
