@@ -50,11 +50,13 @@ WRITE:
    STA $0910  
    STA $0911
    INT $0517
-   JMP WRITE
+   CLV
+   BVC WRITE
 PREEND:
      INT $0516
-END: INT $0527
-     JMP END   
+     INT $C001
+;END: INT $0527
+;     JMP END   
 */
 
 //for get:
@@ -136,11 +138,13 @@ WRITE:
    STA $08f8  
    STA $08f9  ;not really needed maybe
    INT $0518
-   JMP WRITE
+   CLV
+   BVC WRITE
 PREEND:
      INT $0517
-END: INT $0528
-     JMP END   
+     INT $C001
+;END: INT $0528
+;     JMP END 
 */
 
 //for get:
