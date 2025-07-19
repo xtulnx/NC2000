@@ -7,6 +7,7 @@ extern "C" {
 #include "ANSI/65C02.h"
 #endif
 }
+#include "cpu.h"
 #include "CC800IOName.h"
 #include "NekoDriverIO.h"
 #include <string.h>
@@ -288,7 +289,7 @@ void __iocallconv Write23Unknow( BYTE write, BYTE value )
 // Keypad registers
 //////////////////////////////////////////////////////////////////////////
 unsigned /*char*/ keypadmatrix[8][8] = {0,};
-
+int enable_key_debug_once=0;
 void UpdateKeypadRegisters()
 {
     // TODO: 2pass check
@@ -296,6 +297,9 @@ void UpdateKeypadRegisters()
     // 计算可以用2种方法, 1, 循环matrix, 对每个节点求传导. 2循环
     unsigned char port1control = w15_port1_DIR107;
     unsigned char port0control = rw0f_b4_DIR00 << 4 | rw0f_b5_DIR01 << 5 | rw0f_b6_DIR023 << 6 | rw0f_b7_DIR047 << 7;// // b4~b7
+    if(enable_key_debug_once){
+        printf("[key_debug] port1control=%02x, port0control=%02x\n", port1control, port0control);
+    }
     unsigned char port1controlbit = 1; // aka, y control bit
     unsigned char tmpdest0 = 0, tmpdest1 = 0;
     unsigned short tmpp30tv = 0;
@@ -330,6 +334,10 @@ void UpdateKeypadRegisters()
                 port0controlbit = 0x80u;
             }
             bool xsend = ((port0control & port0controlbit) != 0);
+
+            if(enable_key_debug_once){
+                printf("[key_debug] x=%d, y=%d, xsend=%d, ysend=%d %02x %02x\n", x, y, xsend, ysend,port1data,port1controlbit);
+            }
 
             ////////////TODO FIX HERE!!!!!!!!!!!!!!!!!!
             //have to change here otherwise time key doesn't work
@@ -441,6 +449,19 @@ void UpdateKeypadRegisters()
     } else if (yreceive) {
         zpioregs[io0B_port3_data] |= 1;
     }
+    if(enable_key_debug_once) {
+        printf("[key_debug] new r08_port0_ID=%02x, r09_port1_ID=%02x, tmpp30tv=%04x\n", r08_port0_ID, r09_port1_ID, tmpp30tv);
+    }
+    // this is tmp fix for nc2000 hotkey wakeup
+    // todo: better fix
+    if(nc2000mode&&port1control==0xff&&port0control==0xc0 &&w09_port1_OL==0x00)
+        for(int y=0;y<8;y++){ 
+            if(keypadmatrix[y][1]){
+                //port0data|= 0x01;
+                r08_port0_ID|= 0x01;
+            }
+    }
+    enable_key_debug_once=0;
 }
 
 BYTE __iocallconv ReadPort0( BYTE read )

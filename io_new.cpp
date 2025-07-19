@@ -1,4 +1,5 @@
 #include "comm.h"
+#include "cpu.h"
 #include "NekoDriverIO.h"
 #include "nand.h"
 #include "state.h"
@@ -133,6 +134,12 @@ int io_v2_read(int address) {
         if(address==0x07) return Read07StartTimer1(address);
 
         if(address==0x08){
+            if(cpu->PC>=0x44c2 &&cpu->PC<=0x44c4) {
+                //printf("<<pc=%04x>>\n",cpu->PC);
+                extern int enable_key_debug_once;
+                //enable_key_debug_once=1;
+                //return 0x01;
+            }
             return ReadPort0(address);
         }
         if(address==0x09){

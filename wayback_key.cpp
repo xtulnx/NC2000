@@ -260,9 +260,18 @@ pair<int,int> map_key_wayback(int32_t sym){
 }
 
 void SetKeyWayback(int code_y,int code_x, bool down_or_up){
-  if(code_x==0 && code_y==0 && down_or_up){
-    void try_soft_reset();
-    try_soft_reset();
+  if(pc1000mode || nc1020mode|| nc3000mode){
+    //todo not really works
+    if(code_x==0 && code_y==0 && down_or_up){
+      void try_soft_reset();
+      try_soft_reset();
+    }
+  }
+  if(nc2000mode){
+      if(code_x<2&& down_or_up){
+        void try_soft_reset();
+        try_soft_reset();
+      }
   }
     /*
     unsigned int y = key_id / 16;
