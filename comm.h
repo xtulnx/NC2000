@@ -111,6 +111,8 @@ const bool enable_beeper=true;
 
 extern bool enable_debug_beeper;
 extern bool enable_debug_dsp;
+
+extern bool enable_debug_timer;
 /*
 ===================
 cpu related
