@@ -46,8 +46,9 @@ static int min_audio_queue_size_observed=int_inf;
 
 void manipulate_beeper(int a){
     long long current_cycle=nc1020_states.cycles;
-    long long samples_start=last_beeper.cycle*BEEPER_AUDIO_HZ/CYCLES_SECOND;
-    long long samples_end=current_cycle*BEEPER_AUDIO_HZ/CYCLES_SECOND;
+	//note: (BEEPER_AUDIO_HZ+20) is to make it a bit larger, so that queue will not drain because of clock mismatch
+    long long samples_start=last_beeper.cycle*(BEEPER_AUDIO_HZ+20)/CYCLES_SECOND;
+    long long samples_end=current_cycle*(BEEPER_AUDIO_HZ+20)/CYCLES_SECOND;
     //printf("%lld, %d  %lld %lld\n",current_cycle -last_beeper.cycle, nc1020_states.cycles, samples_start,samples_end);
     last_beeper.cycle=current_cycle;
 
