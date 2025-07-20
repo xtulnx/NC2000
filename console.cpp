@@ -150,11 +150,11 @@ void handle_cmd(string str){
 	printf("\n");
 	fflush(stdout);
 	if(cmds.size()==0) return;
-	if(cmds[0]=="soft_reset"){
+	if(cmds[0]=="warm_reset"){
 		prepare_soft_reset();
 		cpu->reset();
 	}
-	if(cmds[0]=="hard_reset"){
+	if(cmds[0]=="cold_reset"){
 		memset(ram_io,0,0x40);
 		cpu->reset();
 	}
