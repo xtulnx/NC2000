@@ -27,7 +27,7 @@ string inject_code;
 uint64_t tick=0;  //tick is mostly for debug
 
 bool enable_dyn_debug=false;
-int enable_dyn_debug_next_n=100;
+int enable_dyn_debug_next_n=20;
 
 bool enable_debug_nand=false;
 

@@ -188,7 +188,7 @@ void handle_cmd(string str){
 		return;
 	}
 
-	if(cmds[0]=="file_manager"){
+	if(cmds[0]=="file_manager"||cmds[0]=="f"){
 		cpu->PC=0x3000;
 		/*if(nc1020mode){
 			uint8_t buf[]={0x00,0x2d,0x93,0x18,0x90,0xfa};

@@ -178,15 +178,15 @@ void dsp_call_back(unsigned char *p,int len){
 	cnt++;
 	if(enable_debug_dsp){
 		if(cnt%1000==0){
-			printf("queue_len=%d\n",SDL_GetQueuedAudioSize(dsp_deviceId));
+			printf("audio_queue_len=%d\n",SDL_GetQueuedAudioSize(dsp_deviceId));
 		}
 		if(SDL_GetQueuedAudioSize(dsp_deviceId)==0) {
-			printf("DDDDDDDDDDDDDDDDDDDDDDDDDDDrain\n");
+			printf("audio queue drain!!! \n");
 		}
 	}
     if(SDL_GetQueuedAudioSize( dsp_deviceId )>dsp_busy_len*1.5) {
 		if(enable_debug_dsp){
-			printf("drop!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+			printf("audio queue dropping!!!!!!");
 		}
         return ;
     }
