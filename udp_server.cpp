@@ -120,7 +120,7 @@ void init_udp_server(int listen_port){
 	myaddr.sin_port = htons(listen_port);
 
 	if (bind(udp_fd, (struct sockaddr *)&myaddr, sizeof(myaddr)) < 0) {
-		printf("bind failed");
+		printf("bind failed\n");
 		sock_close(udp_fd);
 		return ;
 	}

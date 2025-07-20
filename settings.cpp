@@ -8,8 +8,8 @@ using namespace std;
 extern WqxRom nc1020_rom;
 void print_help(){
     printf("help page:\n");
-    printf(" nc2000/2600 simulator\n");
-    printf(" TODO");
+    printf("  nc2000/2600/1020 emulator\n");
+    printf("  check https://github.com/wangyu-/NC2000 for usage\n");
 }
 static string rom_path;
 int listen_port=9000;
@@ -61,25 +61,10 @@ void process_args(int argc, char *argv[])
 		}
 	}
 
-	int no_l = 1, no_r = 1;
 	while ((opt = getopt_long(argc, argv, "l:r:tuh:",long_options,&option_index)) != -1)
 	{
 		switch (opt)
 		{
-		case 'l':
-			no_l = 0;
-			//local_addr.from_str(optarg);
-			break;
-		case 'r':
-			no_r = 0;
-			//remote_addr.from_str(optarg);
-			break;
-		case 't':
-			//enable_tcp=1;
-			break;
-		case 'u':
-			//enable_udp=1;
-			break;
 		case 'h':
 			break;
 		case 1:
@@ -195,11 +180,13 @@ void process_args(int argc, char *argv[])
 			else
 			{
 				printf("unknown option\n");
+				print_help();
 				exit(-1);
 			}
 			break;
 		default:
-			printf("unknown option <%x>", opt);
+			printf("unknown option <%x>\n", opt);
+			print_help();
 			exit(-1);
 		}
 	}
