@@ -114,7 +114,7 @@ void init_parameters(){
     //static_multipler=1; //tmp fix for speed and crash
 
     // cpu cycles per second (cpu freq).
-    CYCLES_SECOND = 3686400*(pc1000mode) + 5120000*(nc1020mode||nc2000mode)+10240000*nc3000mode;
+    CYCLES_SECOND = 3686400*(pc1000mode) + 5120*1000*(nc1020mode||nc2000mode)+10240*1000*nc3000mode;
     CYCLES_SECOND *= oc_factor;
     
     UNKNOWN_TIMER0_FREQ = 2;
@@ -155,9 +155,6 @@ void init_parameters(){
     */
     total_size=pixel_size+gap_size;
 
-
-
-    timer01_speed_fix/=oc_factor;
 }
 
 /*void rom_switcher(){
