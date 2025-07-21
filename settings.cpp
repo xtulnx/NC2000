@@ -45,6 +45,7 @@ void process_args(int argc, char *argv[])
 		{"lcd-refresh", required_argument, 0, 1},
 		{"stripe", required_argument, 0, 1},
 		{"timer01-speed", required_argument, 0, 1},
+		{"no-load-state", no_argument,    0, 1},
 		{NULL, 0, 0, 0}
       };
     int option_index = 0;
@@ -177,6 +178,10 @@ void process_args(int argc, char *argv[])
 			{
 				timer01_speed_fix = stod(optarg);
 			}
+			else if (strcmp(long_options[option_index].name,"no-load-state")==0)
+			{
+				enable_load_state = false;
+			}
 			else
 			{
 				printf("unknown option\n");
@@ -236,5 +241,7 @@ void process_args(int argc, char *argv[])
 		nc1020_rom.nandFlashPath = rom_path + ".nand";
 		nc1020_rom.norFlashPath = rom_path + ".nor";
 	}
+
+	nc1020_rom.statesPath=rom_path + ".state";
 
 }

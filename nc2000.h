@@ -15,4 +15,7 @@ bool CopyLcdBuffer(uint8_t*);
 void LoadNC1020();
 //void SaveNC1020();
 
+void save_states(string file_name);
+void load_states();
+
 bool is_grey_mode();

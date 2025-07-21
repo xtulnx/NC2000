@@ -85,6 +85,8 @@ const bool use_legacy_key_io = false;
 extern NorFormat nor_read_format;
 extern NorFormat nor_write_format;
 
+extern bool enable_load_state;
+
 /*
 ===================
 debug related

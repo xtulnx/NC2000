@@ -14,6 +14,7 @@ extern "C" {
 #include "ansi/w65c02.h"
 }
 #include "compare/pc1000bus.h"
+#include "nc2000.h"
 extern nc1020_states_t nc1020_states;
 extern CPUInterface *cpu;
 extern string nand_magic;
@@ -158,15 +159,21 @@ void handle_cmd(string str){
 		memset(ram_io,0,0x40);
 		cpu->reset();
 	}
-	if(cmds[0]=="save_flash"){
+	if(cmds[0]=="save_flash"||cmds[0]=="save_all"||cmds[0]=="save_state"){
 		string file="";
 		if(cmds.size()>1){
 			file=cmds[1];	
 		}
-		write_nand0_file(file);
-		write_nand_file(file);
-		SaveNor(file);
-		printf("flash saved to file!!\n");
+		if(cmds[0]=="save_flash"||cmds[0]=="save_all"){
+			write_nand0_file(file);
+			write_nand_file(file);
+			SaveNor(file);
+			printf("flash saved to file!!\n");
+		}
+		if(cmds[0]=="save_state"||cmds[0]=="save_all"){
+			save_states(file);
+			printf("state saved to file!!\n");
+		}
 		return;
 	}
 	if(cmds[0]=="dump"){

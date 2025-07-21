@@ -69,6 +69,31 @@ void SaveStates(){
 }
 #endif
 
+void save_states(string file_name){
+	if(file_name.empty()) file_name=nc1020_rom.statesPath;
+	else file_name+=".state";
+	FILE* file = fopen(file_name.c_str(), "wb");
+	if (file == NULL) {
+		printf("states file %s open failed, skip saving!\n", nc1020_rom.statesPath.c_str());
+		return;
+	}
+	fwrite(&nc1020_states.SAVE_STATE_BEGIN, 1, &nc1020_states.SAVE_STATE_END-&nc1020_states.SAVE_STATE_BEGIN, file);
+	fflush(file);
+	fclose(file);
+}
+
+void load_states(){
+	FILE* file = fopen(nc1020_rom.statesPath.c_str(), "rb");
+	if (file == NULL) {
+		printf("states file %s open failed, skip loading!\n", nc1020_rom.statesPath.c_str());
+		return;
+	}
+	int ret=fread(&nc1020_states.SAVE_STATE_BEGIN, 1, &nc1020_states.SAVE_STATE_END-&nc1020_states.SAVE_STATE_BEGIN, file);
+	fclose(file);
+	printf("loaded states from %s,ret=%d\n", nc1020_rom.statesPath.c_str(),ret);
+	//super_switch();
+}
+
 void LoadNC1020(){
 	memset(&nc1020_states,0,sizeof(nc1020_states_t));
 	dummy_bus= new BusWrapper();
@@ -106,6 +131,14 @@ void LoadNC1020(){
 	}
 
 	init_mem();
+	if(enable_load_state){
+		load_states();
+		prepare_soft_reset();
+		void sync_time_2000();
+		if(nc2000mode){
+			if(enable_sync) sync_time_2000();
+		}
+	}
 
 	//reset_cpu_states();
 	init_cpu_new();
@@ -192,3 +225,4 @@ void RunTimeSlice(uint32_t time_slice, bool speed_up) {
 
 
 }
+
