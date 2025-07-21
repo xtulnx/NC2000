@@ -121,6 +121,8 @@ extern bool enable_debug_beeper;
 extern bool enable_debug_dsp;
 
 extern bool enable_debug_timer;
+
+extern bool enable_debug_cks;
 /*
 ===================
 cpu related

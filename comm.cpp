@@ -48,6 +48,7 @@ bool enable_debug_beeper=false;
 bool enable_debug_dsp=false;
 
 bool enable_debug_timer=false;
+bool enable_debug_cks = false;
 
 /*
 ===================

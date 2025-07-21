@@ -244,7 +244,7 @@ void io_v2_write(int address, int value) {
                     case 7: printf("oops clk off\n");speed_scaledown=99999;break;
                     default:assert(false);
                 }
-                //printf("<cks=%d scaledown=%d>\n",cks,speed_scaledown);
+                if(enable_debug_cks) printf("<cks=%d scaledown=%d>\n",cks,speed_scaledown);
             }
             //purposely not return
         }
