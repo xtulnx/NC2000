@@ -159,6 +159,9 @@ void handle_cmd(string str){
 		memset(ram_io,0,0x40);
 		cpu->reset();
 	}
+	if(cmds[0]=="exit"){
+		exit(-1);
+	}
 	if(cmds[0]=="save_flash"||cmds[0]=="save_all"||cmds[0]=="save_state"){
 		string file="";
 		if(cmds.size()>1){
