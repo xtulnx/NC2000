@@ -142,7 +142,9 @@ void main_loop() {
 int main(int argc, char* args[]) {
   process_args(argc, args);
   init_parameters();
-
+#if defined(__MINGW32__)
+  SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
+#endif
   int res1=SDL_SetThreadPriority(SDL_THREAD_PRIORITY_TIME_CRITICAL);
   printf("SDL_SetThreadPriority returned %d\n", res1);
 
