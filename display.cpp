@@ -5,8 +5,6 @@
 
 SDL_Renderer* renderer;
 
-const bool simulate_lcd_delay=true;
-
 uint8_t lcd_buf[SCREEN_WIDTH * SCREEN_HEIGHT / 8*2];
 
 MyLCDView*  lcdview;
@@ -22,7 +20,7 @@ inline void handle_pixel(int u,int v,const unsigned char * color_arr[], int idx)
     //todo: inefficient, change to for each lcd tile use SDL_RenderCopy
     unsigned char (*p)[SCREEN_WIDTH*total_size][4] ;
     p = (decltype(p)) lcd_effect_buffer;
-    if(!simulate_lcd_delay){
+    if(!enable_lcd_latency_effect){
         memcpy(p[u][v], color_arr[idx], 4);
     }else{
       for(int i=1;i<4;i++){

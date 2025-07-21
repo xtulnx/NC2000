@@ -108,9 +108,11 @@ int gap_size=1;
 int lcd_scale=1;
 int total_size;
 
+bool enable_lcd_latency_effect = true;
 uint32_t LCD_INNER_REFRESH_INTERVAL=8; //refresh every 8ms
 uint32_t LCD_OUTER_REFRESH_INTERVAL=16;
 string lcdstripe_suffix="w1313";
+
 
 WqxRom nc1020_rom;
 

@@ -48,6 +48,7 @@ void process_args(int argc, char *argv[])
 		{"stripe", required_argument, 0, 1},
 		{"timer01-speed", required_argument, 0, 1},
 		{"no-load-state", no_argument,    0, 1},
+		{"no-lcd-latency-effect", no_argument,    0, 1},
 		{"state", required_argument, 0, 1},
 		{"auto-save-state", no_argument,    0, 1},
 		{"auto-save-all", no_argument,    0, 1},
@@ -217,6 +218,9 @@ void process_args(int argc, char *argv[])
 			}
 			else if (strcmp(long_options[option_index].name,"debug-cks")==0){
 				enable_debug_cks = true;
+			}
+			else if (strcmp(long_options[option_index].name,"no-lcd-latency-effect")==0){
+				enable_lcd_latency_effect = false;
 			}
 			else
 			{
