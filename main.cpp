@@ -82,10 +82,8 @@ void main_loop() {
       }
     }
 
-    if(expected_tick/LCD_REFRESH_INTERVAL != (expected_tick+SLICE_INTERVAL)/LCD_REFRESH_INTERVAL){
-      if(!power_save){
-        Render();
-      }
+    if(!power_save){
+      Render(expected_tick);
     }
 
     uint64_t current_time = SDL_GetTicks64();

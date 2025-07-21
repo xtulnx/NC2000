@@ -50,22 +50,32 @@ inline void handle_pixel(int u,int v,const unsigned char * color_arr[], int idx)
       }
     }
 }
-void Render() {
+
+void Render(uint64_t expected_tick) {
+  if(expected_tick/LCD_INNER_REFRESH_INTERVAL == (expected_tick+SLICE_INTERVAL)/LCD_INNER_REFRESH_INTERVAL){
+    return; //not time to render
+  }
   if (!CopyLcdBuffer(lcd_buf)) {
     std::cout << "Failed to copy buffer renderer." << std::endl;
   }
+
+  SDL_Texture *texture;
+  unsigned char* bytes = nullptr;
+  bool do_SDL_refresh = (expected_tick/LCD_OUTER_REFRESH_INTERVAL != (expected_tick+SLICE_INTERVAL)/LCD_OUTER_REFRESH_INTERVAL);
+  if(do_SDL_refresh){
   SDL_RenderSetLogicalSize(renderer, lcdview->getLCDWidth(), lcdview->getLCDHeight());
   lcdview->paint(renderer, true);
 
   SDL_RenderSetLogicalSize(renderer, (SCREEN_WIDTH +LEFT_GAP +RIGHT_GAP-1) * lcd_scale *total_size+ (LEFT_GAP_EXTRA+RIGHT_GAP_EXTRA)*lcd_scale, SCREEN_HEIGHT * lcd_scale *total_size);
   //SDL_RenderClear(renderer);
-  SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
+  texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
     SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH*total_size, SCREEN_HEIGHT*total_size);
 
-  unsigned char* bytes = nullptr;
+  
   int pitch = 0;
   static SDL_Rect source = { 0, 0, SCREEN_WIDTH*total_size, SCREEN_HEIGHT*total_size };
   SDL_LockTexture(texture, &source, reinterpret_cast<void**>(&bytes), &pitch);
+  }
   
   static const unsigned char colors[4]={245,180,105,0};
   static const unsigned char shadows[4]={255,
@@ -152,6 +162,7 @@ void Render() {
       }
     }
   }
+  if(!do_SDL_refresh) return;
   memcpy(bytes,lcd_effect_buffer,SCREEN_HEIGHT*total_size* SCREEN_WIDTH*total_size * 4);
   /*
   for(int i=0;i<80;i++){

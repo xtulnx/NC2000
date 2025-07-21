@@ -43,7 +43,8 @@ void process_args(int argc, char *argv[])
 		{"lcd-scale", required_argument, 0, 1},
 		{"slice", required_argument, 0, 1},
 		{"cpu-batch", required_argument, 0, 1},
-		{"lcd-refresh", required_argument, 0, 1},
+		{"lcd-inner-refresh", required_argument, 0, 1},
+		{"lcd-outer-refresh", required_argument, 0, 1},
 		{"stripe", required_argument, 0, 1},
 		{"timer01-speed", required_argument, 0, 1},
 		{"no-load-state", no_argument,    0, 1},
@@ -160,10 +161,15 @@ void process_args(int argc, char *argv[])
 				SLICE_INTERVAL = stoi(optarg);
 				if(SLICE_INTERVAL<1) SLICE_INTERVAL=1;
 			}
-			else if(strcmp(long_options[option_index].name,"lcd-refresh")==0)
+			else if(strcmp(long_options[option_index].name,"lcd-inner-refresh")==0)
 			{
-				LCD_REFRESH_INTERVAL = stoi(optarg);
-				if(LCD_REFRESH_INTERVAL<1) LCD_REFRESH_INTERVAL=1;
+				LCD_INNER_REFRESH_INTERVAL = stoi(optarg);
+				if(LCD_INNER_REFRESH_INTERVAL<1) LCD_INNER_REFRESH_INTERVAL=1;
+			}
+			else if(strcmp(long_options[option_index].name,"lcd-outer-refresh")==0)
+			{
+				LCD_OUTER_REFRESH_INTERVAL = stoi(optarg);
+				if(LCD_OUTER_REFRESH_INTERVAL<1) LCD_OUTER_REFRESH_INTERVAL=1;
 			}
 			else if(strcmp(long_options[option_index].name,"cpu-batch")==0)
 			{

@@ -163,7 +163,8 @@ extern int gap_size;
 extern int lcd_scale;
 extern int total_size;
 
-extern uint32_t LCD_REFRESH_INTERVAL;
+extern uint32_t LCD_INNER_REFRESH_INTERVAL;
+extern uint32_t LCD_OUTER_REFRESH_INTERVAL;
 
 extern string lcdstripe_suffix;
 
