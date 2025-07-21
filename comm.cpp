@@ -17,7 +17,7 @@ IoVersion io_version = IO_V2;
 NorFormat nor_read_format = NorFormat::PHYSICAL_ORDER;
 NorFormat nor_write_format = NorFormat::PHYSICAL_ORDER;
 
-bool enable_load_state=true;
+bool enable_load_state=false;
 bool save_flash_on_exit=false;
 bool save_state_on_exit=false;
 

@@ -47,7 +47,7 @@ void process_args(int argc, char *argv[])
 		{"lcd-outer-refresh", required_argument, 0, 1},
 		{"stripe", required_argument, 0, 1},
 		{"timer01-speed", required_argument, 0, 1},
-		{"no-load-state", no_argument,    0, 1},
+		{"load-state", no_argument,    0, 1},
 		{"no-lcd-latency-effect", no_argument,    0, 1},
 		{"state", required_argument, 0, 1},
 		{"auto-save-state", no_argument,    0, 1},
@@ -192,9 +192,9 @@ void process_args(int argc, char *argv[])
 			{
 				timer01_speed_fix = stod(optarg);
 			}
-			else if (strcmp(long_options[option_index].name,"no-load-state")==0)
+			else if (strcmp(long_options[option_index].name,"load-state")==0)
 			{
-				enable_load_state = false;
+				enable_load_state = true;
 			}
 			else if (strcmp(long_options[option_index].name,"state")==0){
 				nc1020_rom.statesPath = optarg;
