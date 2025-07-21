@@ -147,7 +147,7 @@ void LoadNC1020(){
 		prepare_soft_reset();
 		void sync_time_2000();
 		if(nc2000mode){
-			if(enable_sync) sync_time_2000();
+			if(enable_auto_time_sync) sync_time_2000();
 		}
 	}
 

@@ -32,6 +32,7 @@ void process_args(int argc, char *argv[])
         {"nc3000", no_argument,    0, 1},
         {"no-keepon", no_argument,    0, 1},
         {"no-sync", no_argument,    0, 1},
+		{"sync-on-resume", no_argument,    0, 1},
         {"debug-beeper", no_argument,    0, 1},
 		{"debug-dsp", no_argument,    0, 1},
 		{"debug-timer", no_argument,    0, 1},
@@ -176,7 +177,7 @@ void process_args(int argc, char *argv[])
 			}
 			else if(strcmp(long_options[option_index].name,"no-sync")==0)
 			{
-				enable_sync = false;
+				enable_auto_time_sync = false;
 			}
 			else if(strcmp(long_options[option_index].name,"timer01-speed")==0)
 			{
@@ -199,6 +200,9 @@ void process_args(int argc, char *argv[])
 			}
 			else if (strcmp(long_options[option_index].name,"auto-save-flash")==0){
 				save_flash_on_exit = true;
+			}
+			else if (strcmp(long_options[option_index].name,"sync-on-resume")==0){
+				sync_on_power_save_resume = true;
 			}
 			else
 			{

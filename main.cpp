@@ -101,7 +101,11 @@ void main_loop() {
     }else{
       if(power_save == true) {
         power_save = false;
-        printf("get out of power save\n");
+        if(sync_on_power_save_resume){
+          printf("sync time on power save resume\n");
+          void sync_time_2000();
+          if(enable_auto_time_sync)sync_time_2000();
+        }
       }
     }
 

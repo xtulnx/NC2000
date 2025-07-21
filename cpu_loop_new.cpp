@@ -249,12 +249,12 @@ void cpu_run3(){
 		if(is_nc2600_rom()){
 			if(!time_adjusted && Peek16(0x3fa)==0x7a &&rtc_reg[0]==1){
 				time_adjusted=1;
-				if(enable_sync) sync_time_2000();
+				if(enable_auto_time_sync) sync_time_2000();
 			}
 		}else{
 			if(!time_adjusted && Peek16(0x3fa)==0x79 &&rtc_reg[0]==1){
 				time_adjusted=1;
-				if(enable_sync) sync_time_2000();
+				if(enable_auto_time_sync) sync_time_2000();
 			}
 		}
 

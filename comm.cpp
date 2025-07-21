@@ -20,6 +20,8 @@ NorFormat nor_write_format = NorFormat::PHYSICAL_ORDER;
 bool enable_load_state=true;
 bool save_flash_on_exit=true;
 bool save_state_on_exit=true;
+
+bool sync_on_power_save_resume = false;
 /*
 ===================
 debug related
@@ -57,7 +59,7 @@ int power_save_interval=1200;
 uint32_t cpu_batch=64;
 
 bool enable_keepon = true;
-bool enable_sync= true;
+bool enable_auto_time_sync= true;
 
 double timer01_speed_fix=1.0;
 

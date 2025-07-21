@@ -89,6 +89,8 @@ extern bool enable_load_state;
 extern bool save_flash_on_exit;
 extern bool save_state_on_exit;
 
+extern bool sync_on_power_save_resume;
+
 /*
 ===================
 debug related
@@ -136,7 +138,7 @@ extern uint32_t SLICE_INTERVAL;
 extern int power_save_interval;
 extern uint32_t cpu_batch;
 extern bool enable_keepon;
-extern bool enable_sync;
+extern bool enable_auto_time_sync;
 
 extern double timer01_speed_fix;
 /*
