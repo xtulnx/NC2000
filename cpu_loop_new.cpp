@@ -158,13 +158,13 @@ bool chk_ar(){
 }
 void setTimeRTC(){
 	rtc_reg[0]++;
-	if (rtc_reg[0] == '\x60') {
+	if (rtc_reg[0] == 60) {
       rtc_reg[0] = '\0';
       rtc_reg[1] = rtc_reg[1] + '\x01';
-      if (rtc_reg[1] == '\x60') {
+      if (rtc_reg[1] == 60) {
         rtc_reg[1] = '\0';
         rtc_reg[2] = rtc_reg[2] + '\x01';
-        if (rtc_reg[2] == '\x18') {
+        if (rtc_reg[2] == 24) {
           rtc_reg[2] = '\0';
           rtc_reg[3] = rtc_reg[3] + '\x01';
         }
