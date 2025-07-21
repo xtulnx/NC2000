@@ -24,7 +24,7 @@ extern IBus6502 *dummy_bus;
 void init_cpu_new(){
 	//assert(use_emux_cpu);
 	// assert(use_emux_bus);
-	if(io_version != IO_EMUX) {
+	if(io_version == IO_V1 || io_version == IO_V2){
 		if(cpu_version== CPU_HANDYPSP) {
 			cpu=new CPUInterface();
 		} else if(cpu_version==CPU_EMUX) {
@@ -33,7 +33,8 @@ void init_cpu_new(){
 		} else {
 			assert(false);
 		}
-	}else{
+	}else if(io_version == IO_EMUX){
+		//emux io只能运行于pc1000mode + bus_pc1000
 		assert(pc1000mode);
 		assert(cpu_loop_version==CPU_RUN3);
 		bus_pc1000=new BusPC1000();
@@ -41,6 +42,9 @@ void init_cpu_new(){
 		cpu = new CPUInterface(cpu_impl);
 		bus_pc1000->cpu=cpu_impl;
 		dummy_bus=0;
+	}else{
+		printf("unknown io version %d\n", io_version);
+		assert(false);
 	}
 	
 }
@@ -154,10 +158,10 @@ bool chk_ar(){
 }
 void setTimeRTC(){
 	rtc_reg[0]++;
-	if (rtc_reg[0] == '<') {
+	if (rtc_reg[0] == '\x60') {
       rtc_reg[0] = '\0';
       rtc_reg[1] = rtc_reg[1] + '\x01';
-      if (rtc_reg[1] == '<') {
+      if (rtc_reg[1] == '\x60') {
         rtc_reg[1] = '\0';
         rtc_reg[2] = rtc_reg[2] + '\x01';
         if (rtc_reg[2] == '\x18') {

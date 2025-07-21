@@ -340,8 +340,7 @@ void UpdateKeypadRegisters()
                 printf("[key_debug] x=%d, y=%d, xsend=%d, ysend=%d %02x %02x\n", x, y, xsend, ysend,port1data,port1controlbit);
             }
 
-            ////////////TODO FIX HERE!!!!!!!!!!!!!!!!!!
-            //have to change here otherwise time key doesn't work
+            //nc2000 doesn't have this special P30 row
             if (pc1000mode && y == 0) {
                 // Special P30 "row"
                 if (x == 0) {
@@ -358,7 +357,6 @@ void UpdateKeypadRegisters()
                 }
             }
             if (ysend != xsend) {
-            //if (ysend != xsend) {
                 if (ysend) {
                     // port1y-> port0x, and x is receive
                     if (keypadmatrix[y][x]==1 && ((port1data & port1controlbit) != 0)) {
@@ -434,11 +432,6 @@ void UpdateKeypadRegisters()
     }
     r09_port1_ID = port1data;
     r08_port0_ID = port0data;
-    /*******else{
-        r08_port0_ID = (port0data &0x0c) | (port0data&0xf3);
-        r1e_port0_ID_EXP = (port0data &0xfc) | ((port0data&0x0c)>>2);
-        //zpioregs[0x1e] = (port0data &0xfc) | ((port0data&0x0c)>>2);
-    }*/
 
     //printf("<port0=%d port1=%d tmpp30tv=%d>\n",port0data,port1data, tmpp30tv);
     if (tmpp30tv) {
@@ -455,6 +448,7 @@ void UpdateKeypadRegisters()
     }
     // this is tmp fix for nc2000 hotkey wakeup
     // todo: better fix
+    //// 肯定是前面按键扫描代码哪里有问题
     if(nc2000mode&&port1control==0xff&&port0control==0xc0 &&w09_port1_OL==0x00)
         for(int y=0;y<8;y++){ 
             if(keypadmatrix[y][1]){
@@ -473,7 +467,8 @@ BYTE __iocallconv ReadPort0( BYTE read )
     (void)read;
 }
 
-BYTE __iocallconv ReadPort6EXP( BYTE read )
+//// hack, 主要是为了骗nc3000的按键运行起来
+BYTE __iocallconv ReadPort6EX( BYTE read )
 {
     UpdateKeypadRegisters();
     //qDebug("ggv wanna read keypad port6, [%04x] -> %02x", read, mem[read]);

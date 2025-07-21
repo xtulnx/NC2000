@@ -191,11 +191,12 @@ bool CopyLcdBuffer(uint8_t* buffer){
 		return true;;
 	}
 	else if(nc2000mode||nc3000mode){
-		//TODO: cannot use lcd_addr, it has some offset
 		if(!is_grey_mode()){
+			//TODO: cannot use lcd_addr, it has some offset
+			//// 应该是lcdaddr io哪里没有模拟好。 如果lcd end addr不是(1fff,0fff,...)可能应该忽略lcd_addr的设置
 			memcpy(buffer, ram_buff + 0x19c0, 1600 );
 		}else{
-			memcpy(buffer, ram_buff + 0x19c0 -1600, 1600 *2);
+			memcpy(buffer, ram_buff + lcd_addr, 1600 *2);
 		}
 		return true;
 	}else{

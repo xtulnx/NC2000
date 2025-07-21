@@ -39,7 +39,10 @@ static uint8_t& interr_flag = nc1020_states.interr_flag;
 
 static unsigned char* ioReg=nc1020_states.ram_io;
 
+/////d0应该是未定指令
+////不处理这个有声读物会死机
 bool dsp_0xd0=0;
+
 // dsp functions adapted from pc1000emux
 int dspRetData() {
 	int ret=dspData;
@@ -93,6 +96,7 @@ void dspCmd(int cmd) {
 }
 
 //timerA from pc1000emux
+// 实现的不全，缺TMACT
 void setTimerA() {
     int temp = ioReg[IO_TIMERAB_CTRL] >> 4;
     if (temp != 0) {
@@ -104,6 +108,7 @@ void setTimerA() {
         }
     }
 }
+//todo timerB
 
 void setIrqTimeBase() {
     ioReg[io01_int_status] |= INT_TIME_BASE;
@@ -177,7 +182,7 @@ int io_v2_read(int address) {
             return read_nand();
         }
         if(address==0x1e){
-            return ReadPort6EXP(address);
+            return ReadPort6EX(address);
         }
     } 
     if(nc2000mode){

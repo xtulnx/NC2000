@@ -45,7 +45,7 @@ void init_io(){
         io_read[0x08] = ReadPort0;
         io_read[0x09] = ReadPort1;
         if(nc3000mode){
-            io_read[0x1e] = ReadPort6EXP;
+            io_read[0x1e] = ReadPort6EX;
         }
     }
     io_read[0x18] = Read18Port4;

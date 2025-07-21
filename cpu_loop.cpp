@@ -231,7 +231,9 @@ bool KeepTimer01( unsigned int cpuTick )
             timer1ticks -= inc1 << ((w0c_b23_TM1S+1)*2);
         }
 
-        if(false){//originl wayback code. seems like it's wrong according to datasheet
+        //originl wayback code. seems like it's wrong according to datasheet
+        ////systools wav播放fill buffer速度不对造成破音
+        if(false){
             int inc1 = timer1ticks >> (1 + w0c_b23_TM1S);
             if (inc1) {
                 timer1ticks -= inc1 << (1 + w0c_b23_TM1S);
