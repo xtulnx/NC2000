@@ -1,9 +1,9 @@
 # NC2000
-Retro device wqx nc2000/nc2600 emulator, which emulates a 6502 SoC and peripherals. The emulator runs the offical firmware.
+Retro device wqx nc2000/nc2600 emulator, which emulates a 6502 SoC and peripherals. The emulator runs firmware dumped from physical device.
 
 Cross-platform, supports running on windows/linux/mac.
 
-nc2000/nc2600 is a series of electric dictionary:
+nc2000/nc2600 is a series of 6502-based portable computer:
 <img width="700" alt="image" src="https://github.com/wangyu-/NC2000/assets/4922024/e9d5bca8-2824-442b-9e22-b13e5e4a0eb6"> 
 <br>
 [image source](https://www.bilibili.com/video/BV1EW411C77i)
@@ -16,8 +16,9 @@ The device has following hardware:
 * 24K internal ram, 32K external ram, 4k addition ram built inside SPR4096  (`ram.cpp` and `ram.h`)
 * 00h~03Fh as special registers of SoC, also called IO port (`io.cpp` `io.h`)
 * memory mapping from 0000h~FFFFh controlled by `00h` as "bank switch", `0Ah[0:3]` as "BIOS bank switch", `0Ah[8]` as "ROM/RAM select", `0D[0:1]` as "volume select", `0D[2]` as "ramb select" (`mem.cpp` `mem.h`)
-* 160*80 LCD with SPLD803A as LCD driver (currently as part of `main.cpp` and `nc2000.cpp`)
-* QWERT keyboard (currently as part of `main.cpp` and `nc2000.cpp`)
+* 160*80 LCD with SPLD803A as LCD driver (`display.cpp` and `display.h`)
+* SPDS104A DSP with speaker (`sound.cpp` and `sound.h` and `dsp` folder)
+* QWERT keyboard (`key.cpp` and `key.h`)
 
 PCB layout:
 
@@ -25,12 +26,13 @@ PCB layout:
 <br>
 <br>
 
-The rest of Readme is going to be in Chinese， I will put english materials in [wiki](https://github.com/wangyu-/NC2000/wiki)
+The rest of Readme is going to be in Chinese, there are a few more english materials in [wiki](https://github.com/wangyu-/NC2000/wiki).
 
 # Screenshots
+<img width="812" alt="image" src="https://github.com/user-attachments/assets/96f03545-daf1-43c4-b825-aea37977e80d" />
 
-<img width="405" alt="image" src="https://github.com/user-attachments/assets/fc9514bc-4733-40a4-966d-10c6021a8bb1">
-<img width="405" alt="image" src="https://github.com/user-attachments/assets/f6449eb2-d1df-4922-ad62-55eb23b158a2">
+<img width="405" alt="image" src="https://github.com/user-attachments/assets/0a05b378-a533-4d50-927b-6e9019c51d39">
+<img width="405" alt="image" src="https://github.com/user-attachments/assets/5d5ddc49-c9dd-404d-a5df-6efe4c7452c9">
 
 <br>
 
@@ -52,130 +54,136 @@ The rest of Readme is going to be in Chinese， I will put english materials in 
 
 # NC2000
 
-文曲星nc2000/nc2600模拟器。跨平台，可以运行在windows/linux/mac。
+文曲星nc2000/nc2600。跨平台，可以运行在windows/linux/mac。另外也顺便支持nc1020。
 
 支持以下feature：
-* 下载, 上传文件
-* 保存状态
-* 发音/beeper
+* 运行从真机dump的rom
+* 兼容真机软件，和各种自制内核
+* 下载, 上传文件, 保存状态
+* 发音，蜂鸣器
 * 4灰度
-* 液晶格栅效果, 液晶残影
+* 液晶格栅效果, 液晶残影, 液晶屏侧面的小图标
+* 热键唤醒
+* 超频
 
-# nand 和 nor
-因为可能有版权问题，暂时没放到repo里。 需要使用从真机dump的rom。
-
-nand命名为：`nand.bin`
-
-nor命名为：`nor.bin`
-
+经测试支持的内核:
+* nc2000c `官方3.5`
+* nc2600c `官方3.2`, `3.5内核 by sun`,`4.1内核 by qiqi`, `4.1内核保留剑桥版 by qiqi`, `非常4.2内核 by 41824984`, `5.0内核 by epc`
+  
 # 按键
 
 特殊键：
 
-`英汉 名片 计算 行程 时间 游戏 网络` ：`F5~F11`
+```
+英汉 名片 计算 行程 测验 时间 网络 ：F5~F11
+on/off ： F12
 
-`on/off` ： `F12`
+发音 报时：; '
+求助 中英数 输入法 ： [ ] \
+红外：Alt
 
-`求助 中英数 输入法` ： `[ ] \`
-
-`跳出` ： `ESC`
-
-`翻页上 翻页下` ： `, ?`
-
+跳出 ： ESC
+翻页上 翻页下 ： , ?
+```
 其他的键都跟直觉相符，与电脑上的同名键对应
 
-另外按TAB可以切换快进模式
+另外`TAB`可以切换快进模式
+
+# 模拟器参数
+
+### 切换型号和rom
+```
+nc2000:
+ nc2000.exe --nc2000 --rom roms/nc2000  (默认参数)
+nc2600:
+ nc2000.exe --nc2000 --rom roms/nc2600
+nc1020:
+ nc2000.exe --nc1020 --rom roms/nc1020
+```
+更多见wiki[切换不同机型和内核](https://github.com/wangyu-/NC2000/wiki/%E5%88%87%E6%8D%A2%E4%B8%8D%E5%90%8C%E6%9C%BA%E5%9E%8B%E5%92%8C%E5%86%85%E6%A0%B8)
+
+### 超频
+
+```
+nc2000.exe --oc 2 （超频到2倍速）
+```
+
+### 完整参数
+
+见wiki[模拟器参数](https://github.com/wangyu-/NC2000/wiki/%E6%A8%A1%E6%8B%9F%E5%99%A8%E5%8F%82%E6%95%B0)
 
 # 模拟器命令行
 
-模拟器启动后会监听在udp 9000端口，可以接受外部发来的命令。 实现下载，调整模拟器速度等功能。 
+模拟器启动后会监听在udp 9000端口，可以接受外部发来的命令。 实现下载，上传，保存等功能。 
 
-推荐用netcat向模拟器发送命令， 比如：
-
+可以使用`nc` `ncat` `socat`等工具向模拟器发命令，比如：
 ```
 nc -u 127.0.0.1 9000 <回车>
-speed 0.5 <回车>        //把模拟器速度调为0.5倍
+speed 1.5 <回车>           //把模拟器速度调为1.5倍
 create_dir XXXX <回车>    //在模拟器创建一个名为XXXX的目录
 ....                     //只要nc和模拟器不关，可以继续发送命令
 ```
 
+(nc和ncat可以按[wiki里的方法](https://github.com/wangyu-/NC2000/wiki/%E6%A8%A1%E6%8B%9F%E5%99%A8%E5%91%BD%E4%BB%A4)安装)
 
 ### 下载相关命令
 
 `create_dir XXXX`： 在文曲星当前目录内创建一个名为XXXX的目录。 
 
-`put aaa.bin bbb.bin` ：把本地的aaa.bin上传到文曲星的当前目录，命名为bbb.bin
+`put aaa.bin bbb.bin` ：把本地的aaa.bin下载到文曲星的当前目录，命名为bbb.bin
 
-`put 1.txt` 把本地的1.txt上传到文曲星的当前目录，命名为1.txt (也就是上一个命令省略了一个参数的形式)
+`put 1.txt` 把本地的1.txt下载到文曲星的当前目录，命名为1.txt (也就是上一个命令省略了一个参数的形式)
 
-`get aaa.bin bbb.bin` ：把文曲星的当前目录的aaa.bin下载到电脑，命名为bbb.bin
+`get aaa.bin bbb.bin` ：把文曲星的当前目录的aaa.bin上传到电脑，命名为bbb.bin
 
 
 #### Note
 
 1. 如何切换当前目录呢？ 你在文曲星上打开资源管理器，进入哪个目录，哪个目录就是你的当前目录。 也就是说你文件上传到哪里，取决于模拟器内文曲星当前所在的文件夹。
 2. 以上命令需要文曲星在进入系统以后才可以运行
-3. 模拟器暂时不支持bin解密。上传bin文件需要在电脑上提前把bin文件解密好。
+3. 模拟器不自带bin解密功能。下载bin文件需要在电脑上提前把bin文件解密好。
 
 ### flash保存
 
-`save_flash`:   把模拟器对nand和nor的修改保存到硬盘。  默认模拟器是不会写硬盘的。
+`save_flash`:  把模拟器对nand和nor的修改保存到硬盘。  默认模拟器是不会写硬盘的。
 
 ### 其他命令
 
-`speed 2` :  把模拟器运行速度调为2倍
+完整命令见wiki [模拟器命令](https://github.com/wangyu-/NC2000/wiki/%E6%A8%A1%E6%8B%9F%E5%99%A8%E5%91%BD%E4%BB%A4)
 
-`file_manager` : 强制文曲星打开资源管理器。 主要是为了管理文件方便，免得手工一层一层得进入。
+# 编译
 
-`dump 4000 100` : 从地址0x4000开始，dump 100个字节的内存打印出来。
-
-`ec 4000 00 27 05 60`: 把16进制数据 0x00 0x27 0x05 0x60写入 地址0x4000开始的内存， 有多少参数就写多少字节。
-
-`wqxhex` : 强制模拟器打开wqxhex, 方便调试bug。 需要本地目录有wqxhex.bin文件。
-
-### 更改监听端口
-
-如果9000端口被占用，或者是需要多开模拟器，可以修改监听的端口。
-
-比如 `a.exe 8000` 就是监听在8000端口。
-
-### 已知问题
-
-1. 超级玛丽、淘金者等游戏按键不能用
-2. nc2000报时报不出来
-
-### TODO
-
-1. 模拟更多的I/O。
-
-### Note on compile
-
-```
-git clone https://github.com/wangyu-/NC2000.git
-cd NC2000
-git clone https://github.com/wangyu-/wqxdsp.git dsp
-cmake .
-make
-```
+见wiki [How to compile](https://github.com/wangyu-/NC2000/wiki/How-to-compile)
 
 # 代码基于以下项目
 
 **这个项目本质上是sim800和wayback的fork：**
 
-https://github.com/banxian/Sim800 sim800: cc800模拟器。 作者：曾半仙
+[sim800](https://github.com/banxian/Sim800 ): cc800模拟器。 作者：曾半仙
 
-https://github.com/banxian/Wayback800iOS wayback800: cc800/pc1000模拟器。（sim800作者的新版）
+[wayback800](https://github.com/banxian/Wayback800iOS): cc800/pc1000模拟器。（sim800作者的新版）
 
-**CPU[1]、DSP功能、部分IO，复用或者参考了：**
+**DSP功能基于：**
 
-Pc1000emux，nc3000emux旧版。 作者：Lee。
+Pc1000emux。 作者：Lee。
 
-nc3000emux新版(没有源码)
+**CPU[1], IO，中断处理参考、复用了：**
 
-**早期代码复用或参考了：**
+Pc1000emux，nc3000emux旧版，nc3000emux新版(没有源码) 作者：Lee。
 
-https://github.com/hackwaly/NC1020 nc1020模拟器，应该是基于sim800开发。 (不确定URL是否是原作者）
+[1] 软件默认运行wayback的handypsp cpu实现，不过也支持pc1000emux的cpu实现用做对比查错。用 `--cpu 2`可以切换至pc1000emux的cpu
 
-https://github.com/Wang-Yue/NC1020 nc1020模拟器SDL版。应该是上一个项目的fork。
+**早期代码基于：**
 
-[1] 支持两个cpu实现，其中一个是wayback中的handypsp实现，另一个是pc1000mux的c6502.cpp实现。 可以在编译时切换。
+[nc1020模拟器SDL版](https://github.com/Wang-Yue/NC1020) 作者：Wang-Yue。 貌似此版本是基于"nc1020模拟器c语言版"做了SDL移植。 
+
+"nc1020模拟器c语言版"作者不详，代码最早应该也是基于sim800。 另外"nc1020模拟器c语言版"貌似跟[nc1020模拟器js版](https://github.com/hackwaly/jswqx)也有关系, 具体不详。
+
+**感谢**
+
+除了感谢以上作者外，诗诺比对本项目提供了很多帮助，特此感谢。
+
+# Wiki
+
+更多信息见wiki: https://github.com/wangyu-/NC2000/wiki/
+
