@@ -117,6 +117,7 @@ void Render(uint64_t expected_tick) {
         int v=c*total_size;
         handle_pixel(u,v,index,value);
         handle_pixel(u,v+total_size-1,index_shadow,value);
+        if(!do_SDL_refresh) continue;
         int v1=*(int*)p[u][v];
         int v2=*(int*)p[u][v+total_size-1];
         for(int i=0;i<total_size-1;i++){
@@ -148,6 +149,7 @@ void Render(uint64_t expected_tick) {
         int v=c*total_size;
         handle_pixel(u,v,index,value);
         handle_pixel(u,v+total_size-1,index_shadow,value);
+        if(!do_SDL_refresh) continue;
         int v1=*(int*)p[u][v];
         int v2=*(int*)p[u][v+total_size-1];
         for(int i=0;i<total_size-1;i++){
