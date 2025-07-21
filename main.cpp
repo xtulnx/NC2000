@@ -72,7 +72,7 @@ void main_loop() {
 
 
   while (loop) {
-    if(sync_on_power_save_resume && enable_auto_time_sync)
+    if(sync_on_resume && enable_auto_time_sync)
     {
       last_time_rtc = current_time_rtc;
       current_time_rtc = get_current_time_milliseconds();
@@ -127,7 +127,7 @@ void main_loop() {
     }else{
       if(power_save == true) {
         power_save = false;
-        if(sync_on_power_save_resume){
+        if(sync_on_resume){
           printf("sync time on power save resume\n");
           void sync_time_2000();
           if(enable_auto_time_sync)sync_time_2000();

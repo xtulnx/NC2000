@@ -21,7 +21,7 @@ bool enable_load_state=false;
 bool save_flash_on_exit=false;
 bool save_state_on_exit=false;
 
-bool sync_on_power_save_resume = false;
+bool sync_on_resume = false;
 
 bool pro_key= false;
 /*
@@ -78,7 +78,7 @@ double oc_factor=1.0;
 
 //uint32_t static_multipler;
 uint32_t CYCLES_SECOND;
-uint32_t UNKNOWN_TIMER0_FREQ;
+uint32_t UNKNOWN_TIMER_FREQ;
 uint32_t TIMER0_FREQ;
 uint32_t TIMER1_FREQ;
 uint32_t TIMEBASE_FREQ;
@@ -129,12 +129,16 @@ void init_parameters(){
     // cpu cycles per second (cpu freq).
     CYCLES_SECOND = 3686400*(pc1000mode) + 5120*1000*(nc1020mode||nc2000mode)+10240*1000*nc3000mode;
     CYCLES_SECOND *= oc_factor;
+    CYCLES_MS = CYCLES_SECOND / 1000;
+    printf("cycles per second is %d\n",CYCLES_SECOND);
     
-    UNKNOWN_TIMER0_FREQ = 2;
+    // below are not used in new cpu loop,
+    // but they are kept for old cpu loop for compare
+    UNKNOWN_TIMER_FREQ = 2;
     TIMER0_FREQ = 2; //not used now
     TIMER1_FREQ = 200;//not used now
     TIMEBASE_FREQ = 250;
-    CYCLES_UNKNOWN_TIMER = CYCLES_SECOND / UNKNOWN_TIMER0_FREQ;
+    CYCLES_UNKNOWN_TIMER = CYCLES_SECOND / UNKNOWN_TIMER_FREQ;
     // cpu cycles per timer0 period (1/2 s).
     CYCLES_TIMER0 = CYCLES_SECOND / TIMER0_FREQ;
     // cpu cycles per timer1 period (1/256 s).
@@ -144,7 +148,7 @@ void init_parameters(){
     CYCLES_TIMER1_SPEED_UP = CYCLES_SECOND / TIMER1_FREQ / 20;
     // cpu cycles per ms (1/1000 s).
     CYCLES_NMI = CYCLES_SECOND / 2;
-    CYCLES_MS = CYCLES_SECOND / 1000;
+
 
     /*
     ===================

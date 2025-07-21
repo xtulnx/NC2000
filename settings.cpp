@@ -212,7 +212,7 @@ void process_args(int argc, char *argv[])
 				save_flash_on_exit = true;
 			}
 			else if (strcmp(long_options[option_index].name,"sync-on-resume")==0){
-				sync_on_power_save_resume = true;
+				sync_on_resume = true;
 			}
 			else if (strcmp(long_options[option_index].name,"cks")==0){
 				enable_emulate_cks = true;

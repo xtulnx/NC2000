@@ -89,7 +89,7 @@ extern bool enable_load_state;
 extern bool save_flash_on_exit;
 extern bool save_state_on_exit;
 
-extern bool sync_on_power_save_resume;
+extern bool sync_on_resume;
 
 extern bool enable_emulate_cks;
 
@@ -185,7 +185,7 @@ extern double oc_factor;
 
 //extern uint32_t static_multipler;
 extern uint32_t CYCLES_SECOND;
-extern uint32_t UNKNOWN_TIMER0_FREQ;
+extern uint32_t UNKNOWN_TIMER_FREQ;
 extern uint32_t TIMER0_FREQ;
 extern uint32_t TIMER1_FREQ;
 extern uint32_t TIMEBASE_FREQ;
