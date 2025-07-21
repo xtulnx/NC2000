@@ -100,6 +100,9 @@ void Render(uint64_t expected_tick) {
   //unsigned char lcd[80*(pixel_size+gap_zize)][160*(pixel_size+gap_zize)][color_size] ;
   //unsigned char lcd[80*(pixel_size+gap_zize)][160*(pixel_size+gap_zize)][color_size] ;
 
+  unsigned char (*p)[SCREEN_WIDTH*total_size][4] ;
+  p = (decltype(p)) lcd_effect_buffer;
+
   //p=(unsigned char (*)[160*total_size][color_size] ) bytes;
   if(!is_grey_mode()){
     for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT/8; ++i) {
@@ -112,22 +115,23 @@ void Render(uint64_t expected_tick) {
         if(c==0){
           lcdview->setPixel(0, r, value );
         }
-        for(int u=r*total_size;u<r*total_size+total_size;u++){
-          for(int v=c*total_size;v<c*total_size+total_size;v++){
-              if(u-r*total_size<pixel_size && v-c*total_size<pixel_size){
-                handle_pixel(u,v,index,value);
-              }/*else if (u==r*total_size &&  v-c*total_size>=pixel_size || v==c*total_size && u-r*total_size>=pixel_size){
-                memcpy(p[u][v],index[0],color_size);  
-              }*/
-              else{
-                handle_pixel(u,v,index_shadow,value);
-                /*unsigned char tmp[4];
-                memcpy(tmp,index[value],color_size);
-                tmp[1]+=(255-tmp[1])/2;tmp[2]+=(255-tmp[2])/2;tmp[3]+=(255-tmp[3])/2;
-                memcpy(p[u][v],tmp,color_size);*/
-              }
-          }
+        int u=r*total_size;
+        int v=c*total_size;
+        handle_pixel(u,v,index,value);
+        handle_pixel(u,v+total_size-1,index_shadow,value);
+        int v1=*(int*)p[u][v];
+        int v2=*(int*)p[u][v+total_size-1];
+        for(int i=0;i<total_size-1;i++){
+            int *p2=(int*)p[u+i][v];
+            for(int j=0;j<total_size-1;j++){
+                *(p2++) = v1;
+            }
         }
+        for(int i=0;i<total_size;i++){
+            *(int*)p[u+i][v+total_size-1] = v2;
+            *(int*)p[u+total_size-1][v+i] = v2;
+        }
+
         //memcpy(bytes, pixel ? black_color : white_color, color_size);
         //bytes += color_size;
       }
@@ -142,22 +146,21 @@ void Render(uint64_t expected_tick) {
         if(c==0){
           lcdview->setPixel(0, r, value );
         }
-        //memcpy(p[r][c],index[value],color_size);
-        for(int u=r*total_size;u<r*total_size+total_size;u++){
-          for(int v=c*total_size;v<c*total_size+total_size;v++){
-              if(u-r*total_size<pixel_size && v-c*total_size<pixel_size){
-                handle_pixel(u,v,index,value);    
-              }/*else if (u==r*total_size &&  v-c*total_size>=pixel_size || v==c*total_size && u-r*total_size>=pixel_size){
-                memcpy(p[u][v],index[0],color_size);  
-              }*/
-              else{
-                handle_pixel(u,v,index_shadow,value);
-                /*unsigned char tmp[4];
-                memcpy(tmp,index[value],color_size);
-                tmp[1]+=(255-tmp[1])/2;tmp[2]+=(255-tmp[2])/2;tmp[3]+=(255-tmp[3])/2;
-                memcpy(p[u][v],tmp,color_size);*/
-              }
-          }
+        int u=r*total_size;
+        int v=c*total_size;
+        handle_pixel(u,v,index,value);
+        handle_pixel(u,v+total_size-1,index_shadow,value);
+        int v1=*(int*)p[u][v];
+        int v2=*(int*)p[u][v+total_size-1];
+        for(int i=0;i<total_size-1;i++){
+            int *p2=(int*)p[u+i][v];
+            for(int j=0;j<total_size-1;j++){
+                *(p2++) = v1;
+            }
+        }
+        for(int i=0;i<total_size;i++){
+            *(int*)p[u+i][v+total_size-1] = v2;
+            *(int*)p[u+total_size-1][v+i] = v2;
         }
       }
     }
