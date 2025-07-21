@@ -5,7 +5,7 @@
 #include <string>
 #include "comm.h"
 using namespace std;
-extern WqxRom nc1020_rom;
+extern WqxRom nc2k_rom;
 void print_help(){
     printf("help page:\n");
     printf("  nc2000/2600/1020 emulator\n");
@@ -198,8 +198,8 @@ void process_args(int argc, char *argv[])
 				enable_load_state = true;
 			}
 			else if (strcmp(long_options[option_index].name,"state")==0){
-				nc1020_rom.statesPath = optarg;
-				nc1020_rom.statesPath += ".state";
+				nc2k_rom.statesPath = optarg;
+				nc2k_rom.statesPath += ".state";
 			}
 			else if (strcmp(long_options[option_index].name,"auto-save-state")==0){
 				save_state_on_exit = true;
@@ -258,36 +258,36 @@ void process_args(int argc, char *argv[])
 		if(rom_path.empty()){
 			rom_path = "roms/nc2000";
 		}
-  	    nc1020_rom.nandFlashPath = rom_path + ".nand";
-		nc1020_rom.nand0Path = rom_path + ".nand0";
-        nc1020_rom.norFlashPath = rom_path + ".nor";
+  	    nc2k_rom.nandFlashPath = rom_path + ".nand";
+		nc2k_rom.nand0Path = rom_path + ".nand0";
+        nc2k_rom.norFlashPath = rom_path + ".nor";
     }
 	if(nc1020mode){
 		if(rom_path.empty()){
 			rom_path = "roms/nc1020";
 		}
-		nc1020_rom.romPath = rom_path + ".rom";
-		nc1020_rom.norFlashPath = rom_path + ".nor";
+		nc2k_rom.romPath = rom_path + ".rom";
+		nc2k_rom.norFlashPath = rom_path + ".nor";
 	}
 	if(pc1000mode){
 		if(rom_path.empty()){
 			rom_path = "roms/pc1000";
 		}
-		nc1020_rom.romPath = rom_path + ".rom";
-		nc1020_rom.norFlashPath = rom_path + ".nor";
+		nc2k_rom.romPath = rom_path + ".rom";
+		nc2k_rom.norFlashPath = rom_path + ".nor";
 	}
 
 	if(nc3000mode){
 		if(rom_path.empty()){
 			rom_path = "roms/nc3000";
 		}
-		nc1020_rom.nand0Path = rom_path + ".nand0";
-		nc1020_rom.nandFlashPath = rom_path + ".nand";
-		nc1020_rom.norFlashPath = rom_path + ".nor";
+		nc2k_rom.nand0Path = rom_path + ".nand0";
+		nc2k_rom.nandFlashPath = rom_path + ".nand";
+		nc2k_rom.norFlashPath = rom_path + ".nor";
 	}
 
-	if(nc1020_rom.statesPath.empty()){
-		nc1020_rom.statesPath=rom_path + ".state";
+	if(nc2k_rom.statesPath.empty()){
+		nc2k_rom.statesPath=rom_path + ".state";
 	}
 
 }

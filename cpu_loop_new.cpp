@@ -13,11 +13,11 @@
 
 
 extern unsigned short gThreadFlags;
-extern nc1020_states_t nc1020_states;
-static uint64_t& cycles = nc1020_states.cycles;
-static uint64_t& last_cycles = nc1020_states.last_cycles;
-static uint8_t * rtc_reg=nc1020_states.rtc_reg;
-static uint8_t& interr_flag = nc1020_states.interr_flag;
+extern nc2k_states_t nc2k_states;
+static uint64_t& cycles = nc2k_states.cycles;
+static uint64_t& last_cycles = nc2k_states.last_cycles;
+static uint8_t * rtc_reg=nc2k_states.rtc_reg;
+static uint8_t& interr_flag = nc2k_states.interr_flag;
 struct BusPC1000 *bus_pc1000=0;
 extern IBus6502 *dummy_bus;
 

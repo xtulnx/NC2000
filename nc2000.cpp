@@ -16,21 +16,21 @@
 #include <deque>
 #include "sound.h"
 #include "compare/c6502.h"
-extern WqxRom nc1020_rom;
+extern WqxRom nc2k_rom;
 
-nc1020_states_t nc1020_states;
+nc2k_states_t nc2k_states;
 BusWrapper *dummy_bus = nullptr;
 
 //static uint32_t& version = nc1020_states.version;
 
-static bool& slept = nc1020_states.slept;
-static bool& should_wake_up = nc1020_states.should_wake_up;
+static bool& slept = nc2k_states.slept;
+static bool& should_wake_up = nc2k_states.should_wake_up;
 
-static uint8_t* keypad_matrix = nc1020_states.keypad_matrix;
+static uint8_t* keypad_matrix = nc2k_states.keypad_matrix;
 //static uint32_t& lcd_addr = nc1020_states.lcd_addr;
 
-static bool& wake_up_pending = nc1020_states.pending_wake_up;
-static uint8_t& wake_up_key = nc1020_states.wake_up_flags;
+static bool& wake_up_pending = nc2k_states.pending_wake_up;
+static uint8_t& wake_up_key = nc2k_states.wake_up_flags;
 
 /*void ResetStates(){
 	//version = VERSION;
@@ -70,21 +70,21 @@ void SaveStates(){
 #endif
 
 void save_state(string file_name){
-	if(file_name.empty()) file_name=nc1020_rom.statesPath;
+	if(file_name.empty()) file_name=nc2k_rom.statesPath;
 	else file_name+=".state";
 	FILE* file = fopen(file_name.c_str(), "wb");
 	if (file == NULL) {
-		printf("states file %s open failed, skip saving!\n", nc1020_rom.statesPath.c_str());
+		printf("states file %s open failed, skip saving!\n", nc2k_rom.statesPath.c_str());
 		return;
 	}
-	fwrite(&nc1020_states.SAVE_STATE_BEGIN, 1, &nc1020_states.SAVE_STATE_END-&nc1020_states.SAVE_STATE_BEGIN, file);
+	fwrite(&nc2k_states.SAVE_STATE_BEGIN, 1, &nc2k_states.SAVE_STATE_END-&nc2k_states.SAVE_STATE_BEGIN, file);
 	fflush(file);
 	fclose(file);
 	printf("state saved to file %s!!\n",file_name.c_str());
 }
 
 void delete_state(string file_name){
-	if(file_name.empty()) file_name=nc1020_rom.statesPath;
+	if(file_name.empty()) file_name=nc2k_rom.statesPath;
 	else file_name+=".state";
 	if(remove(file_name.c_str())==0){
 		printf("state file %s deleted!\n",file_name.c_str());
@@ -94,19 +94,19 @@ void delete_state(string file_name){
 }
 
 void load_state(){
-	FILE* file = fopen(nc1020_rom.statesPath.c_str(), "rb");
+	FILE* file = fopen(nc2k_rom.statesPath.c_str(), "rb");
 	if (file == NULL) {
-		printf("states file %s open failed, skip loading!\n", nc1020_rom.statesPath.c_str());
+		printf("states file %s open failed, skip loading!\n", nc2k_rom.statesPath.c_str());
 		return;
 	}
-	int ret=fread(&nc1020_states.SAVE_STATE_BEGIN, 1, &nc1020_states.SAVE_STATE_END-&nc1020_states.SAVE_STATE_BEGIN, file);
+	int ret=fread(&nc2k_states.SAVE_STATE_BEGIN, 1, &nc2k_states.SAVE_STATE_END-&nc2k_states.SAVE_STATE_BEGIN, file);
 	fclose(file);
-	printf("loaded states from %s, ret=%d\n", nc1020_rom.statesPath.c_str(),ret);
+	printf("loaded states from %s, ret=%d\n", nc2k_rom.statesPath.c_str(),ret);
 	//super_switch();
 }
 
-void LoadNC1020(){
-	memset(&nc1020_states,0,sizeof(nc1020_states_t));
+void LoadNC2k(){
+	memset(&nc2k_states,0,sizeof(nc2k_states_t));
 	dummy_bus= new BusWrapper();
 
 	init_io();
@@ -212,11 +212,11 @@ void RunTimeSlice(uint32_t time_slice, bool speed_up) {
 
 	new_cycles= new_cycles * speed_multiplier;
 
-	uint64_t target_cycles=nc1020_states.cycles +new_cycles;
+	uint64_t target_cycles=nc2k_states.cycles +new_cycles;
 
 	//auto old=sound_stream.size();
 	//printf("<%u,%u, %lld>",cycles,end_cycles,SDL_GetTicks64());
-	while (nc1020_states.cycles < target_cycles) {
+	while (nc2k_states.cycles < target_cycles) {
 		if(cpu_loop_version == CPU_RUN1){
 			cpu_run();
 		}else if (cpu_loop_version == CPU_RUN2){

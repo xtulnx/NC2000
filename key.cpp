@@ -2,12 +2,12 @@
 #include "comm.h"
 #include "state.h"
 
-extern nc1020_states_t nc1020_states;
-static uint8_t* keypad_matrix = nc1020_states.keypad_matrix;
-static bool& slept = nc1020_states.slept;
-static uint8_t& wake_up_key = nc1020_states.wake_up_flags;
-static bool& should_wake_up = nc1020_states.should_wake_up;
-static bool& wake_up_pending = nc1020_states.pending_wake_up;
+extern nc2k_states_t nc2k_states;
+static uint8_t* keypad_matrix = nc2k_states.keypad_matrix;
+static bool& slept = nc2k_states.slept;
+static uint8_t& wake_up_key = nc2k_states.wake_up_flags;
+static bool& should_wake_up = nc2k_states.should_wake_up;
+static bool& wake_up_pending = nc2k_states.pending_wake_up;
 
 static int enable_debug_key_shoot=false;
 extern bool fast_forward;

@@ -12,7 +12,7 @@ emulator api
 void SetKey(uint8_t, bool);
 void RunTimeSlice(uint32_t, bool);
 bool CopyLcdBuffer(uint8_t*);
-void LoadNC1020();
+void LoadNC2k();
 //void SaveNC1020();
 void save_flash(string file);
 

@@ -12,7 +12,7 @@
 #include "nand.h"
 #include "NekoDriverIO.h"
 #include "io.h"
-extern nc1020_states_t nc1020_states;
+extern nc2k_states_t nc2k_states;
 extern Dsp dsp;
 
 
@@ -20,7 +20,7 @@ long long recTick=0,lastDac=0,recTotal=0;
 
 BusPC1000::BusPC1000() {
 	///////////sound = 0;
-    ioReg=nc1020_states.ram_io;
+    ioReg=nc2k_states.ram_io;
 	musicEnable = true;
 
 	dsp= &::dsp;

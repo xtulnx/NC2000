@@ -4,15 +4,15 @@
 #include "mem.h"
 #include <cassert>
 
-extern nc1020_states_t nc1020_states;
-extern WqxRom nc1020_rom;
+extern nc2k_states_t nc2k_states;
+extern WqxRom nc2k_rom;
 
 uint8_t nor_buff[1024*1024];
 uint8_t* nor_banks[0x20];
 extern uint8_t* memmap[8];
 
-static uint8_t& fp_step = nc1020_states.fp_step;
-static uint8_t& fp_type = nc1020_states.fp_type;
+static uint8_t& fp_step = nc2k_states.fp_step;
+static uint8_t& fp_type = nc2k_states.fp_type;
 //static uint8_t& fp_bank_idx = nc1020_states.fp_bank_idx;
 //static uint8_t& fp_bak1 = nc1020_states.fp_bak1;
 //static uint8_t& fp_bak2 = nc1020_states.fp_bak2;
@@ -36,9 +36,9 @@ enum NOR_CMD{
 void LoadNor(){
 	assert(sizeof(nor_buff) >= NOR_SIZE);
 	uint8_t* temp_buff = (uint8_t*)malloc(NOR_SIZE);
-	FILE* file = fopen(nc1020_rom.norFlashPath.c_str(), "rb");
+	FILE* file = fopen(nc2k_rom.norFlashPath.c_str(), "rb");
 	if(file==0){
-		printf("nor file [%s] not exist!\n",nc1020_rom.norFlashPath.c_str());
+		printf("nor file [%s] not exist!\n",nc2k_rom.norFlashPath.c_str());
 		exit(-1);
 	}
     if(0){
@@ -67,7 +67,7 @@ void LoadNor(){
 
 void SaveNor(string file)
 {
-    if(file.empty()) { file = nc1020_rom.norFlashPath;}
+    if(file.empty()) { file = nc2k_rom.norFlashPath;}
     else file+=+".nor";
 	uint8_t* temp_buff = (uint8_t*)malloc(NOR_SIZE);
 	FILE* fp = fopen(file.c_str(), "wb");

@@ -15,7 +15,7 @@ extern "C" {
 }
 #include "compare/pc1000bus.h"
 #include "nc2000.h"
-extern nc1020_states_t nc1020_states;
+extern nc2k_states_t nc2k_states;
 extern CPUInterface *cpu;
 extern string nand_magic;
 
@@ -269,7 +269,7 @@ void handle_cmd(string str){
 	if(cmds[0]=="wqxhex"){
 			vector<char> wqxhex;
 			read_file("wqxhex.bin", wqxhex);
-			memcpy(nc1020_states.ext_ram+0x4000, &wqxhex[0], wqxhex.size());
+			memcpy(nc2k_states.ext_ram+0x4000, &wqxhex[0], wqxhex.size());
 			ram_io[0x00]=0x80;
 			ram_io[0x0a]=0x80;
 			super_switch();

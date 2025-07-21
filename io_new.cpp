@@ -10,7 +10,7 @@
 #include <cassert>
 #include "CC800IOName.h"
 
-extern nc1020_states_t nc1020_states;
+extern nc2k_states_t nc2k_states;
 extern Dsp dsp;
 
 static int dspData;
@@ -34,10 +34,10 @@ const int O_INT_ENABLE = 0x40;
 
 unsigned int speed_scaledown=1;
 
-static uint8_t * rtc_reg=nc1020_states.rtc_reg;
-static uint8_t& interr_flag = nc1020_states.interr_flag;
+static uint8_t * rtc_reg=nc2k_states.rtc_reg;
+static uint8_t& interr_flag = nc2k_states.interr_flag;
 
-static unsigned char* ioReg=nc1020_states.ram_io;
+static unsigned char* ioReg=nc2k_states.ram_io;
 
 /////d0应该是未定指令
 ////不处理这个有声读物会死机

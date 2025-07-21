@@ -14,7 +14,7 @@ extern BusPC1000 *bus_pc1000;
 uint8_t* memmap[8];
 
 
-extern nc1020_states_t nc1020_states;
+extern nc2k_states_t nc2k_states;
 
 void init_mem(){	
 	memmap[0] = ram00;
@@ -122,16 +122,16 @@ void Store(uint16_t addr, uint8_t value) {
 		return;
 	}
 	uint8_t* page = memmap[addr >> 13];
-	if (page == nc1020_states.ram_b/*ramb*/) {
+	if (page == nc2k_states.ram_b/*ramb*/) {
 		page[addr & 0x1FFF] = value;
 		return;
 	}
-	if (page >=nc1020_states.ram && page<nc1020_states.ram+ sizeof(nc1020_states.ram) ) {
+	if (page >=nc2k_states.ram && page<nc2k_states.ram+ sizeof(nc2k_states.ram) ) {
 		page[addr & 0x1FFF] = value;
 		return;
 	}
 	
-	if (page >= nc1020_states.ext_ram && page < nc1020_states.ext_ram+sizeof(nc1020_states.ext_ram)) {
+	if (page >= nc2k_states.ext_ram && page < nc2k_states.ext_ram+sizeof(nc2k_states.ext_ram)) {
 		//printf("write!!!");
 		page[addr & 0x1FFF] = value;
 		return;
@@ -186,7 +186,7 @@ uint8_t* GetBank(uint8_t bank_idx){
 			//printf("<%x\n>",bank_idx);
 			//assert(bank_idx==0x80);
 
-			return nc1020_states.ext_ram;
+			return nc2k_states.ext_ram;
 
 			/*
 			if(bank_idx%2==0)

@@ -9,7 +9,7 @@ struct cpu_states_t {
 	uint8_t reg_sp;
 };
 
-struct nc1020_states_t{
+struct nc2k_states_t{
 	uint32_t version;
 	////////////cpu_states_t cpu;
 

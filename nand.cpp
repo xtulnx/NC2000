@@ -4,10 +4,10 @@
 #include "state.h"
 #include <cassert>
 #include <cstdio>
-extern WqxRom nc1020_rom;
-extern nc1020_states_t nc1020_states;
-static uint8_t* ram_buff = nc1020_states.ram;
-static uint8_t* ram_io = nc1020_states.ram_io;
+extern WqxRom nc2k_rom;
+extern nc2k_states_t nc2k_states;
+static uint8_t* ram_buff = nc2k_states.ram;
+static uint8_t* ram_io = nc2k_states.ram_io;
 
 static uint64_t last_tick=0;
 static deque<uint8_t> nand_cmd;
@@ -24,9 +24,9 @@ string nand_magic;
 void read_nand0_file(){
     memset(nand,0xff, 64*528);
     char *p0= &nand[0][0];
-    FILE *f = fopen(nc1020_rom.nand0Path.c_str(), "rb");
+    FILE *f = fopen(nc2k_rom.nand0Path.c_str(), "rb");
     if(f==0) {
-        printf("file %s not exist!\n",nc1020_rom.nand0Path.c_str());
+        printf("file %s not exist!\n",nc2k_rom.nand0Path.c_str());
         exit(-1);
     }
     fseek(f, 0, SEEK_END);
@@ -45,9 +45,9 @@ void read_nand0_file(){
 void read_nand_file(){
     char *p0= &nand[64][0];
     memset(p0,0xff,sizeof(nand)-64*528);
-    FILE *f = fopen(nc1020_rom.nandFlashPath.c_str(), "rb");
+    FILE *f = fopen(nc2k_rom.nandFlashPath.c_str(), "rb");
     if(f==0) {
-        printf("file %s not exist!\n",nc1020_rom.nandFlashPath.c_str());
+        printf("file %s not exist!\n",nc2k_rom.nandFlashPath.c_str());
         exit(-1);
     }
     fseek(f, 0, SEEK_END);
@@ -83,7 +83,7 @@ void read_nand_file(){
 
 void write_nand0_file(string file){
     if(!nc2000mode &&!nc3000mode) return;
-    if(file.empty()) file=nc1020_rom.nand0Path;
+    if(file.empty()) file=nc2k_rom.nand0Path;
     else file+=".nand0";
      FILE *f = fopen(file.c_str(), "wb");
     fwrite(&nand[0][0], 64*528 , 1 , f);
@@ -92,7 +92,7 @@ void write_nand0_file(string file){
 
 void write_nand_file(string file){
     if(!nc2000mode &&!nc3000mode) return;
-    if(file.empty()) file=nc1020_rom.nandFlashPath;
+    if(file.empty()) file=nc2k_rom.nandFlashPath;
     else file+=".nand";
     FILE *f = fopen(file.c_str(), "wb");
     assert(num_nand_pages*528 + 64*528 <= sizeof(nand));

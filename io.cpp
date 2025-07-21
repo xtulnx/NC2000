@@ -6,18 +6,18 @@
 #include "sound.h"
 #include "NekoDriverIO.h"
 
-extern nc1020_states_t nc1020_states;
+extern nc2k_states_t nc2k_states;
 
-static bool& slept = nc1020_states.slept;
-static bool& should_wake_up = nc1020_states.should_wake_up;
+static bool& slept = nc2k_states.slept;
+static bool& should_wake_up = nc2k_states.should_wake_up;
 
-static uint8_t* keypad_matrix = nc1020_states.keypad_matrix;
+static uint8_t* keypad_matrix = nc2k_states.keypad_matrix;
 //static uint32_t& lcd_addr = nc1020_states.lcd_addr;
 
-static uint8_t* jg_wav_buff = nc1020_states.jg_wav_data;
-static uint8_t& jg_wav_flags = nc1020_states.jg_wav_flags;
-static uint8_t& jg_wav_index = nc1020_states.jg_wav_idx;
-static bool& jg_wav_playing = nc1020_states.jg_wav_playing;
+static uint8_t* jg_wav_buff = nc2k_states.jg_wav_data;
+static uint8_t& jg_wav_flags = nc2k_states.jg_wav_flags;
+static uint8_t& jg_wav_index = nc2k_states.jg_wav_idx;
+static bool& jg_wav_playing = nc2k_states.jg_wav_playing;
 
 io_read_func_t io_read[0x40];
 io_write_func_t io_write[0x40];
@@ -116,14 +116,14 @@ uint8_t IO_API Read06(uint8_t addr){
 
 uint8_t IO_API Read3B(uint8_t addr){
     if (!(ram_io[0x3D] & 0x03)) {
-        return nc1020_states.clock_buff[0x3B] & 0xFE;
+        return nc2k_states.clock_buff[0x3B] & 0xFE;
     }
     return ram_io[addr];
 }
 
 uint8_t IO_API Read3F(uint8_t addr){
     uint8_t idx = ram_io[0x3E];
-    return idx < 80 ? nc1020_states.clock_buff[idx] : 0;
+    return idx < 80 ? nc2k_states.clock_buff[idx] : 0;
 }
 
 void IO_API WriteXX(uint8_t addr, uint8_t value){
@@ -373,8 +373,8 @@ void IO_API Write23(uint8_t addr, uint8_t value){
 
 // clock.
 void IO_API Write3F(uint8_t addr, uint8_t value){
-    uint8_t* clock_buff = nc1020_states.clock_buff;
-	uint8_t& clock_flags = nc1020_states.clock_flags;
+    uint8_t* clock_buff = nc2k_states.clock_buff;
+	uint8_t& clock_flags = nc2k_states.clock_flags;
     ram_io[addr] = value;
     uint8_t idx = ram_io[0x3E];
     if (idx >= 0x07) {

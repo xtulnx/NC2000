@@ -116,7 +116,7 @@ uint32_t LCD_OUTER_REFRESH_INTERVAL=16;
 string lcdstripe_suffix="w1313";
 
 
-WqxRom nc1020_rom;
+WqxRom nc2k_rom;
 
 void init_parameters(){
     /*
@@ -169,41 +169,6 @@ void init_parameters(){
     total_size=pixel_size+gap_size;
 
 }
-
-/*void rom_switcher(){
-    if(nc1020mode){
-        nc1020_rom.romPath = "./1020/obj_lu.bin";
-        nc1020_rom.norFlashPath = "./1020/nc1020.fls";
-        //nc1020_rom.norFlashPath = "./1020/nc1020.fls2";
-        //nc1020_rom.norFlashPath = "./1020/flash.ini";
-        //nc1020_rom.norFlashPath = "./1020/nc1020ch.fls.half";
-    }
-    if(nc2000mode){
-        nc1020_rom.nandFlashPath = "./2000rom/phy_ggvsimformat_2000.nand";
-        nc1020_rom.norFlashPath = "./2000rom/phy_ggvsimformat_2000.nor";  
-
-        if (nc2000_use_2600_rom){
-                nc1020_rom.nandFlashPath = "./2600rom/phy_ggvsimformat_2600.nand";
-                nc1020_rom.norFlashPath = "./2600rom/phy_ggvsimformat_2600.nor";  
-                if(nc2600_rom_use_ggvsim){
-                    nc1020_rom.nandFlashPath = "./2600rom/2600nand.bin";
-                    nc1020_rom.norFlashPath = "./2600rom/2600nor.bin";  
-                }
-
-        }
-    }
-
-    if(nc3000mode){
-        nc1020_rom.nandFlashPath = "./3000/nc3000.nand";
-        nc1020_rom.norFlashPath = "./3000/nc3000.nor"; 
-    }
-
-    if(pc1000mode){
-        nc1020_rom.romPath = "./cc800/brom.bin";
-        //nc1020_rom.norFlashPath = "./cc800/pc1000emux.fls";
-        nc1020_rom.norFlashPath = "./cc800/pc1000.fls";
-    }
-}*/
 
 void ProcessBinaryRev(uint8_t* dest, uint8_t* src, uint32_t size){
 	uint32_t offset = 0;

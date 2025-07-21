@@ -25,28 +25,20 @@ extern bool timer0run;
 extern bool timer1run_tmie;
 int gDeadlockCounter = 0;
 
-extern nc1020_states_t nc1020_states;
+extern nc2k_states_t nc2k_states;
 
-static uint64_t& cycles = nc1020_states.cycles;
+static uint64_t& cycles = nc2k_states.cycles;
 //static bool& should_irq = nc1020_states.should_irq;
-static bool& timer0_toggle = nc1020_states.timer0_toggle;
-static uint64_t& unknown_timer_cycles = nc1020_states.unknown_timer_cycles;
-static uint64_t& timer0_cycles = nc1020_states.timer0_cycles;
-static uint64_t& timer1_cycles = nc1020_states.timer1_cycles;
-static uint64_t& timebase_cycles = nc1020_states.timebase_cycles;
+static bool& timer0_toggle = nc2k_states.timer0_toggle;
+static uint64_t& unknown_timer_cycles = nc2k_states.unknown_timer_cycles;
+static uint64_t& timer0_cycles = nc2k_states.timer0_cycles;
+static uint64_t& timer1_cycles = nc2k_states.timer1_cycles;
+static uint64_t& timebase_cycles = nc2k_states.timebase_cycles;
 
-static uint64_t& nmi_cycles = nc1020_states.nmi_cycles;
+static uint64_t& nmi_cycles = nc2k_states.nmi_cycles;
 
-static bool& should_wake_up = nc1020_states.should_wake_up;
+static bool& should_wake_up = nc2k_states.should_wake_up;
 
-/*
-static uint16_t& reg_pc = nc1020_states.cpu.reg_pc;
-static uint8_t& reg_a = nc1020_states.cpu.reg_a;
-static uint8_t& reg_ps = nc1020_states.cpu.reg_ps;
-static uint8_t& reg_x = nc1020_states.cpu.reg_x;
-static uint8_t& reg_y = nc1020_states.cpu.reg_y;
-static uint8_t& reg_sp = nc1020_states.cpu.reg_sp;
-*/
 
 double speed_multiplier=1.0;
 
@@ -71,7 +63,7 @@ void reset_cpu_states(){
 }
 #endif
 void AdjustTime(){
-	uint8_t* clock_buff = nc1020_states.clock_buff;
+	uint8_t* clock_buff = nc2k_states.clock_buff;
     if (++ clock_buff[0] >= 60) {
         clock_buff[0] = 0;
         if (++ clock_buff[1] >= 60) {
@@ -85,8 +77,8 @@ void AdjustTime(){
 }
 
 bool IsCountDown(){
-	uint8_t* clock_buff = nc1020_states.clock_buff;
-	uint8_t& clock_flags = nc1020_states.clock_flags;
+	uint8_t* clock_buff = nc2k_states.clock_buff;
+	uint8_t& clock_flags = nc2k_states.clock_flags;
     if (!(clock_buff[10] & 0x02) ||
         !(clock_flags & 0x02)) {
         return false;
@@ -111,7 +103,7 @@ void inject(){
 	}
 	printf("\n");
 
-	memcpy(nc1020_states.ext_ram, inject_code.c_str(), inject_code.size());
+	memcpy(nc2k_states.ext_ram, inject_code.c_str(), inject_code.size());
 	ram_io[0x00]=0x80;
 	ram_io[0x0a]=0x80;
 	//Peek16(0xe3)=0x40;
@@ -367,7 +359,7 @@ void cpu_run(){
 				ram_io[0x3D] = 0;
 			} else {
 				ram_io[0x3D] = 0x20;
-				nc1020_states.clock_flags &= 0xFD;
+				nc2k_states.clock_flags &= 0xFD;
 			}
 			//g_irq = true;
 		}
@@ -375,7 +367,7 @@ void cpu_run(){
 		if ((nc1020mode) && cycles >= timebase_cycles) {
 			timebase_cycles += CYCLES_TIMEBASE;
 
-			nc1020_states.clock_buff[4] ++;
+			nc2k_states.clock_buff[4] ++;
 			if (should_wake_up) {
 				should_wake_up = false;
 				ram_io[0x01] |= 0x01;
@@ -505,7 +497,7 @@ void cpu_run2(){
 			ram_io[0x3D] = 0;
 		} else {
 			ram_io[0x3D] = 0x20;
-			nc1020_states.clock_flags &= 0xFD;
+			nc2k_states.clock_flags &= 0xFD;
 		}
 		//g_irq = true;
 	}
@@ -520,7 +512,7 @@ void cpu_run2(){
 		else{
 				ram_io[0x0c]&=0xfe;
 		}
-		nc1020_states.clock_buff[4] ++;
+		nc2k_states.clock_buff[4] ++;
 		if (should_wake_up) {
 			should_wake_up = false;
 			ram_io[0x01] |= 0x01;

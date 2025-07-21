@@ -1,6 +1,6 @@
 #include "comm.h"
 
-extern WqxRom nc1020_rom;
+extern WqxRom nc2k_rom;
 
 uint8_t rom_buff[24*1024*1024];
 
@@ -35,7 +35,7 @@ void LoadRom(const string romPath){
 
 void init_rom(){
     memset(&rom_buff,0xff,ROM_SIZE);
-	LoadRom(nc1020_rom.romPath);
+	LoadRom(nc2k_rom.romPath);
 	if(nc1020mode){
 		for (uint32_t i=0; i<num_rom_pages/3; i++) {
 			rom_volume0[i] = rom_buff + (0x8000 * i);
