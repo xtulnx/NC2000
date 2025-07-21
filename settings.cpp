@@ -46,6 +46,7 @@ void process_args(int argc, char *argv[])
 		{"stripe", required_argument, 0, 1},
 		{"timer01-speed", required_argument, 0, 1},
 		{"no-load-state", no_argument,    0, 1},
+		{"state", required_argument, 0, 1},
 		{NULL, 0, 0, 0}
       };
     int option_index = 0;
@@ -182,6 +183,10 @@ void process_args(int argc, char *argv[])
 			{
 				enable_load_state = false;
 			}
+			else if (strcmp(long_options[option_index].name,"state")==0){
+				nc1020_rom.statesPath = optarg;
+				nc1020_rom.statesPath += ".state";
+			}
 			else
 			{
 				printf("unknown option\n");
@@ -242,6 +247,8 @@ void process_args(int argc, char *argv[])
 		nc1020_rom.norFlashPath = rom_path + ".nor";
 	}
 
-	nc1020_rom.statesPath=rom_path + ".state";
+	if(nc1020_rom.statesPath.empty()){
+		nc1020_rom.statesPath=rom_path + ".state";
+	}
 
 }

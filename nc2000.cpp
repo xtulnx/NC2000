@@ -80,6 +80,17 @@ void save_states(string file_name){
 	fwrite(&nc1020_states.SAVE_STATE_BEGIN, 1, &nc1020_states.SAVE_STATE_END-&nc1020_states.SAVE_STATE_BEGIN, file);
 	fflush(file);
 	fclose(file);
+	printf("state saved to file %s!!\n",file_name.c_str());
+}
+
+void delete_states(string file_name){
+	if(file_name.empty()) file_name=nc1020_rom.statesPath;
+	else file_name+=".state";
+	if(remove(file_name.c_str())==0){
+		printf("state file %s deleted!\n",file_name.c_str());
+	}else{
+		printf("state file %s not exist!\n",file_name.c_str());
+	}
 }
 
 void load_states(){
@@ -90,7 +101,7 @@ void load_states(){
 	}
 	int ret=fread(&nc1020_states.SAVE_STATE_BEGIN, 1, &nc1020_states.SAVE_STATE_END-&nc1020_states.SAVE_STATE_BEGIN, file);
 	fclose(file);
-	printf("loaded states from %s,ret=%d\n", nc1020_rom.statesPath.c_str(),ret);
+	printf("loaded states from %s, ret=%d\n", nc1020_rom.statesPath.c_str(),ret);
 	//super_switch();
 }
 

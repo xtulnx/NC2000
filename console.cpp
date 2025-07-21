@@ -172,8 +172,15 @@ void handle_cmd(string str){
 		}
 		if(cmds[0]=="save_state"||cmds[0]=="save_all"){
 			save_states(file);
-			printf("state saved to file!!\n");
 		}
+		return;
+	}
+	if(cmds[0]=="delete_state"||cmds[0]=="del_state"){
+		string file="";
+		if(cmds.size()>1){
+			file=cmds[1];	
+		}
+		delete_states(file);
 		return;
 	}
 	if(cmds[0]=="dump"){
