@@ -165,13 +165,10 @@ void handle_cmd(string str){
 			file=cmds[1];	
 		}
 		if(cmds[0]=="save_flash"||cmds[0]=="save_all"){
-			write_nand0_file(file);
-			write_nand_file(file);
-			SaveNor(file);
-			printf("flash saved to file!!\n");
+			save_flash(file);
 		}
 		if(cmds[0]=="save_state"||cmds[0]=="save_all"){
-			save_states(file);
+			save_state(file);
 		}
 		return;
 	}
@@ -180,7 +177,7 @@ void handle_cmd(string str){
 		if(cmds.size()>1){
 			file=cmds[1];	
 		}
-		delete_states(file);
+		delete_state(file);
 		return;
 	}
 	if(cmds[0]=="dump"){

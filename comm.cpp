@@ -18,6 +18,8 @@ NorFormat nor_read_format = NorFormat::PHYSICAL_ORDER;
 NorFormat nor_write_format = NorFormat::PHYSICAL_ORDER;
 
 bool enable_load_state=true;
+bool save_flash_on_exit=true;
+bool save_state_on_exit=true;
 /*
 ===================
 debug related

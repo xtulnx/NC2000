@@ -86,6 +86,8 @@ extern NorFormat nor_read_format;
 extern NorFormat nor_write_format;
 
 extern bool enable_load_state;
+extern bool save_flash_on_exit;
+extern bool save_state_on_exit;
 
 /*
 ===================

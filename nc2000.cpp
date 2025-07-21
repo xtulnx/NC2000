@@ -69,7 +69,7 @@ void SaveStates(){
 }
 #endif
 
-void save_states(string file_name){
+void save_state(string file_name){
 	if(file_name.empty()) file_name=nc1020_rom.statesPath;
 	else file_name+=".state";
 	FILE* file = fopen(file_name.c_str(), "wb");
@@ -83,7 +83,7 @@ void save_states(string file_name){
 	printf("state saved to file %s!!\n",file_name.c_str());
 }
 
-void delete_states(string file_name){
+void delete_state(string file_name){
 	if(file_name.empty()) file_name=nc1020_rom.statesPath;
 	else file_name+=".state";
 	if(remove(file_name.c_str())==0){
@@ -93,7 +93,7 @@ void delete_states(string file_name){
 	}
 }
 
-void load_states(){
+void load_state(){
 	FILE* file = fopen(nc1020_rom.statesPath.c_str(), "rb");
 	if (file == NULL) {
 		printf("states file %s open failed, skip loading!\n", nc1020_rom.statesPath.c_str());
@@ -143,7 +143,7 @@ void LoadNC1020(){
 
 	init_mem();
 	if(enable_load_state){
-		load_states();
+		load_state();
 		prepare_soft_reset();
 		void sync_time_2000();
 		if(nc2000mode){
@@ -237,3 +237,10 @@ void RunTimeSlice(uint32_t time_slice, bool speed_up) {
 
 }
 
+
+void save_flash(string file){
+	write_nand0_file(file);
+	write_nand_file(file);
+	SaveNor(file);
+	printf("flash saved to file!!\n");
+}

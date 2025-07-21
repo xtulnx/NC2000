@@ -47,6 +47,9 @@ void process_args(int argc, char *argv[])
 		{"timer01-speed", required_argument, 0, 1},
 		{"no-load-state", no_argument,    0, 1},
 		{"state", required_argument, 0, 1},
+		{"auto-save-state", no_argument,    0, 1},
+		{"auto-save-all", no_argument,    0, 1},
+		{"auto-save-flash", no_argument,    0, 1},
 		{NULL, 0, 0, 0}
       };
     int option_index = 0;
@@ -186,6 +189,16 @@ void process_args(int argc, char *argv[])
 			else if (strcmp(long_options[option_index].name,"state")==0){
 				nc1020_rom.statesPath = optarg;
 				nc1020_rom.statesPath += ".state";
+			}
+			else if (strcmp(long_options[option_index].name,"auto-save-state")==0){
+				save_state_on_exit = true;
+			}
+			else if (strcmp(long_options[option_index].name,"auto-save-all")==0){
+				save_state_on_exit = true;
+				save_flash_on_exit = true;
+			}
+			else if (strcmp(long_options[option_index].name,"auto-save-flash")==0){
+				save_flash_on_exit = true;
 			}
 			else
 			{

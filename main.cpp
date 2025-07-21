@@ -153,8 +153,11 @@ int main(int argc, char* args[]) {
   //SDL_SetThreadPriority(SDL_THREAD_PRIORITY_HIGH);
   //SDL_SetThreadPriority(SDL_THREAD_PRIORITY_TIME_CRITICAL);
   main_loop();
-  if(false){
-    //SaveNC1020();
+  if(save_flash_on_exit){
+    save_flash("");
+  }
+  if(save_state_on_exit){
+    save_state("");
   }
 
   return 0;
