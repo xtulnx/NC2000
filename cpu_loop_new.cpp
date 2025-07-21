@@ -171,6 +171,7 @@ uint8_t trigger256_cnt=0;// uint8 here, will wrap back to 0
 
 bool time_adjusted;
 void sync_time_2000(){
+		printf("sync_time() called\n");
 		time_t current_time = time(NULL);
 		struct tm *local_time = localtime(&current_time);
 		Store(0x3fa, local_time->tm_year - 103 +0x7a);

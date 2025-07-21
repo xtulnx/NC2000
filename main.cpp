@@ -46,6 +46,17 @@ bool InitAudioVideo() {
   return true;
 }
 
+long long get_current_time_milliseconds() {
+    struct timespec spec;
+    if (clock_gettime(CLOCK_REALTIME, &spec) == -1) {
+        // Handle error, e.g., print an error message and exit
+        perror("clock_gettime");
+        return -1; 
+    }
+    // Convert seconds and nanoseconds to milliseconds
+    return (long long)spec.tv_sec * 1000 + (long long)spec.tv_nsec / 1000000; 
+}
+
 void main_loop() {
   bool loop = true;
   bool power_save= false;
@@ -55,7 +66,23 @@ void main_loop() {
 
   uint64_t last_key_pressed_tick = 0;
 
+
+  uint64_t last_time_rtc=0;
+  uint64_t current_time_rtc=0;
+
+
   while (loop) {
+    if(sync_on_power_save_resume && enable_auto_time_sync)
+    {
+      last_time_rtc = current_time_rtc;
+      current_time_rtc = get_current_time_milliseconds();
+      if(last_time_rtc && current_time_rtc - last_time_rtc > 10*1000) {
+        //there is timejump in between, likely because of system sleep and recover
+            void sync_time_2000();
+            if(enable_auto_time_sync)sync_time_2000();
+      }
+    }
+
     if(power_save) {
       SDL_Delay(200);
     }
@@ -66,6 +93,7 @@ void main_loop() {
     SDL_Event event;
     map<signed int, bool> mp;
     bool key_pressed= false;
+    
     while (SDL_PollEvent(&event)) {
       if ( event.type == SDL_QUIT ) {
         loop = false;
@@ -85,8 +113,8 @@ void main_loop() {
     if(!power_save){
       Render(expected_tick);
     }
-
     uint64_t current_time = SDL_GetTicks64();
+
     if (key_pressed) {
       last_key_pressed_tick = current_time;
     }
