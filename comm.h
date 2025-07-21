@@ -170,6 +170,8 @@ extern uint32_t LCD_OUTER_REFRESH_INTERVAL;
 
 extern string lcdstripe_suffix;
 
+extern bool pro_key;
+
 //const uint32_t FRAME_RATE=40;   //how many frames in a second
 //const uint32_t FRAME_FACTOR=SLICE_RATE/FRAME_RATE;
 

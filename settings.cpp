@@ -55,6 +55,7 @@ void process_args(int argc, char *argv[])
 		{"auto-save-flash", no_argument,    0, 1},
 		{"cks", no_argument,    0, 1},
 		{"debug-cks", no_argument,    0, 1},
+		{"pro-keyboard", no_argument,    0, 1},
 		{NULL, 0, 0, 0}
       };
     int option_index = 0;
@@ -221,6 +222,9 @@ void process_args(int argc, char *argv[])
 			}
 			else if (strcmp(long_options[option_index].name,"no-lcd-latency-effect")==0){
 				enable_lcd_latency_effect = false;
+			}
+			else if (strcmp(long_options[option_index].name,"pro-keyboard")==0){
+				pro_key = true;
 			}
 			else
 			{

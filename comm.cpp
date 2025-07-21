@@ -22,6 +22,8 @@ bool save_flash_on_exit=false;
 bool save_state_on_exit=false;
 
 bool sync_on_power_save_resume = false;
+
+bool pro_key= false;
 /*
 ===================
 debug related
