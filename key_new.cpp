@@ -316,6 +316,7 @@ void handle_key_wayback(signed int sym, bool key_down){
             if(key_down==1){
                 extern bool fast_forward;
                 fast_forward^= 0x1;
+                printf("fast forward %s\n", fast_forward ? "on" : "off");
             }
             break;
 

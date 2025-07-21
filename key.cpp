@@ -164,6 +164,7 @@ void handle_key(signed int sym, bool key_down){
           case SDLK_TAB:
             if(key_down==1){
                 fast_forward^= 0x1;
+                printf("fast forward %s\n", fast_forward ? "on" : "off");
             }
             break;
 

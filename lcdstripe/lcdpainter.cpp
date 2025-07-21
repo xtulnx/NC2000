@@ -82,7 +82,7 @@ void MyLCDView::loadStripeTexture(const char * texpath, SDL_Renderer* render)
 
     int width = surface->w;
     int height = surface->h;
-    printf("w %d h %d\n", width, height);
+    printf("lcdstripe: w %d h %d\n", width, height);
     
     fLCDTexture = SDL_CreateTexture(render, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height);
     void* buffer = malloc(width * height * 4);
