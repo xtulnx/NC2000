@@ -91,6 +91,8 @@ extern bool save_state_on_exit;
 
 extern bool sync_on_power_save_resume;
 
+extern bool enable_emulate_cks;
+
 /*
 ===================
 debug related

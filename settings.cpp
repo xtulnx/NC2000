@@ -51,6 +51,7 @@ void process_args(int argc, char *argv[])
 		{"auto-save-state", no_argument,    0, 1},
 		{"auto-save-all", no_argument,    0, 1},
 		{"auto-save-flash", no_argument,    0, 1},
+		{"cks", no_argument,    0, 1},
 		{NULL, 0, 0, 0}
       };
     int option_index = 0;
@@ -203,6 +204,9 @@ void process_args(int argc, char *argv[])
 			}
 			else if (strcmp(long_options[option_index].name,"sync-on-resume")==0){
 				sync_on_power_save_resume = true;
+			}
+			else if (strcmp(long_options[option_index].name,"cks")==0){
+				enable_emulate_cks = true;
 			}
 			else
 			{

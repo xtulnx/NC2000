@@ -63,6 +63,8 @@ bool enable_auto_time_sync= true;
 
 double timer01_speed_fix=1.0;
 
+bool enable_emulate_cks = false;
+
 /*
 ===================
 cycles related

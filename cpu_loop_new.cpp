@@ -277,18 +277,19 @@ void cpu_run3(){
 
 	uint32_t target_cycles=cpu_batch;
 	uint32_t CycleDelta;
-	if(false){
+	if(enable_emulate_cks){
 		//TODO FIX ME
 		//todo study datasheet of how speed affect timers
 		target_cycles/=speed_scaledown;
 		CycleDelta=cpu->execute(target_cycles);
-		CycleDelta*=speed_scaledown;
+		last_cycles=cycles;
+		cycles+=CycleDelta*speed_scaledown;
 	}
 	else{
 		CycleDelta=cpu->execute(target_cycles);
+		last_cycles=cycles;
+		cycles+=CycleDelta;
 	}
-	last_cycles=cycles;
-	cycles+=CycleDelta;
 
 	//magic number to fit timerA and pc1000emux's timer0 and timer1 code
 	if(trigger_x_times_per_s(576*50)){
