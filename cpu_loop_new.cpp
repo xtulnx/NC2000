@@ -362,6 +362,7 @@ void cpu_run3(){
 					printf("chk_ar() return true!\n");
 					ram_io[0x3d] = 0x10;
 					interr_flag&=0xfd;	
+					try_soft_reset();
 				}else{
 					if(rtc_reg[10]&1 &&interr_flag&1){
 						ram_io[0x3d] =0;
