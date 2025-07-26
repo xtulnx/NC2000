@@ -79,10 +79,10 @@ void main_loop() {
       last_time_rtc = current_time_rtc;
       current_time_rtc = get_current_time_milliseconds();
       if(last_time_rtc && last_time_rtc > current_time_rtc) {
-        if(debug_level>=1) printf("oops, time goes back, last=%llu current=%llu\n",last_time_rtc,current_time_rtc);
+        if(debug_level>=1) printf("oops, time goes back, last=%llu current=%llu, delta=%llu\n",last_time_rtc,current_time_rtc, current_time_rtc - last_time_rtc);
       }
       if(last_time_rtc && current_time_rtc - last_time_rtc > 10*1000) {
-        if(debug_level>=1) printf("detected time jump last=%llu current=%llu\n",last_time_rtc,current_time_rtc);
+        if(debug_level>=1) printf("detected time jump last=%llu current=%llu, delta=%llu\n",last_time_rtc,current_time_rtc,current_time_rtc-last_time_rtc);
         //there is timejump in between, likely because of system sleep and recover
         if(nc2000mode){
             void sync_time_2000();
