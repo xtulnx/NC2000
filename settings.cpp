@@ -18,8 +18,7 @@ void process_args(int argc, char *argv[])
 {
 	int i, j, k;
 	int opt;
-    static struct option long_options[] =
-      {
+	static struct option long_options[] = {
 		{"port", required_argument, 0, 1},
 		{"cpu", required_argument, 0, 1},
 		{"loop", required_argument, 0, 1},
@@ -27,18 +26,18 @@ void process_args(int argc, char *argv[])
 		{"oc", required_argument, 0, 1},
 		{"nor-read", required_argument, 0, 1},
 		{"nor-write", required_argument, 0, 1},
-		{"nc1020", no_argument,    0, 1},
-        {"pc1000", no_argument,    0, 1},
-        {"nc2000", no_argument,    0, 1},
-        {"nc3000", no_argument,    0, 1},
-        {"no-keepon", no_argument,    0, 1},
-        {"no-sync", no_argument,    0, 1},
-		{"no-sync-on-resume", no_argument,    0, 1},
-        {"debug-beeper", no_argument,    0, 1},
-		{"debug-dsp", no_argument,    0, 1},
-		{"debug-timer", no_argument,    0, 1},
+		{"nc1020", no_argument, 0, 1},
+		{"pc1000", no_argument, 0, 1},
+		{"nc2000", no_argument, 0, 1},
+		{"nc3000", no_argument, 0, 1},
+		{"no-keepon", no_argument, 0, 1},
+		{"no-sync", no_argument, 0, 1},
+		{"no-sync-on-resume", no_argument, 0, 1},
+		{"debug-beeper", no_argument, 0, 1},
+		{"debug-dsp", no_argument, 0, 1},
+		{"debug-timer", no_argument, 0, 1},
 		{"power-save", required_argument, 0, 1},
-        {"rom", required_argument, 0, 1},
+		{"rom", required_argument, 0, 1},
 		{"pixel-size", required_argument, 0, 1},
 		{"gap-size", required_argument, 0, 1},
 		{"lcd-scale", required_argument, 0, 1},
@@ -48,21 +47,21 @@ void process_args(int argc, char *argv[])
 		{"lcd-outer-refresh", required_argument, 0, 1},
 		{"stripe", required_argument, 0, 1},
 		{"timer01-speed", required_argument, 0, 1},
-		{"load-state", no_argument,    0, 1},
-		{"no-lcd-latency-effect", no_argument,    0, 1},
+		{"load-state", no_argument, 0, 1},
+		{"no-lcd-latency-effect", no_argument, 0, 1},
 		{"state", required_argument, 0, 1},
-		{"auto-save-state", no_argument,    0, 1},
-		{"auto-save-all", no_argument,    0, 1},
-		{"auto-save-flash", no_argument,    0, 1},
-		{"cks", no_argument,    0, 1},
-		{"debug-cks", no_argument,    0, 1},
-		{"pro-keyboard", no_argument,    0, 1},
-		{"no-nand-forced-erase", no_argument,    0, 1},
+		{"auto-save-state", no_argument, 0, 1},
+		{"auto-save-all", no_argument, 0, 1},
+		{"auto-save-flash", no_argument, 0, 1},
+		{"cks", no_argument, 0, 1},
+		{"debug-cks", no_argument, 0, 1},
+		{"pro-keyboard", no_argument, 0, 1},
+		{"no-nand-forced-erase", no_argument, 0, 1},
 		{"log-level", required_argument, 0, 1},
 		{NULL, 0, 0, 0}
-      };
-    int option_index = 0;
-	if (argc == 1)
+	};
+	int option_index = 0;
+    if (argc == 1)
 	{
         //printf("no argument provided\n");
 	}
