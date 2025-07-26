@@ -63,6 +63,7 @@ void process_args(int argc, char *argv[])
 		{"log-on-key-press", required_argument, 0, 1},
 		{"log-all-dsp-io", no_argument, 0, 1},
 		{"battery-level", required_argument, 0, 1},
+		{"oops", no_argument, 0, 1},
 		{NULL, 0, 0, 0}
 	};
 	int option_index = 0;
@@ -260,6 +261,9 @@ void process_args(int argc, char *argv[])
 			}
 			else if (strcmp(long_options[option_index].name,"battery-level")==0){
 				battery_level = stoi(optarg);
+			}
+			else if (strcmp(long_options[option_index].name,"oops")==0){
+				enable_oops = true;
 			}
 			else
 			{
