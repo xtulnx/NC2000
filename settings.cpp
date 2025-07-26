@@ -18,6 +18,7 @@ void process_args(int argc, char *argv[])
 {
 	int i, j, k;
 	int opt;
+	bool timer01_speed_fix_set=0;
 	static struct option long_options[] = {
 		{"port", required_argument, 0, 1},
 		{"cpu", required_argument, 0, 1},
@@ -196,6 +197,7 @@ void process_args(int argc, char *argv[])
 			}
 			else if(strcmp(long_options[option_index].name,"timer01-speed")==0)
 			{
+				timer01_speed_fix_set=true;
 				timer01_speed_fix = stod(optarg);
 			}
 			else if (strcmp(long_options[option_index].name,"load-state")==0)
@@ -267,6 +269,9 @@ void process_args(int argc, char *argv[])
 			print_help();
 			exit(-1);
 		}
+	}
+	if (!timer01_speed_fix_set){
+		timer01_speed_fix = 1.0/oc_factor;
 	}
 
 	set_dsp_log_level(debug_level);
