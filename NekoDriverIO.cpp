@@ -542,10 +542,13 @@ void __iocallconv Write09Port1( BYTE write, BYTE value )
     (void)write;
     }
 
+unsigned char cpf;   
 void __iocallconv Write0BPort3LCDStartAddr( BYTE write, BYTE value )
 {
     // 控制LCD地址有效位数
     unsigned short b6b5 = (value & 0x60) >> 5;
+    cpf=(value>>2)&7;
+    if(debug_level>=2) printf("Write0BPort3LCDStartAddr %02x b6b5=%02x cpf=%02x\n",value,b6b5,cpf);
     // CPU   A15 A14 A13 A12 A11 A10 A9 A8 A7 A6 A5 A4
     // LCD   0   0   L13 L12 L11 L10 L9 L8 L7 L6 L5 L4     for LCDX1=0  LCDX0=0 3FFF
     // LCD   0   0   0   L12 L11 L10 L9 L8 L7 L6 L5 L4     for LCDX1=0  LCDX0=1 1FFF

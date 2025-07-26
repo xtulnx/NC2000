@@ -338,15 +338,31 @@ void cpu_run3(){
 			///////}
 		}
 	}
+	if(nc2000mode||nc3000mode){
+		//timebase is trigged by address line of lcd, 
+		//the trigger depends on TBC cps and cpf
+		//for simplicty just use fixed value
 
-	if(trigger_x_times_per_s(250)){
-		if(nc1020mode||nc2000mode||nc3000mode || pc1000mode_normal()) {
+		//nc2000 use TBC=0c, pc1000 use TBC=0a
+		//so the value is defintely not same as pc1000's
+		//here use 135 since I saw someone say tc808's is 13x
+		if(trigger_x_times_per_s(135)){  
 			if (timeBaseEnable()) {
 				setIrqTimeBase();
 				cpu->set_irq_pending();
 			}
 		}
-		if(pc1000mode_emux()) {
+	}
+	if(nc1020mode||pc1000mode_normal()){
+		if(trigger_x_times_per_s(250)){
+			if (timeBaseEnable()) {
+				setIrqTimeBase();
+				cpu->set_irq_pending();
+			}
+		}
+	}
+	if(pc1000mode_emux()){
+		if(trigger_x_times_per_s(250)){
 			if (bus_pc1000->timeBaseEnable()) {
 				//timebase中断为4ms一次，主要用于键盘扫描
 				bus_pc1000->setIrqTimeBase();

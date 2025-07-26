@@ -35,6 +35,9 @@ static uint8_t& interr_flag = nc2k_states.interr_flag;
 
 static unsigned char* ioReg=nc2k_states.ram_io;
 
+uint8_t cks=0;
+uint8_t cps=0;
+
 /////d0应该是未定指令
 ////不处理这个有声读物会死机
 bool dsp_0xd0=0;
@@ -395,7 +398,10 @@ void io_v2_write(int address, int value) {
     }
     if(nc2000mode||nc1020mode||pc1000mode) {
         if(address==0x05){
-            uint8_t cks=value>>5;
+            
+            cks=value>>5;
+            cps=value&0x07;
+            if(debug_level>=2) printf("Write05ClockCtrl %02x cks=%d cps=%d\n",value,cks,cps);
             if (cks!=ram_io[0x05]>>5){
                 switch(cks){
                     case 0: speed_scaledown=8;break;
