@@ -124,12 +124,15 @@ bool read_nor(uint16_t addr, uint8_t &value){
         }else if (addr==0x8001){
             value= 0xD7;
             return true;
-        }else assert(false);
+        }else {
+            value= 0xff;
+            if(debug_level>=1) printf("got NOR_CMD::SW_ID read of unknow addr addr=%04x\n",addr);
+            return false; //todo: should it count as read in nor or not?
+        };
     }
     if(fp_type == NOR_CMD::POLL_STATUS && fp_step==3){
         value=0x88;
-        printf("got NOR_CMD::POLL_STATUS, addr=%04x",addr);
-        assert(false);
+        if(debug_level>=1) printf("got NOR_CMD::POLL_STATUS, addr=%04x\n",addr);
         return true;
     }
     if (((fp_type == NOR_CMD::BYTE_PROGRAM && fp_step == 4) ||
