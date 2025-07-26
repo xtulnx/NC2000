@@ -37,6 +37,7 @@ static unsigned char* ioReg=nc2k_states.ram_io;
 
 uint8_t cks=0;
 uint8_t cps=0;
+uint8_t lcdon=0;
 
 /////d0应该是未定指令
 ////不处理这个有声读物会死机
@@ -401,7 +402,8 @@ void io_v2_write(int address, int value) {
             
             cks=value>>5;
             cps=value&0x07;
-            if(debug_level>=2) printf("Write05ClockCtrl %02x cks=%d cps=%d\n",value,cks,cps);
+            lcdon=(value>>3)&1;
+            if(debug_level>=3) printf("Write05ClockCtrl %02x cks=%d cps=%d lcdon=%d\n",value,cks,cps,lcdon);
             if (cks!=ram_io[0x05]>>5){
                 switch(cks){
                     case 0: speed_scaledown=8;break;

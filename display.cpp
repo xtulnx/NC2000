@@ -61,22 +61,24 @@ void Render(uint64_t tick) {
   }
   last_inner_render_tick= tick;
 
-
+  extern unsigned char lcden;
+  extern unsigned char lcdon;
   if (console_on){
     draw_console();
+  }else if(nc2000mode&&(!lcden || !lcdon)) {
+    memset(lcd_buf, 0, sizeof(lcd_buf));
   }
   else if (!CopyLcdBuffer(lcd_buf)) {
     std::cout << "Failed to copy buffer renderer." << std::endl;
   }
 
-
-
-
+  
   SDL_Texture *texture;
   static SDL_Rect source = { 0, 0, SCREEN_WIDTH*total_size, SCREEN_HEIGHT*total_size };
   unsigned char* bytes = nullptr;
   int pitch = 0;
   bool do_SDL_refresh = (tick/LCD_OUTER_REFRESH_INTERVAL != last_outer_render_tick/LCD_OUTER_REFRESH_INTERVAL);
+
   if(do_SDL_refresh){
     last_outer_render_tick= tick;
     render_cnt++;
