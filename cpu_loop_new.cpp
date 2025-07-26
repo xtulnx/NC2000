@@ -346,7 +346,7 @@ void cpu_run3(){
 		//nc2000 use TBC=0c, pc1000 use TBC=0a
 		//in theory the value should be not same as pc1000's.  someone say tc808's is 13x
 		//this affect tetris speed,
-		if(trigger_x_times_per_s(200)){
+		if(trigger_x_times_per_s(185)){//14.7456/3*1000000/13/(2^11) ~= 184.6??
 			if (timeBaseEnable()) {
 				setIrqTimeBase();
 				cpu->set_irq_pending();
