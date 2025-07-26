@@ -340,7 +340,7 @@ void cpu_run3(){
 	}
 	if(nc2000mode||nc3000mode){
 		//timebase is trigged by address line of lcd, 
-		//the trigger depends on TBC cps and cpf
+		//the trigger rule is complex, it depends on TBC cps and cpf.
 		//for simplicty just use fixed value
 
 		//nc2000 use TBC=0c, pc1000 use TBC=0a

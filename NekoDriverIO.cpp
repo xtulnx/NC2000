@@ -456,7 +456,7 @@ void UpdateKeypadRegisters()
                 r08_port0_ID|= 0x01;
             }
     }
-    enable_key_debug_once=0;
+    if(enable_key_debug_once>0) enable_key_debug_once--;
 }
 
 BYTE __iocallconv ReadPort0( BYTE read )
