@@ -166,7 +166,10 @@ uint8_t* GetBank(uint8_t bank_idx){
 	}*/
 
 	uint8_t volume_idx = ram_io[0x0D];
-    if (bank_idx < num_nor_pages) {
+    if (bank_idx < num_nor_pages) { 
+		//todo: improve emulation of non-exist nor pages?
+		//      current behavor is do not switch, is this correct? even if from ext_ram to nor
+		//      maybe whenever fall into nor range, should use last worked bank_idx
     	return nor_banks[bank_idx];
     } else if (bank_idx >= 0x80) {
 		if(nc3000mode){
@@ -267,8 +270,16 @@ void SwitchBank_2345(){
 	}
 	if(nc1020mode||nc2000mode){
 		if(bank_idx==0){
-			memmap[2]=ram04;
-			memmap[3]=ram04;
+			if(ram_io[0x0a]&0x80){
+				//special case of roa=1 and bs=0;
+				memmap[2]=ram04;
+				memmap[3]=ram04;
+				memmap[4] = nc2k_states.ext_ram + 0x0000;   //todo: ext ram doesn't exist in nc1020, hwo to handle?
+				memmap[5] = nc2k_states.ext_ram + 0x2000;
+			}else{
+				memmap[2]=ram04;
+				memmap[3]=ram04;
+			}
 		}
 	}
 }
