@@ -99,7 +99,9 @@ void handle_console(signed int sym, bool key_down){
 		if(history_index<history.size()){
 			history_index++;
 			if(history_index>0){
+				bool cursor_at_end= (cursor==console_input.length());
 				console_input=history[history.size()-history_index];
+				if(cursor_at_end) cursor=console_input.length();
 			}
 		}
 
@@ -107,11 +109,13 @@ void handle_console(signed int sym, bool key_down){
 	if(sym==SDLK_DOWN){
 		if(history_index>0){
 			history_index--;
+			bool cursor_at_end= (cursor==console_input.length());
 			if(history_index>0){
 				console_input=history[history.size()-history_index];
 			}else{
 				console_input=save_of_current;
 			}
+			if(cursor_at_end) cursor=console_input.length();
 		}
 
 	}
