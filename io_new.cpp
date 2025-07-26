@@ -92,7 +92,7 @@ int dsp30read_Stat() {
         dsp_data_feeded_but_hasnt_fetched = false; 
     }
 
-    if(dsp_0xd0){ // looks like as long as dsp_0xd0 is set, it should always consider as ready. other wise yousheng will stuck
+    if(dsp_0xd0){ // looks like as long as dsp_0xd0 is set, it should always consider as ready. other wise 有声读物 nc2000 will stuck
         value |= DSP_RETURN_DATA_READY_FLAG;
     }
 
@@ -186,12 +186,13 @@ void dspCmd(int high, int low) {
 void dsp30write_reset_wake(int value) {
     const int DSP_WAKEUP_FLAG = 0x80;
     const int DSP_RESET_FLAG = 0x40;
-    if (value == DSP_RESET_FLAG || value == DSP_WAKEUP_FLAG) {
+    if (value & DSP_WAKEUP_FLAG || value & DSP_RESET_FLAG) {
         dspSleep = false;
         dsp.reset();
+    }
+    if (value & DSP_RESET_FLAG ) {
         dspRetData = -1;
         dsp_data_feeded_but_hasnt_fetched = false;
-
         
         if(dspTrans){ // if set to false, 有声读物 for nc2000 will stuck on quit
             //for old code, if reset it stucks for sure
