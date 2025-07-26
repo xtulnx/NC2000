@@ -70,6 +70,7 @@ bool enable_emulate_cks = false;
 
 bool forced_erase_before_write = true;
 
+bool fast_forward=false;
 /*
 ===================
 cycles related

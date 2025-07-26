@@ -51,13 +51,24 @@ void input_text(string a){
 deque<string> history;
 int history_index=0;
 string save_of_current;
+extern SDL_Window* window;
+
+void on_enter_consoel(){
+	SDL_StartTextInput();
+	SDL_SetWindowTitle(window, "Console");
+}
+
+void on_exit_console(){
+	SDL_StopTextInput();
+	SDL_SetWindowTitle(window, get_title().c_str());
+}
 
 void handle_console(signed int sym, bool key_down){
 	if(!key_down) return;
 	if(!shift_down && sym==SDLK_BACKQUOTE){
 		console_on^= 0x1;
-		if(console_on) SDL_StartTextInput();
-		else SDL_StopTextInput();
+		if(console_on) on_enter_consoel();
+		else on_exit_console();
 		//printf("console %s\n", console_on ? "on" : "off");
 	}
 	if(!console_on) return;
@@ -108,7 +119,7 @@ void handle_console(signed int sym, bool key_down){
 		console_input.clear();
 		cursor=0;
 		console_on=false;
-		SDL_StopTextInput();	
+		on_exit_console();	
 	}
 	if(sym==SDLK_RETURN){
 		if(!console_input.empty()){
@@ -119,7 +130,7 @@ void handle_console(signed int sym, bool key_down){
 			cursor=0;
 		}
 		console_on=false;
-		SDL_StopTextInput();
+		on_exit_console();
 	}
 	if(cursor<0) cursor=0;
 	if(cursor>console_input.length()) cursor=console_input.length();

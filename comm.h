@@ -144,6 +144,8 @@ extern bool enable_auto_time_sync;
 extern double timer01_speed_fix;
 
 extern bool forced_erase_before_write;
+
+extern bool fast_forward;
 /*
 ===================
 display related
@@ -249,4 +251,19 @@ inline vector<string> split_s(const string &str, const string &sp) {
         }
     }
     return res;
+}
+
+inline string get_str_of_mode(){
+    if(nc1020mode) return "NC1020";
+    if(nc2000mode) return "NC2000";
+    if(nc3000mode) return "NC3000";
+    if(pc1000mode) return "PC1000";
+    return "";
+}
+
+inline string get_title(){
+    string ret= get_str_of_mode();
+    if(pro_key) ret+=", pro_key";
+    if(fast_forward) ret+=", fast_forward";
+    return ret;
 }
