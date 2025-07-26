@@ -143,7 +143,7 @@ std::string HexToBytes(const std::string& hex) {
 }
 
 void handle_cmd(string str){
-	printf("handling cmd %s\n",str.c_str());
+	printf("handling cmd ");
 	auto cmds=split_s(str," ");
 	for(int i=0;i<cmds.size();i++){
 		printf("<%s>",cmds[i].c_str());
