@@ -13,16 +13,12 @@
 extern nc2k_states_t nc2k_states;
 extern Dsp dsp;
 
-static int dspData;
+static int dspRetData;
 static bool dspTrans=0;
 static bool dspSleep;
 
 static int tmaValue;
 static int tmaReload;
-
-const int DSP_WAKEUP_FLAG = 0x80;
-const int DSP_RESET_FLAG = 0x40;
-const int DSP_SLEEP_FLAG = 0x80;
 
 const int IO_TIMERA_VAL_L = 0x10;
 const int IO_TIMERA_VAL_H = 0x11;
@@ -43,28 +39,37 @@ static unsigned char* ioReg=nc2k_states.ram_io;
 ////不处理这个有声读物会死机
 bool dsp_0xd0=0;
 
-//dsp test
-int dsp_0x91=0;
+int dsp_0x7001_0x7002=0;
+
+bool dsp_0x91_volume_adjust=false;
 
 unsigned char dsp_data_low=0;
 
 // dsp functions adapted from pc1000emux
 int dsp31read_RetData() {
-    if(dsp_0xd0)
+    if(dsp_0x7001_0x7002)
     {
+        dsp_0x7001_0x7002=0;
         return 0x6;
     }
-	int ret=dspData;
-	if (ret==0x5a)
-		dspData=0xff;
-	else
-		dspData=0;
+    int ret=dspRetData;
+	if (dspRetData==0x5a)
+    {
+        //printf("!!!0x5a!!!!\n");
+        dspRetData=0xff;
+    }else{
+        dspRetData=0;
+    }
 
 	return ret;
 }
 
 
 int dsp30read_Stat() {
+    const int DSP_SLEEP_FLAG = 0x80;
+    const int DSP_RETURN_DATA_READY_FLAG = 0x40;
+    const int DSP_DATA_FETCHED_FLAG = 0x30;
+
     int value = 0;
     if(nc2000mode||nc3000mode){
         //value=ram_io[0x30];
@@ -73,77 +78,107 @@ int dsp30read_Stat() {
     }
     if (dspSleep)
         value |= DSP_SLEEP_FLAG;
-    /*********** 
-	if (!dspSleep && sound->busy())
-		value |= 0x30;*/
+
     bool sound_busy(void);
     if(!dspSleep && sound_busy()){
-        value |= 0x30;
+        value |= DSP_DATA_FETCHED_FLAG;
     }
     /*if(dsp_0xe0==2){
         value|=0x30;
         dsp_0xe0=0;
     }*/
-    if(pc1000mode||dspTrans||dsp_0xd0){
-	    value |= 0x40;
+    if(pc1000mode||dspTrans||dsp_0xd0||dsp_0x7001_0x7002){
+	    value |= DSP_RETURN_DATA_READY_FLAG;
     }
-    if(dsp_0x91==1){
-        value|=0x80;
-        dsp_0x91=0;
+    if(dsp_0x91_volume_adjust==true){
+        value|=DSP_SLEEP_FLAG; //??why
+        dsp_0x91_volume_adjust=false;
     }
-    if(enable_debug_dsp) printf("dspStat() return %02x\n",value);
+    if(enable_debug_dsp||debug_level>=1) printf("dspStat() return %02x\n",value);
     return value;
 }
 
-void dspCmd(int cmd) {
-    switch (cmd) {
-        case 0x8000: //SLEEP
+void dspCmd(int high, int low) {
+    int cmd= high * 256 + low;
+    if(cmd== 0x8000){ //SLEEP
+            if(debug_level>=1)printf("[dsp] got cmd 0x8000, enable dsp sleep\n");
             dspSleep = true;
-            break;
-		case 0xd001:
-			dspData = 0x5a;
-			break;
     }
-    if(cmd==0x7004){
-        printf("[dsp] got cmd 0x7004, enable dsp trans\n");
-        //enable_dyn_debug_next_n=100;
-        dspTrans=true;
-        dsp_0x91=0;
+	if(high==0xd0 ){
+        /*if(cmd==0xd001){
+            if(debug_level>=1)printf("[dsp] got cmd 0xd001\n");
+			dspData = 0x5a;
+        }*/
+        dspRetData = 0x5a;     // after 0xd001, dsp ret will return 0x5a and 0xff in turn
+        if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",high,dsp_data_low);
+        if(debug_level>=1){
+            if(cmd!=0xd001) printf("[DSP] oops, got d0 but not d001 %04x!!!!!!!!!\n",cmd);
+        }
+        dsp_0xd0=1;
+    }else if(high >0x60){
         dsp_0xd0=0;
     }
+
+    if(high==0x70){
+        if(cmd==0x7004){
+            if(debug_level>=1)printf("[dsp] got cmd 0x7004, enable dsp trans\n");
+            //enable_dyn_debug_next_n=100;
+            dspTrans=true;
+            dsp_0x7001_0x7002=0;
+        }
+        if(!dspTrans){
+            if(dsp_data_low==0x01 ||dsp_data_low==0x02){
+                dsp_0x7001_0x7002=1;
+            }else{
+                dsp_0x7001_0x7002=0;
+            }
+        }
+    } else if(high >=0x60) {
+        dsp_0x7001_0x7002=0;
+    }
+
     if(cmd==0xffff){
-        dspTrans=false;
+        if(dspTrans){
+            if(debug_level>=1) printf("[dsp] got cmd 0xffff, get out of dsp trans\n");
+            dspTrans=false;
+        }
+    }
+
+    if(high==0x91){
+        //if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",value,dsp_data_low);
+        dsp_0x91_volume_adjust=true;
+    } else if(high >=0x60){
+        dsp_0x91_volume_adjust=false;
     }
 }
 
 void dsp30write_reset_wake(int value) {
+    const int DSP_WAKEUP_FLAG = 0x80;
+    const int DSP_RESET_FLAG = 0x40;
     if (value == DSP_RESET_FLAG || value == DSP_WAKEUP_FLAG) {
         dspSleep = false;
         dsp.reset();
-        dsp_0x91=0;
-        dsp_0xd0=0;
-        dspTrans=false;
+        //dsp_0x91=0;
+        //dsp_0xd0=0;
+
+        /*if(dspTrans){ // if set to false, 有声读物 for nc2000 will stuck on quit
+            if(debug_level>=1) printf("[dsp] got cmd %02x, get out of dsp trans\n",value);
+            dspTrans=false;
+        }*/
     }
 }
 void dsp33write_cmd_data(int value){
     //ioReg[0x33] = value;  //shouldn't be read back
-    dspCmd(value * 256 + dsp_data_low);
+    dspCmd(value , dsp_data_low);
     if(dspTrans){
-        dspData = dsp_data_low;
-    }else{
-        if(value==0xd0||value==0xe0||(value==0x70&&ioReg[0x32]!=0x04)){
-            if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",value,ioReg[0x32]);
-            dsp_0xd0=1;
-        } else if(value >=0x60){
-            dsp_0xd0=0;
-        }
-        if(value==0x91){
-            if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",value,ioReg[0x32]);
-            dsp_0x91=1;
-        } else if(value >=0x60){
-            dsp_0x91=0;
-        }
+        dspRetData = dsp_data_low;
+        //in dspTrans mode, the data shouldn't be pass to dsp.write()
+        return ;
+    }
+    if(value==0xa0  ||(value&0xc0)|| dsp.dspMode==4 || ((dsp.dspMode==1 ||dsp.dspMode==2) && value <0x60)){
         dsp.write(value,dsp_data_low);
+    }else{
+        if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",value,dsp_data_low);
     }
 }
 
