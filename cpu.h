@@ -43,6 +43,8 @@ public:
 	void IRQ();
     int P();
 
+    void set_irq_pending();
+
 
     private:
 

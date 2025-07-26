@@ -329,13 +329,13 @@ void cpu_run3(){
 		}
 		if(KeepTimer01(delta)){
 			//adapted from wayback
-			if ( ram_io[0x04] & 0x0F ) {
+			////if ( ram_io[0x04] & 0x0F ) { //why check timebase for timer01?
 				//why only set flag for timer0? why not set 0x20
 				//_ADD_TM1I_BIT() _ADD_TM1I_BIT() is inside KeepTimer01, why set it another time?
 				//this is from wayback
-				ram_io[0x01] |= 0x10;
-				cpu->IRQ();
-			}
+				//ram_io[0x01] |= 0x10;
+				cpu->set_irq_pending();
+			///////}
 		}
 	}
 
@@ -343,7 +343,7 @@ void cpu_run3(){
 		if(nc1020mode||nc2000mode||nc3000mode || pc1000mode_normal()) {
 			if (timeBaseEnable()) {
 				setIrqTimeBase();
-				cpu->IRQ();
+				cpu->set_irq_pending();
 			}
 		}
 		if(pc1000mode_emux()) {
@@ -366,7 +366,7 @@ void cpu_run3(){
 				}else{
 					if(rtc_reg[10]&1 &&interr_flag&1){
 						ram_io[0x3d] =0;
-						cpu->IRQ();
+						cpu->set_irq_pending();
 					}
 				}
 			}

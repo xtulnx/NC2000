@@ -93,6 +93,13 @@ void CPUInterface::IRQ() {
 	}
 
 }
+void CPUInterface::set_irq_pending() {
+	if(cpu_impl_emux) {
+		cpu_impl_emux->irqPending = true;
+		return;
+	}
+	g_irq = true;
+}
 
 int CPUInterface::P() {
 	if(cpu_impl_emux) return cpu_impl_emux->P;

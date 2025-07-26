@@ -26,7 +26,7 @@ const int IO_TIMERAB_CTRL = 0x14;
 
 const int INT_TIME_BASE = 8;
 
-const int O_INT_ENABLE = 0x40;
+unsigned char inner_interrupt_status=0;
 
 unsigned int speed_scaledown=1;
 
@@ -241,8 +241,11 @@ void setTimerA() {
         tmaValue += (256 >> temp);
         if (tmaValue >= 0x10000) {
             tmaValue = tmaReload;
-            if ((ioReg[O_INT_ENABLE] & 1) != 0)
+            if(debug_level>=1) printf("timer A interrupt triggered");
+            if ((inner_interrupt_status & 1) != 0){
                 ioReg[io01_int_status] |= 1;
+                cpu->set_irq_pending();  //newly added, not exist in pc1000emux
+            }
         }
     }
 }
@@ -253,12 +256,12 @@ void setIrqTimeBase() {
 }
 
 bool nmiEnable() {
-    return (ioReg[O_INT_ENABLE] & 0x10) == 0;
+    return (inner_interrupt_status & 0x10) == 0;
 }
 
 bool timeBaseEnable() {
     //if(nc1020mode||nc2000mode||nc3000mode){
-        if((ioReg[O_INT_ENABLE] & 8)) return false;
+        //////////if((ioReg[O_INT_ENABLE] & 8)) return false;  //not correct, b3 is EXIE1, not for timebase
         /*
         // todo fix this
         if (this->field_0x96d4ac != '\0') {
@@ -461,6 +464,7 @@ void io_v2_write(int address, int value) {
     if(nc1020mode||nc2000mode||nc3000mode||pc1000mode){
         if(address==0x04){
             Write04GeneralCtrl(address,value);
+            if(debug_level>=2) printf("Write04GeneralCtrl %02x TBC=%02x\n",value,value&0xf);
             //Write09Port1(0x09, ram_io[0x09]);//reapply after PTYPE changed??
             return;
         }
@@ -546,7 +550,7 @@ void io_v2_write(int address, int value) {
             /////////////bankSwitch();
             return;
         case io01_int_enable://0x01
-            ioReg[O_INT_ENABLE] = value;
+            inner_interrupt_status = value;
             return;
         case io0A_bios_bsw://0x0a
             ioReg[io0A_bios_bsw] = value;
