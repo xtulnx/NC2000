@@ -126,6 +126,14 @@ void dspCmd(int high, int low) {
     if(dspTrans){ // if in dspTrans mode, then shouldn't hanlde below commands
         return ;
     }
+
+    if(high==0xe0){
+        if(debug_level>=1) printf("[dsp] got 0xe0 cmd %04x\n", cmd);
+    }
+
+    if(high==0x91){
+        if(debug_level>=1) printf("[dsp] got 0x91 cmd %04x\n", cmd);
+    }
     
 
 	if(high==0xd0 ){
