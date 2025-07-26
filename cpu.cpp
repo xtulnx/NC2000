@@ -81,7 +81,7 @@ void CPUInterface::NMI() {
 	g_nmi = true;
 }
 
-void CPUInterface::IRQ() {
+void CPUInterface::irq_now() {
 	if(cpu_impl_emux) return cpu_impl_emux->IRQ();
 
 	if(!mI) {

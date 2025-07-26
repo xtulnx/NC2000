@@ -308,12 +308,12 @@ void cpu_run3(){
 				//timer0用于录放音，蜂鸣器音乐
 				bus_pc1000->setIrqTimer0();
 				//printf("irq1!\n");
-				cpu->IRQ();
+				cpu->irq_now();
 			}
 			if (bus_pc1000->setTimer1()) {
 				//timer1用于秒表的百分之一秒，每秒200次
 				bus_pc1000->setIrqTimer1();
-				cpu->IRQ();
+				cpu->irq_now();
 				//printf("irq2!\n");
 			}
 		}
@@ -366,7 +366,7 @@ void cpu_run3(){
 			if (bus_pc1000->timeBaseEnable()) {
 				//timebase中断为4ms一次，主要用于键盘扫描
 				bus_pc1000->setIrqTimeBase();
-				cpu->IRQ();
+				cpu->irq_now();
 			}
 		}
 	}

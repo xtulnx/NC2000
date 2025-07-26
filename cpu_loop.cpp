@@ -433,7 +433,7 @@ void cpu_run2(){
 	} else if ((gThreadFlags & TF_IRQFLAG) != 0) {
 		gThreadFlags &= 0xFFEFu; // remove 0x10 IRQ Flag
 		g_irq = TRUE; // B flag (AF_BREAK) will remove in CpuExecute
-		cpu->IRQ();
+		cpu->irq_now();
 		qDebug("ggv wanna IRQ.");
 		gDeadlockCounter--; // wrong behavior of wqxsim
 	}
