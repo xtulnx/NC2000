@@ -22,7 +22,7 @@ const int DRAW_HEIGHT_START = 1;
 const int DRAW_HEIGHT = FONT_HEIGHT-2;
 
 void draw_console(){
-	string to_draw = ">"+console_input+" ";
+	string to_draw = promot+console_input+" ";
 	memset(lcd_buf,0, sizeof(lcd_buf));
 	for(int i=0;i<to_draw.length();i++){
 		int row_size=SCREEN_WIDTH/8;

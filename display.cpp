@@ -104,6 +104,12 @@ void Render(uint64_t expected_tick) {
   //unsigned char lcd[80*(pixel_size+gap_zize)][160*(pixel_size+gap_zize)][color_size] ;
   //unsigned char lcd[80*(pixel_size+gap_zize)][160*(pixel_size+gap_zize)][color_size] ;
 
+  static const unsigned char black_color_console[4] = { 0, 255, 0, 0 };
+  static const unsigned char black_color_shadow_console[4] = { 0, 0, 255, 0 };
+  static const unsigned char * index_console[4]={white_color,near_white_color,near_black_color,black_color_console};
+  static const unsigned char * index_shadow_console[4]={white_color_shadow, near_white_color_shadow, near_black_color_shadow, black_color_shadow_console};
+  //static const unsigned char * index_console[4]={white_color,near_white_color,near_black_color,black_color_console};
+
   unsigned char (*p)[SCREEN_WIDTH*total_size][4] ;
   p = (decltype(p)) lcd_effect_buffer;
 
@@ -121,8 +127,14 @@ void Render(uint64_t expected_tick) {
         }
         int u=r*total_size;
         int v=c*total_size;
-        handle_pixel(u,v,index,value);
-        handle_pixel(u,v+total_size-1,index_shadow,value);
+        if(console_on) {
+          handle_pixel(u,v,index_console,value);
+          handle_pixel(u,v+total_size-1,index_shadow_console,value);
+        }
+        else {
+          handle_pixel(u,v,index,value);
+          handle_pixel(u,v+total_size-1,index_shadow,value);
+        }
         if(!do_SDL_refresh) continue;
         int v1=*(int*)p[u][v];
         int v2=*(int*)p[u][v+total_size-1];
