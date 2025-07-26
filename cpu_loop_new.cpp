@@ -188,7 +188,7 @@ void sync_time_2000(){
 }
 bool soft_reset=0;
 void try_soft_reset(){
-	if(speed_scaledown>512){
+	if(ram_io[0x05]>>5==7){
 		soft_reset=1;
 		printf("soft reset!!\n");
 	}
