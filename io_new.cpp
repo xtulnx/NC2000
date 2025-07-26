@@ -481,6 +481,7 @@ void io_v2_write(int address, int value) {
             return Write06LCDStartAddr(address, value);
         }
         if(address==0x07){
+            if(debug_level>=1)printf("write07PortConfig %02x xt=%02x\n",value,value&0x7);
             return Write07PortConfig(address,value);//not important? seems like only hotlink inside
         }
         if(address==0x08){
@@ -527,6 +528,14 @@ void io_v2_write(int address, int value) {
         }
         if(address==0x3f){
             int index=ioReg[0x3e];
+            if(debug_level>=1){
+                if(index==0x25){
+                    printf("write to 0x3f idx=0x25 %02x\n",value);
+                }
+                if(index==0x26){
+                    printf("write to 0x3f idx=0x26 %02x\n",value);
+                }
+            }
             ioReg[0x3f]=value;
             if(index<7){
                 if((signed char)rtc_reg[0x0b]<0) return;
