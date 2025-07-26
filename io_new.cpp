@@ -100,48 +100,32 @@ int dsp30read_Stat() {
 
 void dspCmd(int high, int low) {
     int cmd= high * 256 + low;
-    if(cmd== 0x8000){ //SLEEP
-            if(debug_level>=1)printf("[dsp] got cmd 0x8000, enable dsp sleep\n");
-            dspSleep = true;
-    }
-	if(high==0xd0 ){
-        /*if(cmd==0xd001){
-            if(debug_level>=1)printf("[dsp] got cmd 0xd001\n");
-			dspData = 0x5a;
-        }*/
-        dspRetData = 0x5a;     // after 0xd001, dsp ret will return 0x5a and 0xff in turn
-        if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",high,dsp_data_low);
-        if(debug_level>=1){
-            if(cmd!=0xd001) printf("[DSP] oops, got d0 but not d001 %04x!!!!!!!!!\n",cmd);
-        }
-        dsp_0xd0=1;
-    }else if(high >0x60){
-        dsp_0xd0=0;
-    }
-
-    if(high==0x70){
-        if(cmd==0x7004){
-            if(debug_level>=1)printf("[dsp] got cmd 0x7004, enable dsp trans\n");
-            //enable_dyn_debug_next_n=100;
-            dspTrans=true;
-            dsp_0x7001_0x7002=0;
-        }
-        if(!dspTrans){
-            if(dsp_data_low==0x01 ||dsp_data_low==0x02){
-                dsp_0x7001_0x7002=1;
-            }else{
-                dsp_0x7001_0x7002=0;
-            }
-        }
-    } else if(high >=0x60) {
-        dsp_0x7001_0x7002=0;
-    }
-
     if(cmd==0xffff){
         if(dspTrans){
             if(debug_level>=1) printf("[dsp] got cmd 0xffff, get out of dsp trans\n");
             dspTrans=false;
         }
+    }
+
+    if(cmd== 0x8000){ //SLEEP
+            if(debug_level>=1)printf("[dsp] got cmd 0x8000, enable dsp sleep\n");
+            dspSleep = true;
+    }
+
+    if(dspTrans){ // if in dspTrans mode, then shouldn't hanlde other command
+        return ;
+    }
+    
+
+	if(high==0xd0 ){
+        dspRetData = 0x5a;     // after 0xd001, dsp ret will return 0x5a and 0xff in turn
+        if(debug_level>=1){
+            printf("[DSP] got dsp cmd %02x %02x\n",high,dsp_data_low);
+            if(cmd!=0xd001) printf("[DSP] oops, got d0 but not d001 %04x!!!!!!!!!\n",cmd);
+        }
+        dsp_0xd0=1;
+    }else if(high >0x60){
+        dsp_0xd0=0;
     }
 
     if(high==0x91){
@@ -150,6 +134,23 @@ void dspCmd(int high, int low) {
     } else if(high >=0x60){
         dsp_0x91_volume_adjust=false;
     }
+
+    if(high==0x70){
+        if(dsp_data_low==0x01 ||dsp_data_low==0x02){
+            dsp_0x7001_0x7002=1;
+        }else{
+            dsp_0x7001_0x7002=0;
+        }
+    }else if(high >=0x60) {
+        dsp_0x7001_0x7002=0;
+    }
+
+    if(cmd==0x7004){
+        if(debug_level>=1)printf("[dsp] got cmd 0x7004, enable dsp trans\n");
+        //enable_dyn_debug_next_n=100;
+        dspTrans=true;
+        //dsp_0x7001_0x7002=0; //need to clear buf previous logic already covered
+    } 
 }
 
 void dsp30write_reset_wake(int value) {
