@@ -125,7 +125,7 @@ vector<TKeyItem*> items = {
         new TKeyItem(48, 0x1A, 2,3, "▲", "-",NULL,{SDLK_UP}),         // P02, P16
         new TKeyItem(58, 0x1B, 3,3, "▼", "+",NULL,{SDLK_DOWN}),     // P03, P16
         new TKeyItem(29, 0x1C, 4,3, "P", "MC", "☎",{SDLK_p}),           // P04, P16
-        new TKeyItem(39, 0x1D, 5,3, "输入", "MR",NULL,{SDLK_RETURN}),   // P05, P16
+        new TKeyItem(39, 0x1D, 5,3, "输入", "MR",NULL,{SDLK_RETURN,SDLK_MINUS}),   // P05, P16
         new TKeyItem(49, 0x1E, 6,3, "⇟", "M-",NULL,{SDLK_SLASH}), // P06, P16
         new TKeyItem(59, 0x1F, 7,3, "→", "M+",NULL,{SDLK_RIGHT}),   // P07, P16
         
@@ -374,6 +374,11 @@ void handle_key_wayback(signed int sym, bool key_down){
           }
         }
         switch ( sym) {
+          case SDLK_MINUS:
+              if(key_down==1 && shift_down){
+                enable_dyn_debug_next_n=1000000;
+              }
+              break;
           case SDLK_BACKQUOTE:
             if(shift_down){
               if(key_down==1){
