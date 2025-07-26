@@ -367,8 +367,9 @@ void UpdateKeypadRegisters()
                     // port0,port1 -> p30
                     if (y >= 2 ||nc2000mode||nc3000mode||nc1020mode) {
                         if (keypadmatrix[y][x]==1 && ((port0data & xbit) != 0)) {
-                        tmpdest1 |= port1controlbit;
-                    }
+                            tmpdest1 |= port1controlbit;
+                        }
+                        //nc2000 etc never runs to below elses
                     } else if (y == 1) {
                         // hotkey
                         if (keypadmatrix[y][x]==1 && ((port0data & xbit) == 0)) {
@@ -434,27 +435,33 @@ void UpdateKeypadRegisters()
     r08_port0_ID = port0data;
 
     //printf("<port0=%d port1=%d tmpp30tv=%d>\n",port0data,port1data, tmpp30tv);
-    if (tmpp30tv) {
-        //有开机或热键按下, 应当改P30为0
-        qDebug("P30 hotkey scan: %04X", tmpp30tv);
-        if (yreceive) {
-            zpioregs[io0B_port3_data] &= 0xFE;
+    if(pc1000mode){
+        if (tmpp30tv) {
+            //有开机或热键按下, 应当改P30为0
+            qDebug("P30 hotkey scan: %04X", tmpp30tv);
+            if (yreceive) {
+                zpioregs[io0B_port3_data] &= 0xFE;
+            }
+        } else if (yreceive) {
+            zpioregs[io0B_port3_data] |= 1;
         }
-    } else if (yreceive) {
-        zpioregs[io0B_port3_data] |= 1;
     }
     if(enable_key_debug_once) {
         printf("[key_debug] new r08_port0_ID=%02x, r09_port1_ID=%02x, tmpp30tv=%04x\n", r08_port0_ID, r09_port1_ID, tmpp30tv);
     }
     // this is tmp fix for nc2000 hotkey wakeup
-    // todo: better fix
-    //// 肯定是前面按键扫描代码哪里有问题
-    if(nc2000mode&&port1control==0xff&&port0control==0xc0 &&w09_port1_OL==0x00)
-        for(int y=0;y<8;y++){ 
-            if(keypadmatrix[y][1]){
-                //port0data|= 0x01;
-                r08_port0_ID|= 0x01;
+    // todo: better fix, probably need to handle below:
+    //       when port0[3:0] defined as input, it got "on" function and is pulled high.
+    if(nc2000mode) {
+        if(port1control==0xff&&port0control==0xc0 &&w09_port1_OL==0x00){
+            // note: port0control==0xc0 ----->rw0f_b4_DIR00 ==0x00 && rw0f_b5_DIR01 ==0x00
+            for(int y=0;y<8;y++){ 
+                if(keypadmatrix[y][1]){
+                    //port0data|= 0x01;
+                    r08_port0_ID|= 0x01;
+                }
             }
+        }
     }
     if(enable_key_debug_once>0) enable_key_debug_once--;
 }
