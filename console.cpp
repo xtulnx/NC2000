@@ -78,7 +78,7 @@ void handle_console(signed int sym, bool key_down){
 	if(sym== SDLK_BACKSPACE){
 		if(!console_input.empty()) {
 			if(cursor>0){
-				console_input.erase(cursor-1);
+				console_input.erase(cursor-1,1);
 				cursor--;
 			}
 		}
