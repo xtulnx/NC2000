@@ -2,6 +2,7 @@
 #include "font.h"
 #include "SDL.h"
 #include "cmd.h"
+#include <SDL_keycode.h>
 
 string promot=">";
 string console_input="";
@@ -74,6 +75,12 @@ void handle_console(signed int sym, bool key_down){
 		if(shift_down) cursor+=9;
 		if(cursor>console_input.length()) cursor=console_input.length();
 
+	}
+	if(sym==SDLK_ESCAPE){
+		console_input.clear();
+		cursor=0;
+		console_on=false;
+		SDL_StopTextInput();	
 	}
 	if(sym==SDLK_RETURN){
 		if(!console_input.empty()){

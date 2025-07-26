@@ -184,6 +184,10 @@ void handle_cmd(string str){
 		return;
 	}
 	if(cmds[0]=="dump"){
+		if(cmds.size()<2){
+			printf("dump: not enough argument\n");
+			return;
+		}
 		uint32_t start=stoi(cmds[1],0,16);
 		uint32_t size=stoi(cmds[2],0,10);
 		for(uint32_t i=start;i<start+size;i++){
