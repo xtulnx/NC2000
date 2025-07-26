@@ -157,6 +157,19 @@ void handle_cmd(string str){
 		print_help();
 		return;
 	}
+	if(cmds[0]=="wr") cmds[0]="warm_reset";
+	if(cmds[0]=="cr") cmds[0]="cold_reset";
+	if(cmds[0]=="sf") cmds[0]="save_flash";
+	if(cmds[0]=="sa") cmds[0]="save_all";
+	if(cmds[0]=="ss") cmds[0]="save_state";
+	if(cmds[0]=="ds") cmds[0]="delete_state";
+	if(cmds[0]=="f") cmds[0]="file_manager";
+	if(cmds[0]=="cf") cmds[0]="create_folder";
+	if(cmds[0]=="cfh") cmds[0]="create_folder_hex";
+	if(cmds[0]=="st") cmds[0]="sync_time";
+	if(cmds[0]=="sp") cmds[0]="speed";
+	if(cmds[0]=="ed") cmds[0]="edit";
+
 	if(cmds[0]=="warm_reset"){
 		prepare_soft_reset();
 		cpu->reset();
@@ -170,6 +183,7 @@ void handle_cmd(string str){
 	if(cmds[0]=="exit"){
 		exit(-1);
 	}
+
 	if(cmds[0]=="save_flash"||cmds[0]=="save_all"||cmds[0]=="save_state"){
 		string file="";
 		if(cmds.size()>1){
@@ -205,7 +219,7 @@ void handle_cmd(string str){
 		return;
 	}
 
-	if(cmds[0]=="ec"){
+	if(cmds[0]=="edit"||cmds[0]=="modify"){
 		uint32_t start=stoi(cmds[1],0,16);
 		for(uint32_t i=2;i<cmds.size();i++){
 			Peek16(start++)=stoi(cmds[i],0,16);;
@@ -237,11 +251,11 @@ void handle_cmd(string str){
 		return;
 	}
 
-	if(cmds[0]=="create_dir" || cmds[0]=="create_dir_hex"){
+	if(cmds[0]=="create_dir" || cmds[0]=="create_dir_hex" || cmds[0]=="create_folder" || cmds[0]=="create_folder_hex"){
 			//printf("<pc=%x>\n",cpu->PC);
 			cpu->PC=0x3000;
 			string dir_name=cmds[1];
-			if(cmds[0]=="create_dir_hex"){
+			if(cmds[0]=="create_dir_hex"|| cmds[0]=="create_folder_hex"){
 				dir_name=HexToBytes(dir_name);
 			}
 			if(nc1020mode){
