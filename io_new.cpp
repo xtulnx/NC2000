@@ -103,8 +103,11 @@ void dspCmd(int cmd) {
 			break;
     }
     if(cmd==0x7004){
+        printf("[dsp] got cmd 0x7004, enable dsp trans\n");
         //enable_dyn_debug_next_n=100;
         dspTrans=true;
+        dsp_0x91=0;
+        dsp_0xd0=0;
     }
     if(cmd==0xffff){
         dspTrans=false;
@@ -309,6 +312,9 @@ void io_v2_write(int address, int value) {
                 if (value == DSP_RESET_FLAG || value == DSP_WAKEUP_FLAG) {
                     dspSleep = false;
                     dsp.reset();
+                    dsp_0x91=0;
+                    dsp_0xd0=0;
+                    dspTrans=false;
                 }
                 return;
             case 0x33:
@@ -317,7 +323,7 @@ void io_v2_write(int address, int value) {
                 if(dspTrans){
                     dspData = ioReg[0x32];
                 }else{
-                    if(value==0xd0||value==0xe0||value==0x70){
+                    if(value==0xd0||value==0xe0||(value==0x70&&ioReg[0x32]!=0x04)){
                         if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",value,ioReg[0x32]);
                         dsp_0xd0=1;
                     } else if(value >=0x60){
