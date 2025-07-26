@@ -62,6 +62,7 @@ void process_args(int argc, char *argv[])
 		{"lcd-effect", required_argument, 0, 1},
 		{"log-on-key-press", required_argument, 0, 1},
 		{"log-all-dsp-io", no_argument, 0, 1},
+		{"battery-level", required_argument, 0, 1},
 		{NULL, 0, 0, 0}
 	};
 	int option_index = 0;
@@ -256,6 +257,9 @@ void process_args(int argc, char *argv[])
 			}
 			else if (strcmp(long_options[option_index].name,"log-all-dsp-io")==0){
 				log_all_dsp_io = true;
+			}
+			else if (strcmp(long_options[option_index].name,"battery-level")==0){
+				battery_level = stoi(optarg);
 			}
 			else
 			{

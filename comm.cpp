@@ -134,6 +134,7 @@ misc
 ===================
 */
 bool shift_down =false;;
+int battery_level=11;
 
 
 

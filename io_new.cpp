@@ -277,7 +277,7 @@ int io_v2_read(int address) {
         if(address== 0x1c){
             int battery_detect_level= ram_io[0x1c]&0x1f;
             //basic电源管理认为12是满电，lav电源检测认为11是满电
-            if(battery_detect_level>=10){
+            if(battery_detect_level>=battery_level){
                 return ram_io[0x1c]|32;
             }
             else{
