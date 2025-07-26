@@ -26,11 +26,11 @@ int CPUInterface::emux_exec_helper(int max_cycles) {
 		nmiPending = false;
 		cpu_impl_emux->doNMI();
 	}
-	if (irqPending && (P() & 4) == 0) {
-		irqPending = false;
-		cpu_impl_emux->doIRQ();
-	}
-	do{
+	do{	
+		if (irqPending && (P() & 4) == 0) {
+			irqPending = false;
+			cpu_impl_emux->doIRQ();
+		}
 		void debug_pc();
 		debug_pc();
 		cpu_impl_emux->doCode(cpu_impl_emux->getCode());//allow one cycle anyway
@@ -56,13 +56,13 @@ int CPUInterface::execute(int max_cycles){
         cycle+=CpuExecuteNMI();
 		mI = true;     //todo: is this needed?
     }
-    if (g_irq && !mI){
-		g_irq = false;
-        cycle+=CpuExecuteIRQ();
-		//cycle+=1;
-    }
 
     do{
+		if (g_irq && !mI){
+			g_irq = false;
+			cycle+=CpuExecuteIRQ();
+			//cycle+=1;
+		}
 		void debug_pc();
 		debug_pc();
 		if(g_wai) {cycle=max_cycles;break;}
