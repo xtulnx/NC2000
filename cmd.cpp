@@ -62,18 +62,25 @@ char *peek_message(){
 
 deque<char> queue;
 int32_t dummy_io_cnt=-1;
+static int put_total_size=0;
 bool dummy_io_for_read(uint16_t addr, uint8_t &value){
 	if(addr!=0x3fff) return false;
 	if(dummy_io_cnt== -1) return false;
 	if(queue.empty()) {
 		value=0;
         dummy_io_cnt=-1;
+		printf("[put] done, total size=%d\n",put_total_size);
+		put_total_size=0;
 		//printf("<dummy read %02x>\n",value);
 		return true;
 	}
 	if(dummy_io_cnt++%2==0) {
 		value=1;
 	}else{
+		put_total_size++;
+		if(put_total_size%10000==0){
+			printf("[put] sent %d bytes\n",put_total_size);
+		}
 		value=queue.front();
 		queue.pop_front();
 	}
@@ -98,7 +105,7 @@ bool dummy_io_for_write(uint16_t addr, uint8_t value){
 			//do nothing
 		}
 		else if(value==0) {
-			printf("dummy_io_for_write closed, size=%d\n",(int)queue_for_write.size());
+			printf("[get] done, total size=%d\n",(int)queue_for_write.size());
 			if(dummy_io_write_cnt!=-1){
 				auto fp=fopen(file_name_for_write.c_str(),"wb");
 				for(auto c: queue_for_write){
@@ -117,7 +124,7 @@ bool dummy_io_for_write(uint16_t addr, uint8_t value){
 		//printf("got char %02x\n",value);
 		queue_for_write.push_back(value);
 		if(queue_for_write.size()%10000==0) {
-			printf("got %d bytes\n",(int)queue_for_write.size());
+			printf("[get] got %d bytes\n",(int)queue_for_write.size());
 		}
 	}
 	//printf("<dummy read %02x>\n",value);
