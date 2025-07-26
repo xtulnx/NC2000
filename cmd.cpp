@@ -15,6 +15,7 @@ extern "C" {
 }
 #include "compare/pc1000bus.h"
 #include "nc2000.h"
+#include "nor.h"
 extern nc2k_states_t nc2k_states;
 extern CPUInterface *cpu;
 extern string nand_magic;
@@ -29,6 +30,17 @@ bool is_nc2600_rom(){
 	if(nand_magic[8]=='1') return true;
 	return false;
 }
+
+bool is_nc2000_rom(){
+	if(nand_magic[8]=='0' &&nor_buff[2]==0x36) return true;
+	return false;
+}
+
+bool is_nc2010_rom(){
+	if(nand_magic[8]=='0' &&nor_buff[2]==0x4f) return true;
+	return false;
+}
+
 
 void push_message(string msg){
 	if(msg.empty()) return;
@@ -284,7 +296,13 @@ void handle_cmd(string str){
 					uint8_t buf[]={0x00,0x0b,0x05,0x00,0x01,0xc0};
 					copy_to_addr(0x3000, buf, sizeof buf);
 				}else{
-					copy_to_addr(0x08be, (uint8_t*)dir_name.c_str(), dir_name.size()+1);
+					if(is_nc2000_rom()){
+						if(debug_level>=1) printf("is nc2000 rom\n");
+						copy_to_addr(0x08be, (uint8_t*)dir_name.c_str(), dir_name.size()+1);
+					}else{
+						if(debug_level>=1) printf("is nc2010 rom\n");
+						copy_to_addr(0x08ac, (uint8_t*)dir_name.c_str(), dir_name.size()+1);
+					}
 					uint8_t buf[]={0x00,0x0b,0x05,0x00,0x01,0xc0};
 					copy_to_addr(0x3000, buf, sizeof buf);
 				}
@@ -342,7 +360,13 @@ void handle_cmd(string str){
 					0xA9,0x00,0x8D,0xFF,0x3F,0x00,0x16,0x05,0x00,0x01,0xC0,};
 					copy_to_addr(0x3000,buf,sizeof(buf));
 				}else{
-					copy_to_addr(0x08be, (uint8_t*)src.c_str(), src.size()+1);
+					if(is_nc2000_rom()){
+						if(debug_level>=1) printf("is nc2000 rom\n");
+						copy_to_addr(0x08be, (uint8_t*)src.c_str(), src.size()+1);
+					}else{
+						if(debug_level>=1) printf("is nc2010 rom\n");
+						copy_to_addr(0x08ac, (uint8_t*)src.c_str(), src.size()+1);
+					}
 					uint8_t buf[]={0xA9,0x80,0x8D,0xFA,0x08,0xA9,0xEF,0x8D,0xFB,0x08,0x8D,0xFC,0x08,0x00,0x15,0x05,
 					0xA9,0x00,0x8D,0xF6,0x03,0xA9,0x00,0x85,0xDD,0xA9,0x32,0x85,0xDE,0xA9,0x01,0x8D,
 					0xF7,0x08,0xA9,0x00,0x8D,0xF8,0x08,0x8D,0xF9,0x09,0x00,0x16,0x05,0xAD,0xF7,0x08,
@@ -403,7 +427,13 @@ void handle_cmd(string str){
 					0x00,0x16,0x05,0x00,0x01,0xC0,};
 					copy_to_addr(0x3000,buf,sizeof(buf));
 				}else{
-					copy_to_addr(0x08be, (uint8_t*)target.c_str(), target.size()+1);
+					if(is_nc2000_rom()){
+						if(debug_level>=1) printf("is nc2000 rom\n");
+						copy_to_addr(0x08be, (uint8_t*)target.c_str(), target.size()+1);
+					}else{
+						if(debug_level>=1) printf("is nc2010 rom\n");
+						copy_to_addr(0x08ac, (uint8_t*)target.c_str(), target.size()+1);//not working?
+					}
 					prepare_soft_reset();
 					uint8_t buf[]={0x00,0x1D,0x05,0xA9,0x70,0x8D,0xFA,0x08,0xA9,0xEF,0x8D,0xFB,0x08,0x8D,0xFC,0x08,
 					0x00,0x15,0x05,0xA9,0x00,0x8D,0xF6,0x03,0xAD,0xFF,0x3F,0xC9,0x00,0xF0,0x21,0xAD,

@@ -1,7 +1,8 @@
+#pragma once
 #include "comm.h"
 
 extern uint8_t* nor_banks[0x20];
-extern uint8_t* nor_buff;
+extern uint8_t nor_buff[1024*1024];;
 
 void SaveNor(string file = "");
 bool read_nor(uint16_t addr, uint8_t &value);
