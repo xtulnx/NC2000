@@ -113,7 +113,8 @@ void prepare_soft_reset(){
     ora io_timer1_val
     beq cold_start
 */
-	//tmp code
+	// tmp code
+	// as long as one is non-zero, it will pass the check
 	ram_io[2]=1;
-	ram_io[3]|=1;
+	//ram_io[3]=1;
 }
