@@ -43,6 +43,7 @@ int dsp_0x7001_0x7002=0;
 
 //bool dsp_0x91_volume_adjust=false;
 
+bool dsp_data_feeded_but_hasnt_fetched=0;
 unsigned char dsp_data_low=0;
 
 // dsp functions adapted from pc1000emux
@@ -82,7 +83,13 @@ int dsp30read_Stat() {
 
     bool sound_busy(void);
     if(!dspSleep && sound_busy()){
-        value |= DSP_DATA_HASNT_FETCHED_FLAG;
+        if(dsp_data_feeded_but_hasnt_fetched){
+            value |= DSP_DATA_HASNT_FETCHED_FLAG;
+        }
+    }else{
+        // simulate data has been consumed by dsp
+        // maybe better to do in a more real-time fashion, but seems like doing here is sufficient
+        dsp_data_feeded_but_hasnt_fetched = false; 
     }
 
     if(dsp_0xd0){ // looks like as long as dsp_0xd0 is set, it should always consider as ready. other wise yousheng will stuck
@@ -181,6 +188,7 @@ void dsp30write_reset_wake(int value) {
         dspSleep = false;
         dsp.reset();
         dspRetData = -1;
+        dsp_data_feeded_but_hasnt_fetched = false;
 
         
         if(dspTrans){ // if set to false, 有声读物 for nc2000 will stuck on quit
@@ -203,6 +211,12 @@ void dsp33write_cmd_data(int value){
         dspRetData = dsp_data_low;
         //in dspTrans mode, the data shouldn't be pass to dsp.write()
         return ;
+    }
+
+    bool sound_busy(void);
+    if(!dspSleep && sound_busy()){
+        //if(dsp.dspMode==4 || ((dsp.dspMode==1 ||dsp.dspMode==2) && value <0x60))         //for existing code, whether has this code doesn't matter
+        dsp_data_feeded_but_hasnt_fetched=true;
     }
     //for robustness, only pass the value that dsp.write() knows
     if(value==0xa0  ||(value&0xc0)|| dsp.dspMode==4 || ((dsp.dspMode==1 ||dsp.dspMode==2) && value <0x60)){
