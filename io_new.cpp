@@ -112,7 +112,9 @@ int dsp30read_Stat() {
         value|=DSP_SLEEP_FLAG; //??why
         dsp_0x91_volume_adjust=false;
     }*/
-    if(enable_debug_dsp||debug_level>=2) printf("dspStat() return %02x\n",value);
+    if(debug_level>=3) {
+        printf("dspStat() return %02x\n",value);
+    }
     return value;
 }
 

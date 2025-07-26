@@ -172,7 +172,7 @@ void callback(void* userdata, Uint8* stream, int len) {
 	}
 }*/
 const int dsp_busy_len=10000;
-
+const int dsp_drop_len=20000;
 void dsp_call_back(unsigned char *p,int len){
 	static int cnt=0;
 	cnt++;
@@ -184,7 +184,10 @@ void dsp_call_back(unsigned char *p,int len){
 			printf("audio queue drain!!! \n");
 		}
 	}
-    if(SDL_GetQueuedAudioSize( dsp_deviceId )>dsp_busy_len*1.5) {
+	 //if this is too small, then dic's repeat prounce will be cut off
+	 //if this is too large, then sound will not be stopped immediately
+	 //(if wqx program doesn't respect dsp busy, then this is last resort to stop queueing)
+    if(SDL_GetQueuedAudioSize( dsp_deviceId )>dsp_drop_len) {
 		if(enable_debug_dsp){
 			printf("audio queue dropping!!!!!!");
 		}
@@ -192,6 +195,19 @@ void dsp_call_back(unsigned char *p,int len){
     }
     SDL_QueueAudio(dsp_deviceId, p,len );
 }
+
+bool sound_busy(){
+	// this value is tricky:
+	// if too small sdl will pop because queue too small
+	// if too large, then too many queued and sound cannot be stopped immediately. 
+	// (some wqx program respect dsp busy, some doesn't)
+	if(SDL_GetQueuedAudioSize( dsp_deviceId )>dsp_busy_len) {
+		//printf("busy!!!\n");
+		return true;
+	}
+	return false;
+}
+
 
 void init_audio(){
     dsp.callback=dsp_call_back;
@@ -237,15 +253,3 @@ void init_audio(){
 	}*/
 }
 
-bool sound_busy(){
-	//try to mimic emux's behavior
-	//at the moment only for experiment
-
-	//the default value 8000/2 (equivalently 44100/2) is too small
-	//have to use large value here
-	if(SDL_GetQueuedAudioSize( dsp_deviceId )>dsp_busy_len) {
-		//printf("busy!!!\n");
-		return true;
-	}
-	return false;
-}
