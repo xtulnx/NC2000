@@ -59,6 +59,7 @@ void process_args(int argc, char *argv[])
 		{"no-nand-forced-erase", no_argument, 0, 1},
 		{"log-level", required_argument, 0, 1},
 		{"lcd-effect", required_argument, 0, 1},
+		{"log-on-key-press", required_argument, 0, 1},
 		{NULL, 0, 0, 0}
 	};
 	int option_index = 0;
@@ -246,6 +247,9 @@ void process_args(int argc, char *argv[])
 					lcd_effect_discharge_a = lcd_effect_charge_a;
 					lcd_effect_discharge_b = lcd_effect_charge_b;
 				}
+			}
+			else if (strcmp(long_options[option_index].name,"log-on-key-press")==0){
+				log_on_key_press = stoi(optarg);
 			}
 			else
 			{

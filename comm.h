@@ -91,6 +91,8 @@ extern bool sync_on_resume;
 
 extern bool enable_emulate_cks;
 
+extern int log_on_key_press;
+
 /*
 ===================
 debug related

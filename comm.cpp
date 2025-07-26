@@ -24,6 +24,8 @@ bool save_state_on_exit=false;
 bool sync_on_resume = true;
 
 bool pro_key= false;
+
+int log_on_key_press = 0;
 /*
 ===================
 debug related
