@@ -180,14 +180,20 @@ void dsp30write_reset_wake(int value) {
     if (value == DSP_RESET_FLAG || value == DSP_WAKEUP_FLAG) {
         dspSleep = false;
         dsp.reset();
+        dspRetData = -1;
 
-        //this shouln't reset dspTrans
-        /*if(dspTrans){ // if set to false, 有声读物 for nc2000 will stuck on quit
+        
+        if(dspTrans){ // if set to false, 有声读物 for nc2000 will stuck on quit
+            //for old code, if reset it stucks for sure
+            //but looks like for now it's fine
             if(debug_level>=1) printf("[dsp] got cmd %02x, get out of dsp trans\n",value);
             dspTrans=false;
-        }*/
+        }
 
-        //also shouldn't reset dsp_0x7001_0x7002 and dsp_0xd0  (not sure)
+        //for dsp_0x7001_0x7002 and dsp_0xd0, whether it reset or not doesn't matter for existing code
+        //looks like resetting make more sense
+        dsp_0x7001_0x7002=0;
+        dsp_0xd0=0;
     }
 }
 void dsp33write_cmd_data(int value){
