@@ -55,12 +55,12 @@ extern SDL_Window* window;
 
 void on_enter_consoel(){
 	SDL_StartTextInput();
-	SDL_SetWindowTitle(window, "Console");
+	//SDL_SetWindowTitle(window, "Console");
 }
 
 void on_exit_console(){
 	SDL_StopTextInput();
-	SDL_SetWindowTitle(window, get_title().c_str());
+	//SDL_SetWindowTitle(window, get_title().c_str());
 }
 
 void handle_console(signed int sym, bool key_down){
