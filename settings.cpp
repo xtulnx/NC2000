@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string>
 #include "comm.h"
+#include "dsp/dsp.h"
 using namespace std;
 extern WqxRom nc2k_rom;
 void print_help(){
@@ -247,6 +248,8 @@ void process_args(int argc, char *argv[])
 			exit(-1);
 		}
 	}
+
+	set_dsp_log_level(debug_level);
 
 	int mode_cnt=0;
 	mode_cnt+= nc1020mode;

@@ -331,7 +331,7 @@ void nand_write(uint8_t value){
                 if(warn){
                     if(debug_level>=1) printf("oops writing to non-erased byte at %x!!!!!!!!!!\n",final);
                 }
-                printf("nand program spare, offset=%x\n",final);
+                printf("[nand] program spare, offset=%x\n",final);
                 clear_nand_status();
             }
             else if(nand_cmd[0]==0x0 && nand_cmd.size()==2 && nand_addr.size()==4 && nand_data.size()==528){
@@ -349,7 +349,7 @@ void nand_write(uint8_t value){
                 unsigned int final= pos*528u+ y;
                 assert(final%(528)==0);
                 unsigned char *p=(unsigned char*)&nand[0][0];
-                printf("nand program, offset=%x\n",final);
+                printf("[nand] program, offset=%x\n",final);
 
                 bool warn=false;
                 for(int i=0;i<528;i++){
@@ -387,7 +387,7 @@ void nand_write(uint8_t value){
 
                 nand_read_cnt++;
                 char *p=&nand[0][0];
-                printf("nand erase, offset=%x\n",final);
+                printf("[nand] erase, offset=%x\n",final);
 
                 assert(final%(32*528)==0);
                 assert(final +32*528 <= sizeof(nand));

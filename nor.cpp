@@ -251,13 +251,13 @@ void write_nor0(uint16_t addr,uint8_t value){
 		assert(fp_type== NOR_CMD::BLOCK_OR_MASS_ERASE||fp_type== NOR_CMD::INFO_OR_BMASS_ERASE);
         if (addr_is_0x5555 && value == 0x10) {
             //if write to 0x5555 then it's MASS_ERASE or BMASS_ERASE
-            printf("wanna erase nor all\n");
+            printf("[nor] wanna erase all\n");
         	for (uint32_t i=0; i<num_nor_pages; i++) {
                 memset(nor_banks[i], 0xFF, 0x8000);
             }
             if (fp_type == 5) {
                 //if it's BMASS erase info block in addition erase info block
-                printf("wanna erase infoblock size 256\n");
+                printf("[nor] wanna erase infoblock size 256\n");
                 memset(nor_info_block, 0xFF, 0x100);
             }
             fp_step = 6;
@@ -267,11 +267,11 @@ void write_nor0(uint16_t addr,uint8_t value){
         else if (fp_type == BLOCK_OR_MASS_ERASE) {
             if (value == 0x30) {
                 if(nc2000mode||nc1020mode){
-                    printf("wanna erase size 2048, addr= %04x\n",addr);
+                    printf("[nor] wanna erase size 2048, addr= %04x\n",addr);
                     //memset(bank + (addr - (addr % 0x800) - 0x4000), 0xFF, 0x800);
                     memset(&memmap[addr>>13][addr&0x1800],0xff,0x800);
                 }else if(pc1000mode||nc3000mode){
-                    printf("wanna erase size 4096, addr= %04x\n",addr);
+                    printf("[nor] wanna erase size 4096, addr= %04x\n",addr);
                     memset(&memmap[addr>>13][addr&0x1000],0xff,0x1000);
                 }else assert(false);
                 fp_step = 6;
@@ -280,7 +280,7 @@ void write_nor0(uint16_t addr,uint8_t value){
             }
         } else if (fp_type == INFO_OR_BMASS_ERASE) {
             if (value == 0x30) {
-                printf("wanna erase infoblock size 256 B\n");
+                printf("[nor] wanna erase infoblock size 256 B\n");
                 memset(nor_info_block, 0xFF, 0x100);
                 fp_step = 6;
                 if(pc1000mode) reset_nor_status();
