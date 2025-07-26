@@ -78,10 +78,16 @@ void main_loop() {
     {
       last_time_rtc = current_time_rtc;
       current_time_rtc = get_current_time_milliseconds();
+      if(last_time_rtc && last_time_rtc > current_time_rtc) {
+        if(debug_level>=1) printf("oops, time goes back, last=%llu current=%llu\n",last_time_rtc,current_time_rtc);
+      }
       if(last_time_rtc && current_time_rtc - last_time_rtc > 10*1000) {
+        if(debug_level>=1) printf("detected time jump last=%llu current=%llu\n",last_time_rtc,current_time_rtc);
         //there is timejump in between, likely because of system sleep and recover
+        if(nc2000mode){
             void sync_time_2000();
-            if(enable_auto_time_sync)sync_time_2000();
+            sync_time_2000();
+        }
       }
     }
 
@@ -140,10 +146,12 @@ void main_loop() {
     }else{
       if(power_save == true) {
         power_save = false;
-        if(sync_on_resume){
-          printf("sync time on power save resume\n");
-          void sync_time_2000();
-          if(enable_auto_time_sync)sync_time_2000();
+        if(enable_auto_time_sync&&sync_on_resume){
+          if(nc2000mode){
+            printf("sync time on power save resume\n");
+            void sync_time_2000();
+            sync_time_2000();
+          }
         }
       }
     }
@@ -166,7 +174,7 @@ void main_loop() {
   }
 
   if(actual_tick < expected_tick) {
-    {SDL_Delay(expected_tick-actual_tick);}
+    SDL_Delay(expected_tick-actual_tick);
     long long exceed=current_time -start_tick  -expected_tick;
     if(exceed>10){
       if(debug_level>=1) printf("oops sleep too much %lld\n",exceed);

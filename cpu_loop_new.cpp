@@ -173,7 +173,7 @@ void setTimeRTC(){
 }
 uint8_t trigger256_cnt=0;// uint8 here, will wrap back to 0
 
-bool time_adjusted;
+bool time_adjusted=0;
 void sync_time_2000(){
 		printf("sync_time() called\n");
 		time_t current_time = time(NULL);
