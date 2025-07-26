@@ -26,6 +26,8 @@ bool sync_on_resume = true;
 bool pro_key= false;
 
 int log_on_key_press = 0;
+
+bool log_all_dsp_io = false;
 /*
 ===================
 debug related

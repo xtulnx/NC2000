@@ -46,6 +46,8 @@ bool dsp_0xd0=0;
 //dsp test
 int dsp_0x91=0;
 
+unsigned char dsp_data_low=0;
+
 // dsp functions adapted from pc1000emux
 int dsp31read_RetData() {
     if(dsp_0xd0)
@@ -124,10 +126,10 @@ void dsp30write_reset_wake(int value) {
     }
 }
 void dsp33write_cmd_data(int value){
-    ioReg[0x33] = value;
-    dspCmd(ioReg[0x33] * 256 + ioReg[0x32]);
+    //ioReg[0x33] = value;  //shouldn't be read back
+    dspCmd(value * 256 + dsp_data_low);
     if(dspTrans){
-        dspData = ioReg[0x32];
+        dspData = dsp_data_low;
     }else{
         if(value==0xd0||value==0xe0||(value==0x70&&ioReg[0x32]!=0x04)){
             if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",value,ioReg[0x32]);
@@ -141,7 +143,7 @@ void dsp33write_cmd_data(int value){
         } else if(value >=0x60){
             dsp_0x91=0;
         }
-        dsp.write(value,ioReg[0x32]);
+        dsp.write(value,dsp_data_low);
     }
 }
 
@@ -183,7 +185,7 @@ bool timeBaseEnable() {
 
 
 int io_v2_read(int address) {
-    if(address>=0x30 && address<=0x33){
+    if(nc2000mode&&log_all_dsp_io&& address>=0x30 && address<=0x33){
         printf("""[io_v2_read] address=%02x\n",address);
     }
     if(nc1020mode||nc2000mode||nc3000mode||pc1000mode){
@@ -275,7 +277,7 @@ int io_v2_read(int address) {
 }
 
 void io_v2_write(int address, int value) {
-    if(address>=0x30 && address<=0x33){
+    if(nc2000mode&&log_all_dsp_io&&address>=0x30 && address<=0x33){
         printf("[io_v2_write] address=%02x value=%02x\n",address,value);
     }
         if(nc3000mode){
@@ -344,6 +346,9 @@ void io_v2_write(int address, int value) {
             case 0x33:
                 dsp33write_cmd_data(value);
                 return;
+            case 0x32:
+                dsp_data_low=value;
+                return;
         }
     }
     if(nc1020mode||pc1000mode){
@@ -361,6 +366,9 @@ void io_v2_write(int address, int value) {
                 return;
             case 0x23://0x23
                 dsp33write_cmd_data(value);
+                return;
+            case 0x22://0x22
+                dsp_data_low=value;
                 return;
         }
     }

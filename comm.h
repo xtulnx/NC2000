@@ -93,6 +93,8 @@ extern bool enable_emulate_cks;
 
 extern int log_on_key_press;
 
+extern bool log_all_dsp_io;
+
 /*
 ===================
 debug related
