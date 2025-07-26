@@ -71,11 +71,6 @@ int dsp30read_Stat() {
     const int DSP_DATA_FETCHED_FLAG = 0x30;
 
     int value = 0;
-    if(nc2000mode||nc3000mode){
-        //value=ram_io[0x30];
-        //value &=~DSP_SLEEP_FLAG;
-        //value &=~0x30;
-    }
     if (dspSleep)
         value |= DSP_SLEEP_FLAG;
 
@@ -87,7 +82,7 @@ int dsp30read_Stat() {
         value|=0x30;
         dsp_0xe0=0;
     }*/
-    if(pc1000mode||dspTrans||dsp_0xd0||dsp_0x7001_0x7002){
+    if(dspTrans||dsp_0xd0||dsp_0x7001_0x7002){
 	    value |= DSP_RETURN_DATA_READY_FLAG;
     }
     if(dsp_0x91_volume_adjust==true){
