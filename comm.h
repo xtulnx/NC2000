@@ -175,6 +175,11 @@ extern string lcdstripe_suffix;
 
 extern bool pro_key;
 
+extern int lcd_effect_charge_a;
+extern int lcd_effect_charge_b;
+extern int lcd_effect_discharge_a;
+extern int lcd_effect_discharge_b;
+
 //const uint32_t FRAME_RATE=40;   //how many frames in a second
 //const uint32_t FRAME_FACTOR=SLICE_RATE/FRAME_RATE;
 

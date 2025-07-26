@@ -59,7 +59,7 @@ int debug_level = 0;
 emulation parameter
 ===================
 */
-uint32_t SLICE_INTERVAL= 5;  //10ms
+uint32_t SLICE_INTERVAL= 5;  //unit ms
 int power_save_interval=1200;
 uint32_t cpu_batch=64;
 
@@ -116,10 +116,14 @@ int lcd_scale=1;
 int total_size;
 
 bool enable_lcd_latency_effect = true;
-uint32_t LCD_INNER_REFRESH_INTERVAL=8; //refresh every 8ms
+uint32_t LCD_INNER_REFRESH_INTERVAL=8; //unit ms
 uint32_t LCD_OUTER_REFRESH_INTERVAL=16;
 string lcdstripe_suffix="w1313";
 
+int lcd_effect_charge_a=1;
+int lcd_effect_charge_b=6;
+int lcd_effect_discharge_a=1;
+int lcd_effect_discharge_b=8;
 /*
 ===================
 misc

@@ -58,6 +58,7 @@ void process_args(int argc, char *argv[])
 		{"pro-keyboard", no_argument, 0, 1},
 		{"no-nand-forced-erase", no_argument, 0, 1},
 		{"log-level", required_argument, 0, 1},
+		{"lcd-effect", required_argument, 0, 1},
 		{NULL, 0, 0, 0}
 	};
 	int option_index = 0;
@@ -233,6 +234,18 @@ void process_args(int argc, char *argv[])
 			}
 			else if (strcmp(long_options[option_index].name,"log-level")==0){
 				debug_level = stoi(optarg);
+			}
+			else if (strcmp(long_options[option_index].name,"lcd-effect")==0){
+				string effect = optarg;
+				if(effect.find(",")!=string::npos){
+					sscanf(effect.c_str(),"%d/%d,%d/%d",
+						&lcd_effect_charge_a, &lcd_effect_charge_b,
+						&lcd_effect_discharge_a, &lcd_effect_discharge_b);
+				}else{
+					sscanf(effect.c_str(),"%d/%d", &lcd_effect_charge_a, &lcd_effect_charge_b);
+					lcd_effect_discharge_a = lcd_effect_charge_a;
+					lcd_effect_discharge_b = lcd_effect_charge_b;
+				}
 			}
 			else
 			{

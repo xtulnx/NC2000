@@ -25,24 +25,27 @@ inline void handle_pixel(int u,int v,const unsigned char * color_arr[], int idx)
         memcpy(p[u][v], color_arr[idx], 4);
     }else{
       for(int i=1;i<4;i++){
-        if(color_arr[idx][i]>p[u][v][i]){
-          unsigned char delta=color_arr[idx][i]-p[u][v][i];
-          //delta=delta*1/8;
-          delta>>=3;
-          if(delta==0) delta++;
-          p[u][v][i]+=delta;
-            /*int tmp=p[u][v][i]+30;
-            if(tmp >color_arr[idx][i]) tmp=color_arr[idx][i];
-            p[u][v][i]=tmp;*/
-        }
-        else if( color_arr[idx][i]<p[u][v][i] ){
+        if( color_arr[idx][i]<p[u][v][i] ){//value smaller means darker, which mean higher voltage on wqx
+          //voltage increasing
           unsigned char delta=p[u][v][i]- color_arr[idx][i];
           //delta=delta*1/4;
-          delta>>=2;
+          delta*=lcd_effect_charge_a;
+          delta/=lcd_effect_charge_b;
           if(delta==0) delta++;
           p[u][v][i]-=delta;
             /*int tmp=p[u][v][i]-100;
             if(tmp <color_arr[idx][i]) tmp=color_arr[idx][i];
+            p[u][v][i]=tmp;*/
+        }if(color_arr[idx][i]>p[u][v][i]){
+          //voltage reducing
+          unsigned char delta=color_arr[idx][i]-p[u][v][i];
+          //delta=delta*1/8;
+          delta*=lcd_effect_discharge_a;
+          delta/=lcd_effect_discharge_b;
+          if(delta==0) delta++;
+          p[u][v][i]+=delta;
+            /*int tmp=p[u][v][i]+30;
+            if(tmp >color_arr[idx][i]) tmp=color_arr[idx][i];
             p[u][v][i]=tmp;*/
         }else{
         }
