@@ -68,20 +68,17 @@ void Render(uint64_t expected_tick) {
   SDL_Texture *texture;
   static SDL_Rect source = { 0, 0, SCREEN_WIDTH*total_size, SCREEN_HEIGHT*total_size };
   unsigned char* bytes = nullptr;
+  int pitch = 0;
   bool do_SDL_refresh = (expected_tick/LCD_OUTER_REFRESH_INTERVAL != (expected_tick+SLICE_INTERVAL)/LCD_OUTER_REFRESH_INTERVAL);
   if(do_SDL_refresh){
-  SDL_RenderSetLogicalSize(renderer, lcdview->getLCDWidth(), lcdview->getLCDHeight());
-  lcdview->paint(renderer, true);
+    SDL_RenderSetLogicalSize(renderer, lcdview->getLCDWidth(), lcdview->getLCDHeight());
+    lcdview->paint(renderer, true, !console_on);
 
-  SDL_RenderSetLogicalSize(renderer, (SCREEN_WIDTH +LEFT_GAP +RIGHT_GAP-1) * lcd_scale *total_size+ (LEFT_GAP_EXTRA+RIGHT_GAP_EXTRA)*lcd_scale, SCREEN_HEIGHT * lcd_scale *total_size);
-  //SDL_RenderClear(renderer);
-  texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
+    SDL_RenderSetLogicalSize(renderer, (SCREEN_WIDTH +LEFT_GAP +RIGHT_GAP-1) * lcd_scale *total_size+ (LEFT_GAP_EXTRA+RIGHT_GAP_EXTRA)*lcd_scale, SCREEN_HEIGHT * lcd_scale *total_size);
+    //SDL_RenderClear(renderer);
+    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
     SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH*total_size, SCREEN_HEIGHT*total_size);
-
-  
-  int pitch = 0;
-
-  SDL_LockTexture(texture, &source, reinterpret_cast<void**>(&bytes), &pitch);
+    SDL_LockTexture(texture, &source, reinterpret_cast<void**>(&bytes), &pitch);
   }
   
   static const unsigned char colors[4]={245,180,105,0};
@@ -193,6 +190,7 @@ void Render(uint64_t expected_tick) {
     { LEFT_GAP* lcd_scale *total_size + LEFT_GAP_EXTRA*lcd_scale, 0, (SCREEN_WIDTH -1)* lcd_scale *total_size, SCREEN_HEIGHT * lcd_scale *total_size };
   if(console_on) SDL_RenderCopy(renderer, texture, &source, &destination);
   else SDL_RenderCopy(renderer, texture, &source2, &destination2);
+
   SDL_RenderPresent(renderer);
   SDL_DestroyTexture(texture);
 }

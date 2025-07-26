@@ -287,7 +287,7 @@ void MyLCDView::setPixel(int x, int y, unsigned char value)
     fPixel[y * 160 + x] = value;
 }
 
-void MyLCDView::paint(SDL_Renderer* render, bool lcdon)
+void MyLCDView::paint(SDL_Renderer* render, bool lcdon, bool draw_stripe)
 {
     SDL_SetTextureBlendMode(fLCDTexture, SDL_BLENDMODE_NONE);
     //SDL_SetRenderDrawColor(render, 0xFF, 0xFD, 0xE8, 0xFF);
@@ -298,6 +298,8 @@ void MyLCDView::paint(SDL_Renderer* render, bool lcdon)
         auto a=SDL_Rect{ 0, 0, fLCDEmpty.w,fLCDEmpty.h };
         SDL_RenderCopy(render, fLCDTexture, &fLCDEmpty, &a);
     }
+
+    if(!draw_stripe) return;
 
     for (int y = 79; y >= 0; y--) {
         unsigned char pixel = fPixel[160 * y];

@@ -25,7 +25,7 @@ private:
 public:
     void loadStripeTexture(const char * texpath, SDL_Renderer* render);
     void setPixel(int x, int y, unsigned char);
-    void paint(SDL_Renderer* render, bool lcdon);
+    void paint(SDL_Renderer* render, bool lcdon, bool draw_stripe);
     int getLCDWidth();
     int getLCDHeight();
 private:

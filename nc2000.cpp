@@ -16,6 +16,7 @@
 #include <deque>
 #include "sound.h"
 #include "compare/c6502.h"
+#include "console.h"
 extern WqxRom nc2k_rom;
 
 nc2k_states_t nc2k_states;
@@ -167,6 +168,7 @@ void SaveNC1020(){
 }*/
 
 bool is_grey_mode(){
+	if(console_on) return false;
     extern unsigned short lcdbuffaddr;
     extern unsigned short lcdbuffaddrmask;
 	unsigned short lcd_addr = lcdbuffaddr&lcdbuffaddrmask;

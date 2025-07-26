@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include "comm.h"
+#include <SDL_keyboard.h>
 #include <SDL_keycode.h>
 #include <map>
 #include "compare/pc1000bus.h"
@@ -357,12 +358,7 @@ void SetKeyWayback(int code_y,int code_x, bool down_or_up){
     }
 
 }
-static bool shift_down =false;;
 void handle_key_wayback(signed int sym, bool key_down){
-        if(sym==SDLK_LSHIFT || sym==SDLK_RSHIFT){
-          shift_down=key_down;
-          return;
-        }
         /*if(enable_debug_key_shoot){
           printf("event <%d,%d; %llu>\n", sym,key_down,SDL_GetTicks64()%1000);
         }*/
@@ -385,11 +381,6 @@ void handle_key_wayback(signed int sym, bool key_down){
                 printf("[keyboard] pro mode %s\n", pro_key ? "on" : "off");
                 init_keyitems();
                 //enable_dyn_debug^= 0x1;
-              }
-            }else{
-              if(key_down==1){
-                console_on^= 0x1;
-                printf("console %s\n", console_on ? "on" : "off");
               }
             }
             break;

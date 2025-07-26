@@ -216,6 +216,7 @@ misc
 ===================
 */
 const int int_inf=10*10000*10000;
+extern bool shift_down;
 /*
 ===================
 common functions

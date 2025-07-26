@@ -117,6 +117,14 @@ uint32_t LCD_INNER_REFRESH_INTERVAL=8; //refresh every 8ms
 uint32_t LCD_OUTER_REFRESH_INTERVAL=16;
 string lcdstripe_suffix="w1313";
 
+/*
+===================
+misc
+===================
+*/
+bool shift_down =false;;
+
+
 
 WqxRom nc2k_rom;
 

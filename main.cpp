@@ -2,6 +2,7 @@
 #include "comm.h"
 #include "dsp/dsp.h"
 #include "nc2000.h"
+#include <SDL_events.h>
 #include <SDL_keycode.h>
 #include <cstring>
 #include <iostream>
@@ -12,6 +13,7 @@
 #include "key_new.h"
 #include "settings.h"
 #include "display.h"
+#include "console.h"
 
 using namespace std;
 
@@ -104,8 +106,21 @@ void main_loop() {
         //not sure if necessary. But it's helpful for debug
         mp[event.key.keysym.sym]= key_down;
         for(auto it=mp.begin();it!=mp.end();it++){
+          if(it->first==SDLK_LSHIFT || it->first==SDLK_RSHIFT){
+            shift_down=it->second;
+            continue;
+          }
+          bool console_on_saved=console_on;
+          handle_console(it->first, it->second);
+          if(console_on_saved){
+            continue;
+          }
           if(use_legacy_key_io) handle_key(it->first, it->second);
           else handle_key_wayback(it->first,it->second);
+        }
+      } else if (event.type == SDL_TEXTINPUT) {
+        if(console_on){
+          console_input += event.text.text;
         }
       }
     }
