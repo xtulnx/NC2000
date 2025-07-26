@@ -119,9 +119,7 @@ void main_loop() {
           else handle_key_wayback(it->first,it->second);
         }
       } else if (event.type == SDL_TEXTINPUT) {
-        if(console_on){
-          console_input += event.text.text;
-        }
+        input_text(event.text.text);
       }
     }
 
