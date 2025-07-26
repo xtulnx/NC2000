@@ -92,13 +92,16 @@ READ:
    STA $3FFF
    LDA $3200
    STA $3FFF
-   JMP READ
+   CLV
+   BVC READ
 PREEND:
      LDA #$0
      STA $3FFF  ;indicate dummy close
      INT $0516  ;close file
-END: INT $0527  ;open file manager
-     JMP END  
+END:
+     INT $C001
+;END: INT $0527  ;open file manager
+;     JMP END  
 */
 
 
@@ -180,13 +183,16 @@ READ:
    STA $3FFF
    LDA $3200
    STA $3FFF
-   JMP READ
+   CLV
+   BVC READ
 PREEND:
-     LDA #$0
-     STA $3FFF  ;indicate dummy close
-     INT $0516  ;close file
-END: INT $0528  ;open file manager
-     JMP END  
+   LDA #$0
+   STA $3FFF  ;indicate dummy close
+   INT $0516  ;close file
+END:
+   INT $C001
+;END: INT $0528  ;open file manager
+;     JMP END  
 */
 
 /*=======
