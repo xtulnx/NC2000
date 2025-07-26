@@ -10,7 +10,7 @@ extern "C" {
 #include "state.h"
 #include <mutex>
 
-#include "console.h"
+#include "cmd.h"
 #include <thread>
 #include "CC800IOName.h"
 #include "compare/ibus6502.h"

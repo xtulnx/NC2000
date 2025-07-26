@@ -1,6 +1,6 @@
 #include "comm.h"
 #include <thread>
-#include "console.h"
+#include "cmd.h"
 
 #if defined(__MINGW32__)
 #include <winsock2.h>

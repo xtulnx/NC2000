@@ -2,7 +2,7 @@
 #include "comm.h"
 #include "cpu.h"
 #include "mem.h"
-#include "console.h"
+#include "cmd.h"
 #include "ram.h"
 #include "state.h"
 #include "disassembler.h"
