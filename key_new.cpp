@@ -378,7 +378,7 @@ void handle_key_wayback(signed int sym, bool key_down){
             if(shift_down){
               if(key_down==1){
                 pro_key^= 0x1;
-                printf("[keyboard] pro mode %s\n", pro_key ? "on" : "off");
+                printf("pro_key %s\n", pro_key ? "on" : "off");
                 init_keyitems();
                 extern SDL_Window* window;
                 SDL_SetWindowTitle(window, get_title().c_str());
@@ -391,7 +391,7 @@ void handle_key_wayback(signed int sym, bool key_down){
             if(key_down==1){
                 extern bool fast_forward;
                 fast_forward^= 0x1;
-                printf("fast forward %s\n", fast_forward ? "on" : "off");
+                printf("fast_forward %s\n", fast_forward ? "on" : "off");
                 extern SDL_Window* window;
                 SDL_SetWindowTitle(window, get_title().c_str());
             }

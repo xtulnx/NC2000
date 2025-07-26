@@ -114,7 +114,7 @@ uint8_t read_nand(){
         ALE = ram_io[0x18]&0x10;
         CE = ram_io[0x18]&0x04;
         if(CE) {
-            printf("read while no CE\n");
+            if(debug_level>=1) printf("read while no CE\n");
         }
     }
     if(nc2000mode){
@@ -122,11 +122,11 @@ uint8_t read_nand(){
         ALE = ram_io[0x18]&0x02;
         CE = ram_io[0x18]&0x40;
         if(CE) {
-            printf("read while no CE\n");
+            if(debug_level>=1) printf("read while no CE\n");
         }
     }
     if(CLE && ALE){
-        printf("oops, in nand read, both CLE and ALE true!\n");
+        if(debug_level>=1) printf("oops, in nand read, both CLE and ALE true!\n");
     }
 
     //printf("tick=%lld, read %x  %02x\n",tick, addr, ram_io[addr]);
@@ -138,7 +138,7 @@ uint8_t read_nand(){
      if(enable_debug_nand) printf("tick=%llu read $29\n",tick%10000);
 
     if(nand_cmd.size()==0) {
-        printf("oops! no nand cmd %d %d %d\n",CLE,ALE,CE);
+        if(debug_level>=1) printf("oops! no nand cmd %d %d %d\n",CLE,ALE,CE);
         return 0xff;
     }
     assert(nand_cmd.size()>0);
@@ -226,7 +226,7 @@ uint8_t read_nand(){
         unsigned int final= pos*528u+ y +nand_read_cnt;
         if(nand_read_cnt!=0||cmd!=0){
             //assert(final%528!=0);
-            if(final%528==0) printf("warn: read %04x accross 528 boundary\n",final);
+            if(final%528==0) if(debug_level>=1) printf("warn: read %04x accross 528 boundary\n",final);
         }
 
 
@@ -275,7 +275,7 @@ void nand_write(uint8_t value){
         CE = ram_io[0x18]&0x40;
     }
     if(CLE && ALE){
-        printf("oops, in nand write, both CLE and ALE true!\n");
+        if(debug_level>=1) printf("oops, in nand write, both CLE and ALE true!\n");
         return;
     }
 
@@ -329,7 +329,7 @@ void nand_write(uint8_t value){
                     p[final+i]&=nand_data[i];
                 }
                 if(warn){
-                    printf("oops writing to non-erased byte at %x!!!!!!!!!!\n",final);
+                    if(debug_level>=1) printf("oops writing to non-erased byte at %x!!!!!!!!!!\n",final);
                 }
                 printf("nand program spare, offset=%x\n",final);
                 clear_nand_status();
@@ -361,7 +361,7 @@ void nand_write(uint8_t value){
                     p[final+i]&=nand_data[i];
                 }
                 if(warn){
-                    printf("oops writing to non-erased byte at %x!!!!!!!!!!\n",final);
+                    if(debug_level>=1) printf("oops writing to non-erased byte at %x!!!!!!!!!!\n",final);
                 }
                 clear_nand_status();
             }
@@ -387,7 +387,7 @@ void nand_write(uint8_t value){
 
                 nand_read_cnt++;
                 char *p=&nand[0][0];
-                printf("nand erase!!! %x tick=%lld pc=%x %x\n",final,tick, mPC, ram_io[0x00]);
+                printf("nand erase, offset=%x\n",final);
 
                 assert(final%(32*528)==0);
                 assert(final +32*528 <= sizeof(nand));

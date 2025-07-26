@@ -283,7 +283,7 @@ void io_v2_write(int address, int value) {
                     dspData = ioReg[0x32];
                 }else{
                     if(value==0xd0){
-                        printf("[DSP] got dsp cmd %02x %02x\n",value,ioReg[0x32]);
+                        if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",value,ioReg[0x32]);
                         dsp_0xd0=1;
                     }else if(value >=0x60){
                         dsp_0xd0=0;

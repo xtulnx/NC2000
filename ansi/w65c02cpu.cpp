@@ -62,7 +62,7 @@ void CpuInitialize()
     mOpcode = 0;
     mOperand = 0;
     mPC = CPU_PEEKW(BOOT_VECTOR);
-    printf("<pc=%d>\n",mPC);
+    //printf("<pc=%d>\n",mPC);
     mN = FALSE;
     mV = FALSE;
     mB = FALSE;

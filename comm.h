@@ -146,6 +146,8 @@ extern double timer01_speed_fix;
 extern bool forced_erase_before_write;
 
 extern bool fast_forward;
+
+extern int debug_level;
 /*
 ===================
 display related

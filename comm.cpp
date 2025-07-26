@@ -52,6 +52,8 @@ bool enable_debug_dsp=false;
 bool enable_debug_timer=false;
 bool enable_debug_cks = false;
 
+int debug_level = 0;
+
 /*
 ===================
 emulation parameter

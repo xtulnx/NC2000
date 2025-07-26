@@ -232,7 +232,7 @@ void handle_cmd(string str){
 	}
 
 	if(cmds[0]=="create_dir" || cmds[0]=="create_dir_hex"){
-			printf("<pc=%x>\n",cpu->PC);
+			//printf("<pc=%x>\n",cpu->PC);
 			cpu->PC=0x3000;
 			string dir_name=cmds[1];
 			if(cmds[0]=="create_dir_hex"){

@@ -57,12 +57,13 @@ void process_args(int argc, char *argv[])
 		{"debug-cks", no_argument,    0, 1},
 		{"pro-keyboard", no_argument,    0, 1},
 		{"no-nand-forced-erase", no_argument,    0, 1},
+		{"log-level", required_argument, 0, 1},
 		{NULL, 0, 0, 0}
       };
     int option_index = 0;
 	if (argc == 1)
 	{
-        printf("no argument provided\n");
+        //printf("no argument provided\n");
 	}
 	for (i = 0; i < argc; i++)
 	{
@@ -229,6 +230,9 @@ void process_args(int argc, char *argv[])
 			}
 			else if (strcmp(long_options[option_index].name,"no-nand-forced-erase")==0){
 				forced_erase_before_write = false;
+			}
+			else if (strcmp(long_options[option_index].name,"log-level")==0){
+				debug_level = stoi(optarg);
 			}
 			else
 			{

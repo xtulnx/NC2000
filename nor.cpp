@@ -107,7 +107,7 @@ bool read_nor(uint16_t addr, uint8_t &value){
         return true;
     }
     if(fp_type == NOR_CMD::SW_ID && fp_step==3){
-        printf("FIXME, got NOR_CMD::SW_ID !!!!!!!! addr=%04x\n",addr);
+        if(debug_level>=1) printf("FIXME, got NOR_CMD::SW_ID !!!!!!!! addr=%04x\n",addr);
         //assert(false);
         if(addr==0x8000) {
             if(pc1000mode){
@@ -149,7 +149,7 @@ void write_nor0(uint16_t addr,uint8_t value){
 
 	if(nc1020mode||nc2000mode||nc3000mode){
 		if (bank_idx >= 0x80 && addr>=0x4000 && addr<=0xbfff) {
-			printf("oops, suspicious write to nor, bank_idx=%02x, addr=%04x\n",bank_idx, addr);
+			if(debug_level>=1) printf("oops, suspicious write to nor, bank_idx=%02x, addr=%04x\n",bank_idx, addr);
 			/*
 			Peek16(addr) = value;
 			if (addr == 0x8000 && value == 0xF0) {
@@ -163,7 +163,7 @@ void write_nor0(uint16_t addr,uint8_t value){
 		//assert(addr>=0x4000&& addr<=0xbfff);
 	}
     if (bank_idx >= num_nor_pages) {
-        printf("oops, in nor write, bank_idx>=num_nor_pages, bank_idx=%02x\n",bank_idx);
+        if(debug_level>=1) printf("oops, in nor write, bank_idx>=num_nor_pages, bank_idx=%02x\n",bank_idx);
         //note: bank_idx is not really used in below code
         return;
     }
@@ -251,8 +251,8 @@ void write_nor0(uint16_t addr,uint8_t value){
 		assert(fp_type== NOR_CMD::BLOCK_OR_MASS_ERASE||fp_type== NOR_CMD::INFO_OR_BMASS_ERASE);
         if (addr_is_0x5555 && value == 0x10) {
             //if write to 0x5555 then it's MASS_ERASE or BMASS_ERASE
+            printf("wanna erase nor all\n");
         	for (uint32_t i=0; i<num_nor_pages; i++) {
-				printf("wanna erase all\n");
                 memset(nor_banks[i], 0xFF, 0x8000);
             }
             if (fp_type == 5) {
@@ -294,7 +294,7 @@ void write_nor0(uint16_t addr,uint8_t value){
         return;
     }
     
-    printf("error occurs when operate in flash! addr=%04x value=%02x; fp_step=%d tp_type=%d\n",addr,value,fp_step,fp_type);
+    if(debug_level>=1) printf("error occurs when operate in flash! addr=%04x value=%02x; fp_step=%d tp_type=%d\n",addr,value,fp_step,fp_type);
 }
 
 bool write_nor(uint16_t addr, uint8_t value){

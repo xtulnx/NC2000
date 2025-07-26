@@ -241,7 +241,7 @@ void cpu_run3(){
 		{
 			if(cmd=="file_manager"||cmd=="put"||cmd=="get"){
 				speed_scaledown=1;
-				printf("set cks to highest\n");
+				if(debug_level>=1) printf("set cks to highest\n");
 			}
 			string msg=get_message();
 			if(!msg.empty()){
@@ -359,7 +359,7 @@ void cpu_run3(){
 		if(nc1020mode||nc2000mode||nc3000mode){
 			if(trigger256_cnt%128==0){
 				if(trigger256_cnt==0&& chk_ar()){
-					printf("chk_ar() return true!\n");
+					if(debug_level>=1) printf("chk_ar() return true!\n");
 					ram_io[0x3d] = 0x10;
 					interr_flag&=0xfd;	
 					try_soft_reset();
@@ -375,7 +375,7 @@ void cpu_run3(){
 			if(trigger256_cnt%128==64){ //avoid nmi triggerd at same time as rtc irq
 				if (nmiEnable()){
 					if(nc1020mode||nc2000mode||nc3000mode){
-						printf("nmi!\n");
+						if(debug_level>=1) printf("nmi!\n");
 					}
 					cpu->NMI();
 				}

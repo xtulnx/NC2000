@@ -169,7 +169,7 @@ void main_loop() {
     {SDL_Delay(expected_tick-actual_tick);}
     long long exceed=current_time -start_tick  -expected_tick;
     if(exceed>10){
-      printf("oops sleep too much %lld\n",exceed);
+      if(debug_level>=1) printf("oops sleep too much %lld\n",exceed);
     }
   }
 
@@ -187,7 +187,7 @@ int main(int argc, char* args[]) {
   SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
 #endif
   int res1=SDL_SetThreadPriority(SDL_THREAD_PRIORITY_TIME_CRITICAL);
-  printf("SDL_SetThreadPriority returned %d\n", res1);
+  if(debug_level>=1) printf("SDL_SetThreadPriority returned %d\n", res1);
 
   if(listen_port>0) init_udp_server(listen_port);
   init_keyitems();

@@ -90,7 +90,7 @@ void delete_state(string file_name){
 	if(remove(file_name.c_str())==0){
 		printf("state file %s deleted!\n",file_name.c_str());
 	}else{
-		printf("state file %s not exist!\n",file_name.c_str());
+		printf("state file %s not exist or no permission to delete!\n",file_name.c_str());
 	}
 }
 
