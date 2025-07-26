@@ -43,13 +43,21 @@ static unsigned char* ioReg=nc2k_states.ram_io;
 ////不处理这个有声读物会死机
 bool dsp_0xd0=0;
 
+//dsp test
+int dsp_0x91=0;
+
 // dsp functions adapted from pc1000emux
 int dspRetData() {
+    if(dsp_0xd0)
+    {
+        return 0x6;
+    }
 	int ret=dspData;
 	if (ret==0x5a)
 		dspData=0xff;
 	else
 		dspData=0;
+
 	return ret;
 }
 
@@ -70,8 +78,16 @@ int dspStat() {
     if(!dspSleep && sound_busy()){
         value |= 0x30;
     }
+    /*if(dsp_0xe0==2){
+        value|=0x30;
+        dsp_0xe0=0;
+    }*/
     if(pc1000mode||dspTrans||dsp_0xd0){
 	    value |= 0x40;
+    }
+    if(dsp_0x91==1){
+        value|=0x80;
+        dsp_0x91=0;
     }
     if(enable_debug_dsp) printf("dspStat() return %02x\n",value);
     return value;
@@ -133,6 +149,9 @@ bool timeBaseEnable() {
 
 
 int io_v2_read(int address) {
+    if(address>=0x30 && address<=0x33){
+        printf("""[io_v2_read] address=%02x\n",address);
+    }
     if(nc1020mode||nc2000mode||nc3000mode||pc1000mode){
         if(address==0x04) return Read04StopTimer0(address);
         if(address==0x05) return Read05StartTimer0(address);
@@ -222,6 +241,9 @@ int io_v2_read(int address) {
 }
 
 void io_v2_write(int address, int value) {
+    if(address>=0x30 && address<=0x33){
+        printf("[io_v2_write] address=%02x value=%02x\n",address,value);
+    }
         if(nc3000mode){
         if(address==0x05){
             uint8_t cks=value>>5;
@@ -295,11 +317,17 @@ void io_v2_write(int address, int value) {
                 if(dspTrans){
                     dspData = ioReg[0x32];
                 }else{
-                    if(value==0xd0){
+                    if(value==0xd0||value==0xe0||value==0x70){
                         if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",value,ioReg[0x32]);
                         dsp_0xd0=1;
-                    }else if(value >=0x60){
+                    } else if(value >=0x60){
                         dsp_0xd0=0;
+                    }
+                    if(value==0x91){
+                        if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",value,ioReg[0x32]);
+                        dsp_0x91=1;
+                    } else if(value >=0x60){
+                        dsp_0x91=0;
                     }
                     dsp.write(value,ioReg[0x32]);
                 }

@@ -375,7 +375,7 @@ void handle_key_wayback(signed int sym, bool key_down){
         }
         if(log_on_key_press && sym== log_on_key_press){
           if(key_down && shift_down){
-            enable_dyn_debug_next_n=1000000;
+            enable_dyn_debug_next_n=10*1000000;
           }
         }
         switch ( sym) {
