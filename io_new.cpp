@@ -41,25 +41,30 @@ bool dsp_0xd0=0;
 
 int dsp_0x7001_0x7002=0;
 
-bool dsp_0x91_volume_adjust=false;
+//bool dsp_0x91_volume_adjust=false;
 
 unsigned char dsp_data_low=0;
 
 // dsp functions adapted from pc1000emux
 int dsp31read_RetData() {
-    if(dsp_0x7001_0x7002)
-    {
-        dsp_0x7001_0x7002=0;
-        return 0x6;
+    //dsp_0x7001_0x7002=0;   //looks like it doesn't matter whether reset on read
+
+    //dsp_0xd0=0; //if this is reset, then 有声读物 for nc2000 will stuck
+    //dspTrans shound't be reset 
+
+    if(dspRetData==-1){ // indicates no data to return
+        return 0xff;
     }
     int ret=dspRetData;
-	if (dspRetData==0x5a)
+    dspRetData=-1;
+    
+	/*if (dspRetData==0x5a)  //old code, looks like no need to do special handling
     {
         //printf("!!!0x5a!!!!\n");
         dspRetData=0xff;
     }else{
-        dspRetData=0;
-    }
+        dspRetData=0x00;
+    }*/
 
 	return ret;
 }
@@ -68,28 +73,39 @@ int dsp31read_RetData() {
 int dsp30read_Stat() {
     const int DSP_SLEEP_FLAG = 0x80;
     const int DSP_RETURN_DATA_READY_FLAG = 0x40;
-    const int DSP_DATA_FETCHED_FLAG = 0x30;
+    const int DSP_DATA_HASNT_FETCHED_FLAG = 0x30;
 
     int value = 0;
+
     if (dspSleep)
         value |= DSP_SLEEP_FLAG;
 
     bool sound_busy(void);
     if(!dspSleep && sound_busy()){
-        value |= DSP_DATA_FETCHED_FLAG;
+        value |= DSP_DATA_HASNT_FETCHED_FLAG;
     }
-    /*if(dsp_0xe0==2){
-        value|=0x30;
-        dsp_0xe0=0;
-    }*/
-    if(dspTrans||dsp_0xd0||dsp_0x7001_0x7002){
-	    value |= DSP_RETURN_DATA_READY_FLAG;
+
+    if(dsp_0xd0){ // looks like as long as dsp_0xd0 is set, it should always consider as ready. other wise yousheng will stuck
+        value |= DSP_RETURN_DATA_READY_FLAG;
     }
-    if(dsp_0x91_volume_adjust==true){
+
+    if(dsp_0x7001_0x7002){
+        //if(dspRetData!=-1){ //if use the if, it also works.  to keep consistent with dsp_0xd0, don't use if for now
+            value |= DSP_RETURN_DATA_READY_FLAG;
+        //}
+    }
+
+    if(dspTrans){
+        if(dspRetData!=-1){  // if omit this if, it also seems to work for all existing codes
+	        value |= DSP_RETURN_DATA_READY_FLAG;
+        }
+    }
+    /* 
+    if(dsp_0x91_volume_adjust==true){ //a hack that doesn't need any more
         value|=DSP_SLEEP_FLAG; //??why
         dsp_0x91_volume_adjust=false;
-    }
-    if(enable_debug_dsp||debug_level>=1) printf("dspStat() return %02x\n",value);
+    }*/
+    if(enable_debug_dsp||debug_level>=2) printf("dspStat() return %02x\n",value);
     return value;
 }
 
@@ -97,17 +113,17 @@ void dspCmd(int high, int low) {
     int cmd= high * 256 + low;
     if(cmd==0xffff){
         if(dspTrans){
-            if(debug_level>=1) printf("[dsp] got cmd 0xffff, get out of dsp trans\n");
+            if(debug_level>=1) printf("[dsp] get out of dsp trans because of 0xffff\n");
             dspTrans=false;
         }
     }
 
     if(cmd== 0x8000){ //SLEEP
-            if(debug_level>=1)printf("[dsp] got cmd 0x8000, enable dsp sleep\n");
+            if(debug_level>=2)printf("[dsp] got cmd 0x8000, enable dsp sleep\n");
             dspSleep = true;
     }
 
-    if(dspTrans){ // if in dspTrans mode, then shouldn't hanlde other command
+    if(dspTrans){ // if in dspTrans mode, then shouldn't hanlde below commands
         return ;
     }
     
@@ -116,23 +132,25 @@ void dspCmd(int high, int low) {
         dspRetData = 0x5a;     // after 0xd001, dsp ret will return 0x5a and 0xff in turn
         if(debug_level>=1){
             printf("[DSP] got dsp cmd %02x %02x\n",high,dsp_data_low);
-            if(cmd!=0xd001) printf("[DSP] oops, got d0 but not d001 %04x!!!!!!!!!\n",cmd);
+            if(cmd==0xd000 && debug_level>=2) printf("[DSP] got d000\n"); // this is seen in 报时 and calculator
+            if(cmd!=0xd001 && cmd!=0xd000) printf("[DSP] oops, got d0 but not d001 or d000 %04x!!!!!!!!!\n",cmd);
         }
         dsp_0xd0=1;
     }else if(high >0x60){
         dsp_0xd0=0;
     }
 
-    if(high==0x91){
+    /*if(high==0x91){
         //if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",value,dsp_data_low);
         dsp_0x91_volume_adjust=true;
     } else if(high >=0x60){
         dsp_0x91_volume_adjust=false;
-    }
+    }*/
 
     if(high==0x70){
         if(dsp_data_low==0x01 ||dsp_data_low==0x02){
             dsp_0x7001_0x7002=1;
+            dspRetData=0x06;
         }else{
             dsp_0x7001_0x7002=0;
         }
@@ -154,13 +172,14 @@ void dsp30write_reset_wake(int value) {
     if (value == DSP_RESET_FLAG || value == DSP_WAKEUP_FLAG) {
         dspSleep = false;
         dsp.reset();
-        //dsp_0x91=0;
-        //dsp_0xd0=0;
 
+        //this shouln't reset dspTrans
         /*if(dspTrans){ // if set to false, 有声读物 for nc2000 will stuck on quit
             if(debug_level>=1) printf("[dsp] got cmd %02x, get out of dsp trans\n",value);
             dspTrans=false;
         }*/
+
+        //also shouldn't reset dsp_0x7001_0x7002 and dsp_0xd0  (not sure)
     }
 }
 void dsp33write_cmd_data(int value){
@@ -171,10 +190,15 @@ void dsp33write_cmd_data(int value){
         //in dspTrans mode, the data shouldn't be pass to dsp.write()
         return ;
     }
+    //for robustness, only pass the value that dsp.write() knows
     if(value==0xa0  ||(value&0xc0)|| dsp.dspMode==4 || ((dsp.dspMode==1 ||dsp.dspMode==2) && value <0x60)){
         dsp.write(value,dsp_data_low);
     }else{
-        if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",value,dsp_data_low);
+        if(dsp.dspMode!=0){
+            if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",value,dsp_data_low);
+        }else{
+            if(debug_level>=2) printf("[DSP] got dsp cmd %02x %02x in mode 0\n",value,dsp_data_low);
+        }
     }
 }
 
