@@ -33,7 +33,7 @@ void process_args(int argc, char *argv[])
         {"nc3000", no_argument,    0, 1},
         {"no-keepon", no_argument,    0, 1},
         {"no-sync", no_argument,    0, 1},
-		{"sync-on-resume", no_argument,    0, 1},
+		{"no-sync-on-resume", no_argument,    0, 1},
         {"debug-beeper", no_argument,    0, 1},
 		{"debug-dsp", no_argument,    0, 1},
 		{"debug-timer", no_argument,    0, 1},
@@ -214,8 +214,8 @@ void process_args(int argc, char *argv[])
 			else if (strcmp(long_options[option_index].name,"auto-save-flash")==0){
 				save_flash_on_exit = true;
 			}
-			else if (strcmp(long_options[option_index].name,"sync-on-resume")==0){
-				sync_on_resume = true;
+			else if (strcmp(long_options[option_index].name,"no-sync-on-resume")==0){
+				sync_on_resume = false;
 			}
 			else if (strcmp(long_options[option_index].name,"cks")==0){
 				enable_emulate_cks = true;
