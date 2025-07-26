@@ -151,6 +151,12 @@ void handle_cmd(string str){
 	printf("\n");
 	fflush(stdout);
 	if(cmds.size()==0) return;
+	if(cmds[0]=="?"||cmds[0]=="/?"||cmds[0]=="h"||cmds[0]=="H"||cmds[0]=="HELP"||cmds[0]=="help")
+	{
+		void print_help();
+		print_help();
+		return;
+	}
 	if(cmds[0]=="warm_reset"){
 		prepare_soft_reset();
 		cpu->reset();

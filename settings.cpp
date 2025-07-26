@@ -8,7 +8,7 @@
 using namespace std;
 extern WqxRom nc2k_rom;
 void print_help(){
-    printf("help page:\n");
+    printf("help:\n");
     printf("  nc2000/2600/1020 emulator\n");
     printf("  check https://github.com/wangyu-/NC2000 for usage\n");
 }
@@ -68,7 +68,7 @@ void process_args(int argc, char *argv[])
 	}
 	for (i = 0; i < argc; i++)
 	{
-		if(strcmp(argv[i],"-h")==0||strcmp(argv[i],"--help")==0)
+		if(strcmp(argv[i],"-h")==0||strcmp(argv[i],"--help")==0||strcmp(argv[i],"?")==0||strcmp(argv[i],"/?")==0)
 		{
 			print_help();
 			exit(0);
