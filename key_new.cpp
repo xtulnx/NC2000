@@ -356,8 +356,12 @@ void SetKeyWayback(int code_y,int code_x, bool down_or_up){
     }
 
 }
-
+static bool shift_down =false;;
 void handle_key_wayback(signed int sym, bool key_down){
+        if(sym==SDLK_LSHIFT || sym==SDLK_RSHIFT){
+          shift_down=key_down;
+          return;
+        }
         /*if(enable_debug_key_shoot){
           printf("event <%d,%d; %llu>\n", sym,key_down,SDL_GetTicks64()%1000);
         }*/
@@ -374,7 +378,7 @@ void handle_key_wayback(signed int sym, bool key_down){
         }
         switch ( sym) {
           case SDLK_BACKQUOTE:
-            if(key_down==1){
+            if(key_down==1 &&shift_down){
               pro_key^= 0x1;
               printf("[keyboard] pro mode %s\n", pro_key ? "on" : "off");
               init_keyitems();
