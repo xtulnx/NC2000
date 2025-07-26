@@ -47,7 +47,7 @@ bool dsp_0xd0=0;
 int dsp_0x91=0;
 
 // dsp functions adapted from pc1000emux
-int dspRetData() {
+int dsp31read_RetData() {
     if(dsp_0xd0)
     {
         return 0x6;
@@ -62,7 +62,7 @@ int dspRetData() {
 }
 
 
-int dspStat() {
+int dsp30read_Stat() {
     int value = 0;
     if(nc2000mode||nc3000mode){
         //value=ram_io[0x30];
@@ -111,6 +111,37 @@ void dspCmd(int cmd) {
     }
     if(cmd==0xffff){
         dspTrans=false;
+    }
+}
+
+void dsp30write_reset_wake(int value) {
+    if (value == DSP_RESET_FLAG || value == DSP_WAKEUP_FLAG) {
+        dspSleep = false;
+        dsp.reset();
+        dsp_0x91=0;
+        dsp_0xd0=0;
+        dspTrans=false;
+    }
+}
+void dsp33write_cmd_data(int value){
+    ioReg[0x33] = value;
+    dspCmd(ioReg[0x33] * 256 + ioReg[0x32]);
+    if(dspTrans){
+        dspData = ioReg[0x32];
+    }else{
+        if(value==0xd0||value==0xe0||(value==0x70&&ioReg[0x32]!=0x04)){
+            if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",value,ioReg[0x32]);
+            dsp_0xd0=1;
+        } else if(value >=0x60){
+            dsp_0xd0=0;
+        }
+        if(value==0x91){
+            if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",value,ioReg[0x32]);
+            dsp_0x91=1;
+        } else if(value >=0x60){
+            dsp_0x91=0;
+        }
+        dsp.write(value,ioReg[0x32]);
     }
 }
 
@@ -206,9 +237,9 @@ int io_v2_read(int address) {
     if(nc1020mode||pc1000mode) {
         switch(address){
             case 0x20:
-                return dspStat();
+                return dsp30read_Stat();
             case 0x21:
-                return dspRetData();
+                return dsp31read_RetData();
         }
     }
     if(nc3000mode){
@@ -225,9 +256,9 @@ int io_v2_read(int address) {
         }
         switch(address){
             case 0x30:
-                return dspStat();
+                return dsp30read_Stat();
             case 0x31:
-                return dspRetData();
+                return dsp31read_RetData();
         }
     }
     switch (address) {
@@ -308,35 +339,10 @@ void io_v2_write(int address, int value) {
         }
         switch(address){
             case 0x30:
-                //printf("dsp reset\n");
-                if (value == DSP_RESET_FLAG || value == DSP_WAKEUP_FLAG) {
-                    dspSleep = false;
-                    dsp.reset();
-                    dsp_0x91=0;
-                    dsp_0xd0=0;
-                    dspTrans=false;
-                }
+                dsp30write_reset_wake(value);
                 return;
             case 0x33:
-                ioReg[0x33] = value;
-                dspCmd(ioReg[0x33] * 256 + ioReg[0x32]);
-                if(dspTrans){
-                    dspData = ioReg[0x32];
-                }else{
-                    if(value==0xd0||value==0xe0||(value==0x70&&ioReg[0x32]!=0x04)){
-                        if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",value,ioReg[0x32]);
-                        dsp_0xd0=1;
-                    } else if(value >=0x60){
-                        dsp_0xd0=0;
-                    }
-                    if(value==0x91){
-                        if(debug_level>=1) printf("[DSP] got dsp cmd %02x %02x\n",value,ioReg[0x32]);
-                        dsp_0x91=1;
-                    } else if(value >=0x60){
-                        dsp_0x91=0;
-                    }
-                    dsp.write(value,ioReg[0x32]);
-                }
+                dsp33write_cmd_data(value);
                 return;
         }
     }
@@ -351,19 +357,10 @@ void io_v2_write(int address, int value) {
         }
         switch (address) {
             case 0x20://0x20
-                if (value == DSP_RESET_FLAG || value == DSP_WAKEUP_FLAG) {
-                    dspSleep = false;
-                    dsp.reset();
-                }
+                dsp30write_reset_wake(value);
                 return;
             case 0x23://0x23
-                ioReg[0x23] = value;
-                dspCmd(ioReg[0x23] * 256 + ioReg[0x22]);
-                if(dspTrans){
-                    dspData = ioReg[0x22];
-                }else{
-                    dsp.write(value,ioReg[0x22]);
-                }
+                dsp33write_cmd_data(value);
                 return;
         }
     }
