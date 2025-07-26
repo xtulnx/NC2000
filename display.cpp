@@ -49,11 +49,15 @@ inline void handle_pixel(int u,int v,const unsigned char * color_arr[], int idx)
       }
     }
 }
-
-void Render(uint64_t expected_tick) {
-  if(expected_tick/LCD_INNER_REFRESH_INTERVAL == (expected_tick+SLICE_INTERVAL)/LCD_INNER_REFRESH_INTERVAL){
+int render_cnt=0;
+uint64_t last_inner_render_tick=0;
+uint64_t last_outer_render_tick=0;
+void Render(uint64_t tick) {
+  if(tick/LCD_INNER_REFRESH_INTERVAL == last_inner_render_tick/LCD_INNER_REFRESH_INTERVAL){
     return; //not time to render
   }
+  last_inner_render_tick= tick;
+
 
   if (console_on){
     draw_console();
@@ -69,8 +73,11 @@ void Render(uint64_t expected_tick) {
   static SDL_Rect source = { 0, 0, SCREEN_WIDTH*total_size, SCREEN_HEIGHT*total_size };
   unsigned char* bytes = nullptr;
   int pitch = 0;
-  bool do_SDL_refresh = (expected_tick/LCD_OUTER_REFRESH_INTERVAL != (expected_tick+SLICE_INTERVAL)/LCD_OUTER_REFRESH_INTERVAL);
+  bool do_SDL_refresh = (tick/LCD_OUTER_REFRESH_INTERVAL != last_outer_render_tick/LCD_OUTER_REFRESH_INTERVAL);
   if(do_SDL_refresh){
+    last_outer_render_tick= tick;
+    render_cnt++;
+    //if(render_cnt%100==0) printf("Render %d times\n",cnt);
     SDL_RenderSetLogicalSize(renderer, lcdview->getLCDWidth(), lcdview->getLCDHeight());
     lcdview->paint(renderer, true, !console_on);
 
