@@ -76,8 +76,6 @@ extern CpuVersion cpu_version;
 extern CpuLoopVersion cpu_loop_version;
 extern IoVersion io_version;
 
-const bool forced_erase_before_write = true;
-
 const bool nc1020_use_1024k_nor = false;
 
 const bool use_legacy_key_io = false;
@@ -131,7 +129,6 @@ cpu related
 const uint16_t NMI_VEC = 0xFFFA;
 const uint16_t RESET_VEC = 0xFFFC;
 const uint16_t IRQ_VEC = 0xFFFE;
-const uint32_t VERSION = 0x06;
 
 /*
 ===================
@@ -145,6 +142,8 @@ extern bool enable_keepon;
 extern bool enable_auto_time_sync;
 
 extern double timer01_speed_fix;
+
+extern bool forced_erase_before_write;
 /*
 ===================
 display related

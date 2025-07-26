@@ -10,7 +10,7 @@ struct cpu_states_t {
 };
 
 struct nc2k_states_t{
-	uint32_t version;
+	//uint32_t version;
 	////////////cpu_states_t cpu;
 
 	uint8_t SAVE_STATE_BEGIN;

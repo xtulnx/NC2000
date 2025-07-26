@@ -68,6 +68,8 @@ double timer01_speed_fix=1.0;
 
 bool enable_emulate_cks = false;
 
+bool forced_erase_before_write = true;
+
 /*
 ===================
 cycles related

@@ -56,6 +56,7 @@ void process_args(int argc, char *argv[])
 		{"cks", no_argument,    0, 1},
 		{"debug-cks", no_argument,    0, 1},
 		{"pro-keyboard", no_argument,    0, 1},
+		{"no-nand-forced-erase", no_argument,    0, 1},
 		{NULL, 0, 0, 0}
       };
     int option_index = 0;
@@ -225,6 +226,9 @@ void process_args(int argc, char *argv[])
 			}
 			else if (strcmp(long_options[option_index].name,"pro-keyboard")==0){
 				pro_key = true;
+			}
+			else if (strcmp(long_options[option_index].name,"no-nand-forced-erase")==0){
+				forced_erase_before_write = false;
 			}
 			else
 			{
