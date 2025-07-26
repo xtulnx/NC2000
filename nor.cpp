@@ -18,8 +18,13 @@ static uint8_t& fp_type = nc2k_states.fp_type;
 //static uint8_t& fp_bak2 = nc1020_states.fp_bak2;
 //static uint8_t* fp_buff = nc1020_states.fp_buff;
 
+
+//0x28,0x0a ---->2600
+//0xd0,0x07 ---->2000
+//'J' --->简体
 static uint8_t nor_info_block[0x100]={
-0xdb,0xf0,0xd4,0xb6,0xbc,0xfb,'N','C','2','0','0','0',1,1,1,1,1,1,1,1
+0xbd,0xf0,0xd4,0xb6,0xbc,0xfb,'N','C',0xd0,0x07,'J',0x01,0x02,0x03,0x04,0x01,0x01,0x01,0x01,
+//0xbd,0xf0,0xd4,0xb6,0xbc,0xfb,
 };
 enum NOR_CMD{
     NONE=0,
@@ -102,7 +107,7 @@ bool read_nor(uint16_t addr, uint8_t &value){
     if (!in_nor_range(addr)) return false;
 
     if(fp_type==NOR_CMD::INFO_READ && fp_step ==3){
-        //printf("read fp_type=%d fp_step=%d addr=%04x\n",fp_type,fp_step,addr);
+        //printf("read info_block fp_type=%d fp_step=%d addr=%04x\n",fp_type,fp_step,addr);
         value=nor_info_block[addr%0x100];
         return true;
     }
