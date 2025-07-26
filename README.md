@@ -63,12 +63,12 @@ The rest of Readme is going to be in Chinese, there are a few more english mater
 * 发音，蜂鸣器
 * 4灰度
 * 液晶格栅效果, 液晶残影, 液晶屏侧面的小图标
-* 热键唤醒
+* 热键唤醒, 闹铃唤醒
 * 超频
 
 经测试支持的内核:
 * nc2000c `官方3.5`
-* nc2600c `官方3.2`, `3.5内核 by sun`,`4.1内核 by qiqi`, `4.1内核保留剑桥版 by qiqi`, `非常4.2内核 by 41824984`, `5.0内核 by epc`
+* nc2600c `官方3.2`, `3.5内核 by Sun`,`4.1内核 by qiqi`, `4.1内核保留剑桥版 by qiqi`, `非常4.2内核 by 41824984`, `5.0内核 by epc`
   
 # 按键
 
@@ -87,7 +87,12 @@ on/off ： F12
 ```
 其他的键都跟直觉相符，与电脑上的同名键对应
 
-另外`TAB`可以切换快进模式
+另:
+* `TAB`可以切换快进模式
+* <code>\`</code> 可以进入模拟器内置的命令行
+* SHIFT + <code>\`</code> 可以切至其它键位
+
+具体见wiki[模拟器键位](https://github.com/wangyu-/NC2000/wiki/%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%94%AE%E4%BD%8D)
 
 # 模拟器参数
 
@@ -114,17 +119,11 @@ nc2000.exe --oc 2 （超频到2倍速）
 
 # 模拟器命令行
 
-模拟器启动后会监听在udp 9000端口，可以接受外部发来的命令。 实现下载，上传，保存等功能。 
+按<code>`</code>进入模拟的内置的命令行后，可以输入各种命令，如图：
 
-可以使用`nc` `ncat` `socat`等工具向模拟器发命令，比如：
-```
-nc -u 127.0.0.1 9000 <回车>
-speed 1.5 <回车>           //把模拟器速度调为1.5倍
-create_dir XXXX <回车>    //在模拟器创建一个名为XXXX的目录
-....                     //只要nc和模拟器不关，可以继续发送命令
-```
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/ab0955ee-38ec-4757-87fb-f99eb03c6210" />
 
-(nc和ncat可以按[wiki里的方法](https://github.com/wangyu-/NC2000/wiki/%E6%A8%A1%E6%8B%9F%E5%99%A8%E5%91%BD%E4%BB%A4)安装)
+(另外还有其它方法运行命令，具体见wiki)
 
 ### 下载相关命令
 
@@ -146,6 +145,8 @@ create_dir XXXX <回车>    //在模拟器创建一个名为XXXX的目录
 ### flash保存
 
 `save_flash`:  把模拟器对nand和nor的修改保存到硬盘。  默认模拟器是不会写硬盘的。
+
+另外还支持ram保存，这样玩宠物猫等游戏退出模拟器后进度不会丢失，具体使用见wiki。
 
 ### 其他命令
 
