@@ -3,6 +3,7 @@
 #include <SDL_keycode.h>
 #include <map>
 #include "compare/pc1000bus.h"
+#include "console.h"
 using namespace std;
 extern BusPC1000 *bus_pc1000;
 
@@ -378,11 +379,18 @@ void handle_key_wayback(signed int sym, bool key_down){
         }
         switch ( sym) {
           case SDLK_BACKQUOTE:
-            if(key_down==1 &&shift_down){
-              pro_key^= 0x1;
-              printf("[keyboard] pro mode %s\n", pro_key ? "on" : "off");
-              init_keyitems();
-              //enable_dyn_debug^= 0x1;
+            if(shift_down){
+              if(key_down==1){
+                pro_key^= 0x1;
+                printf("[keyboard] pro mode %s\n", pro_key ? "on" : "off");
+                init_keyitems();
+                //enable_dyn_debug^= 0x1;
+              }
+            }else{
+              if(key_down==1){
+                console_on^= 0x1;
+                printf("console %s\n", console_on ? "on" : "off");
+              }
             }
             break;
 

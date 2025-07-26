@@ -298,6 +298,7 @@ void MyLCDView::paint(SDL_Renderer* render, bool lcdon)
         auto a=SDL_Rect{ 0, 0, fLCDEmpty.w,fLCDEmpty.h };
         SDL_RenderCopy(render, fLCDTexture, &fLCDEmpty, &a);
     }
+
     for (int y = 79; y >= 0; y--) {
         unsigned char pixel = fPixel[160 * y];
         int alpha =0;
@@ -312,6 +313,7 @@ void MyLCDView::paint(SDL_Renderer* render, bool lcdon)
         }else{
             assert(false);
         }
+
         if (pixel) {
             SDL_SetTextureAlphaMod(fLCDTexture, alpha); 
             TLCDStripe* item = &fLCDStripes[y];

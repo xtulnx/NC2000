@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include "comm.h"
 #include "nc2000.h"
+#include "console.h"
 #include "lcdstripe/lcdpainter.h"
 
 SDL_Renderer* renderer;
@@ -53,11 +54,19 @@ void Render(uint64_t expected_tick) {
   if(expected_tick/LCD_INNER_REFRESH_INTERVAL == (expected_tick+SLICE_INTERVAL)/LCD_INNER_REFRESH_INTERVAL){
     return; //not time to render
   }
-  if (!CopyLcdBuffer(lcd_buf)) {
+
+  if (console_on){
+    draw_console();
+  }
+  else if (!CopyLcdBuffer(lcd_buf)) {
     std::cout << "Failed to copy buffer renderer." << std::endl;
   }
 
+
+
+
   SDL_Texture *texture;
+  static SDL_Rect source = { 0, 0, SCREEN_WIDTH*total_size, SCREEN_HEIGHT*total_size };
   unsigned char* bytes = nullptr;
   bool do_SDL_refresh = (expected_tick/LCD_OUTER_REFRESH_INTERVAL != (expected_tick+SLICE_INTERVAL)/LCD_OUTER_REFRESH_INTERVAL);
   if(do_SDL_refresh){
@@ -71,7 +80,7 @@ void Render(uint64_t expected_tick) {
 
   
   int pitch = 0;
-  static SDL_Rect source = { 0, 0, SCREEN_WIDTH*total_size, SCREEN_HEIGHT*total_size };
+
   SDL_LockTexture(texture, &source, reinterpret_cast<void**>(&bytes), &pitch);
   }
   
@@ -176,10 +185,14 @@ void Render(uint64_t expected_tick) {
   }*/
   SDL_UnlockTexture(texture);
 
+    static SDL_Rect destination =
+    { LEFT_GAP* lcd_scale *total_size + LEFT_GAP_EXTRA*lcd_scale, 0, SCREEN_WIDTH* lcd_scale *total_size, SCREEN_HEIGHT * lcd_scale *total_size };
+
   static SDL_Rect source2 = { 1*total_size, 0, (SCREEN_WIDTH-1)*total_size, SCREEN_HEIGHT*total_size };
-  static SDL_Rect destination =
+  static SDL_Rect destination2 =
     { LEFT_GAP* lcd_scale *total_size + LEFT_GAP_EXTRA*lcd_scale, 0, (SCREEN_WIDTH -1)* lcd_scale *total_size, SCREEN_HEIGHT * lcd_scale *total_size };
-  SDL_RenderCopy(renderer, texture, &source2, &destination);
+  if(console_on) SDL_RenderCopy(renderer, texture, &source, &destination);
+  else SDL_RenderCopy(renderer, texture, &source2, &destination2);
   SDL_RenderPresent(renderer);
   SDL_DestroyTexture(texture);
 }
