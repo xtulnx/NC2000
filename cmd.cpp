@@ -154,10 +154,12 @@ void handle_cmd(string str){
 	if(cmds[0]=="warm_reset"){
 		prepare_soft_reset();
 		cpu->reset();
+		return;
 	}
 	if(cmds[0]=="cold_reset"){
 		memset(ram_io,0,0x40);
 		cpu->reset();
+		return;
 	}
 	if(cmds[0]=="exit"){
 		exit(-1);
