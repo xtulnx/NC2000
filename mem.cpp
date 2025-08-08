@@ -26,6 +26,18 @@ inline uint8_t & Peek8(uint8_t addr) {
 	return ram_buff[addr];
 }*/
 uint8_t & Peek16(uint16_t addr) {
+	auto ptr= &memmap[addr >> 13][addr & 0x1FFF];
+	if(nc1020tw_mode && debug_level>=2){
+		extern uint8_t nor_buff[1024*1024];
+		/*if(ptr>=&nor_buff[0] && ptr<&nor_buff[0]+32){
+			printf("access problem addr %04x, value=%02x, offset=%04x\n",addr,*ptr,int(ptr-&nor_buff[0]));
+			//printf("peek16 from nor %04x\n",addr);
+		}*/
+		if(ptr>=&nor_buff[16384]+6 && ptr<&nor_buff[16384]+12){
+			printf("access problem addr %04x, value=%02x, offset=%04x\n",addr,*ptr,int(ptr-&nor_buff[0]));
+			//printf("peek16 from nor %04x\n",addr);
+		}
+	}
 	return memmap[addr >> 13][addr & 0x1FFF];
 }
 
@@ -122,7 +134,7 @@ void Store(uint16_t addr, uint8_t value) {
 		return;
 	}
 	uint8_t* page = memmap[addr >> 13];
-	if (page == nc2k_states.ram_b/*ramb*/) {
+	if (page == nc2k_states.ram_b/*ramb*/ || page == nc2k_states.ram_b2/*ramb2*/) {
 		page[addr & 0x1FFF] = value;
 		return;
 	}
@@ -165,8 +177,19 @@ uint8_t* GetBank(uint8_t bank_idx){
 		return NULL;
 	}*/
 
+	if((ram_io[0x0D]&0x3)!=0) {
+		if(debug_level>=99) printf("vol=%02x!!!!!!!!!!!!\n",ram_io[0x0D]&0x3);
+	}
+
 	uint8_t volume_idx = ram_io[0x0D];
     if (bank_idx < num_nor_pages) { 
+		if(bank_idx >= 0x10 && nc1020mode && nc1020tw_mode){
+			//printf("bidx=%02x\n",bank_idx);
+		}
+
+		if(ram_io[0x0a] & 0x80){
+			if(debug_level>=2) printf("oops, GetBank bank_idx=%02x ram_io[0x0a]&0x80 is true\n",bank_idx);
+		}
 		//todo: improve emulation of non-exist nor pages?
 		//      current behavor is do not switch, is this correct? even if from ext_ram to nor
 		//      maybe whenever fall into nor range, should use last worked bank_idx
@@ -176,9 +199,9 @@ uint8_t* GetBank(uint8_t bank_idx){
 			return NULL;
 		}
 		if(nc1020mode){
-			if (volume_idx & 0x01) {
+			if ((volume_idx & 0x03)==0x01) {
 				return rom_volume1[bank_idx];
-			} else if (volume_idx & 0x02) {
+			} else if ((volume_idx & 0x03)==0x02) {
 				return rom_volume2[bank_idx];
 			} else {
 				return rom_volume0[bank_idx];
@@ -197,7 +220,9 @@ uint8_t* GetBank(uint8_t bank_idx){
 			else
 			return nc1020_states.ext_ram2; */
 		}
-    }
+    }else{
+		if(debug_level>=1) printf("oops GetBank bank_idx=%02x invalid roa_bbs=%02x \n",bank_idx, ram_io[0x0a]);
+	}
     return NULL;
 }
 
@@ -238,6 +263,7 @@ void SwitchBank_2345(){
 			memmap[2] = bank + 0x4000;
 			memmap[3] = bank + 0x6000;
 		}else {
+			if(enable_assert) assert((ram_io[0x0d]&0x3) ==0 || (ram_io[0x0d]&0x3) ==1);
 			if (ram_io[0x0d]&0x1){
 				memmap[2] = nor_banks[0] + 0x4000;
 				memmap[3] = nor_banks[0] + 0x6000;
@@ -255,6 +281,9 @@ void SwitchBank_2345(){
 
 
 	uint8_t* bank = GetBank(bank_idx);
+	if(bank_idx<0x80 && ram_io[0x0a]&0x80){
+		if(debug_level>=2)printf("oops, bank_idx=%02x ram_io[0x0a]&0x80 is true\n",bank_idx);
+	}
 	if(bank== NULL) return;
 	
     memmap[2] = bank+ 0x4000;
@@ -282,17 +311,23 @@ void SwitchBank_2345(){
 			}
 		}
 	}
+
+	if(nc1020mode){
+		/*if(bank_idx==0x80){     //this is incorrect for sure, dictionary result got corrupted
+				memmap[2] = nor_banks[0] + 0x4000;
+				memmap[3] = nor_banks[0] + 0x6000;
+		}*/
+
+	}
+
+	if(false){
+		void try_patch();
+		try_patch();
+	}
 }
 
 uint8_t** GetVolumm(uint8_t volume_idx){
-	if(nc1020mode){
-		if ((volume_idx & 0x03) == 0x01) {
-			return rom_volume1;
-		} else if ((volume_idx & 0x03) == 0x03) {
-			return rom_volume2;
-		} else {
-			return rom_volume0;
-		}
+	if(nc2000mode||nc1020mode||nc3000mode){
 		assert(false);
 	}
 	if(pc1000mode){
@@ -309,6 +344,16 @@ void Switch0x2000(){
 	if(nc1020mode){
 		//memmap[1] = (roa_bbs & 0x04 ? ram_b : ram02); // this is wrong???? should be ram_io[0x0d]&0x04
 		memmap[1] = (ram_io[0x0d]&0x04 ? ram_b : ram02);
+		/*if(nc1020tw_mode){
+			if(ram_io[0x0d]&0x4){
+				if((ram_io[0x0]&0x10)==0){
+					memmap[1] = nc2k_states.ram_b;
+				}
+				else {
+					memmap[1] = nc2k_states.ram_b2;
+				}
+			}
+		}*/
 	}
 	if(nc2000mode){
 		memmap[1] = (ram_io[0x0d]&0x04 ? ram_b : ram02);
@@ -424,4 +469,142 @@ void super_switch(){
 	SwitchBbsBios_67();
 	SwitchBank_2345();
 	SwitchZP40();
+}
+
+//experiment hacking code, need rewrite
+void try_patch(){
+	int bank_idx = ram_io[0x00];
+	if(nc1020mode &&!nc1020tw_mode){
+		extern unsigned char patch_table[256];
+		if(true) {
+			static bool patched=false;
+			if(bank_idx==0x9d  &&  patch_table[0x1e]==0x9d&&  patch_table[0x1f]==0xa0 && !patched){
+				patched=true;
+				printf("!!!!aaaa\n");
+				for(int i=0;i<256;i++){
+					printf("%02x ",memmap[5][i]);
+				}
+				printf("\n");
+				
+				//assert(memcmp(memmap[5],nor_buff+491520,0x1000)==0);
+				for(int i=0;i<256;i++){
+					printf("%02x ",*(nor_buff+491520 +i));
+				}
+				printf("\n");
+				memcpy(memmap[5],nor_buff+491520,0x1000);
+			}
+		}
+		if(true)
+		{
+			static bool patched=false;
+			if(bank_idx==0x8f && patch_table[0x1c]==0x8f&&  patch_table[0x1d]==0x50 && !patched){
+				patched=true;
+				printf("!!!!bbb\n");
+				for(int i=0;i<256;i++){
+					printf("%02x ",memmap[2][i+0x1000]);
+				}
+				printf("\n");
+				
+				for(int i=0;i<256;i++){
+					printf("%02x ",*(nor_buff+495616 +i));
+				}
+				printf("\n");
+				//assert(memcmp(memmap[2]+0x1000,nor_buff+495616,0x1000)==0);
+
+				memcpy(memmap[2]+0x1000,nor_buff+495616,0x1000);
+			}
+		}
+		if(true){
+			static bool patched=false;
+			if(bank_idx==0x8f && patch_table[0x1a]==0x8f&&  patch_table[0x1b]==0xb0 && !patched){
+				patched=true;
+				printf("!!!!ccc\n");
+				for(int i=0;i<256;i++){
+					printf("%02x ",memmap[5][i+0x1000]);
+				}
+				printf("\n");
+				
+				
+				
+				for(int i=0;i<256;i++){
+					printf("%02x ",*(nor_buff+499712 +i));
+				}
+				printf("\n");
+				//assert(memcmp(memmap[5]+0x1000,nor_buff+499712,0x1000)==0);
+
+
+				memcpy(memmap[5]+0x1000,nor_buff+499712,0x1000);
+			}
+		}
+	}
+
+	if(nc1020tw_mode && bank_idx==0x90 && ((ram_io[0x0d]&0x3) ==0)){
+		extern unsigned char patch_table[256];
+		if(true)
+		{
+			static bool patched=false;
+			if(patch_table[0x1e]==0x90&&  patch_table[0x1f]==0x40 && !patched){
+				patched=true;
+				printf("!!!!aaaa\n");
+				for(int i=0;i<256;i++){
+					printf("%02x ",memmap[2][i]);
+				}
+				printf("\n");
+				
+
+				
+				for(int i=0;i<256;i++){
+					printf("%02x ",*(nor_buff+491520+512*1024 +i));
+				}
+				printf("\n");
+				//assert(memcmp(memmap[2],nor_buff+491520+512*1024,0x1000)==0);
+
+				memcpy(memmap[2],nor_buff+491520+512*1024,0x1000);
+			}
+		}
+		if(true)
+		{
+			static bool patched=false;
+			if(patch_table[0x1c]==0x90&&  patch_table[0x1d]==0x50 && !patched){
+				patched=true;
+				printf("!!!!bbb\n");
+				for(int i=0;i<256;i++){
+					printf("%02x ",memmap[2][i+0x1000]);
+				}
+				printf("\n");
+				
+				
+				
+				for(int i=0;i<256;i++){
+					printf("%02x ",*(nor_buff+495616+512*1024 +i));
+				}
+				printf("\n");
+				//assert(memcmp(memmap[2]+0x1000,nor_buff+495616+512*1024,0x1000)==0);
+
+				memcpy(memmap[2]+0x1000,nor_buff+495616+512*1024,0x1000);
+			}
+		}
+		if(true){
+			static bool patched=false;
+			if(patch_table[0x1a]==0x90&&  patch_table[0x1b]==0xb0 && !patched){
+				patched=true;
+				printf("!!!!ccc\n");
+				for(int i=0;i<256;i++){
+					printf("%02x ",memmap[5][i+0x1000]);
+				}
+				printf("\n");
+				
+				
+				
+				for(int i=0;i<256;i++){
+					printf("%02x ",*(nor_buff+499712+512*1024 +i));
+				}
+				printf("\n");
+				//assert(memcmp(memmap[5]+0x1000,nor_buff+499712+512*1024,0x1000)==0);
+
+
+				memcpy(memmap[5]+0x1000,nor_buff+499712+512*1024,0x1000);
+			}
+		}
+	}	
 }

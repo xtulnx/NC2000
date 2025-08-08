@@ -16,6 +16,7 @@ struct nc2k_states_t{
 	uint8_t SAVE_STATE_BEGIN;
 	uint8_t ram_io[0x40*2];
 	uint8_t ram_b[0x2000];
+	uint8_t ram_b2[0x2000];
 	uint8_t ram[0x8000*2];
 	uint8_t ext_ram[0x8000];
 	

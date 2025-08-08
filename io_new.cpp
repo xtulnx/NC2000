@@ -276,10 +276,21 @@ bool timeBaseEnable() {
     //assert(false);
 }
 
-
 int io_v2_read(int address) {
     if(nc2000mode&&log_all_dsp_io&& address>=0x30 && address<=0x33){
         printf("""[io_v2_read] address=%02x\n",address);
+    }
+    if(nc1020tw_mode){
+        //hack, need to improve keyboard  (pull high)
+        if(address==0x08){
+            if (cpu->PC==0xe0ad+2){
+                if(debug_level>=1||enable_dyn_debug)printf("returning 0x03!!!!!\n");
+                return 0x03;
+            }
+        }
+        if(address==0x0b){
+            return ram_io[0x0b]|0x01;
+        }
     }
     if(nc1020mode||nc2000mode||nc3000mode||pc1000mode){
         if(address==0x04) return Read04StopTimer0(address);
@@ -368,10 +379,35 @@ int io_v2_read(int address) {
             return ioReg[address];
     }
 }
-
+int patch_idx=0;
+unsigned char patch_table[256];
 void io_v2_write(int address, int value) {
     if(nc2000mode&&log_all_dsp_io&&address>=0x30 && address<=0x33){
         printf("[io_v2_write] address=%02x value=%02x\n",address,value);
+    }
+    if(address==0x1a){
+        if(debug_level>=1 ){
+            printf("[io_v2_write] 0x1a value=%02x\n",value);
+            printf("[io_v2_write] oops!!!!!! 0x1a value&80  is true\n");
+        }
+        if(enable_assert) assert((value &0x80)==0);
+    }
+    if(address==0x3e){
+        if(value>=0x10 &&value<=0x1f){
+            if(enable_assert) assert(value==0x10);
+            patch_idx=value;
+            if(debug_level>=1) printf("[io_v2_write] 0x3e value=%02x\n",value);
+            //enable_dyn_debug_next_n=100;
+        }
+        else{
+            patch_idx=0;
+        }
+    }
+    if(address==0x3f){
+        if(patch_idx>=0x10 &&patch_idx<=0x1f){
+            patch_table[patch_idx]=value;
+            patch_idx++;
+        }
     }
         if(nc3000mode){
         if(address==0x05){

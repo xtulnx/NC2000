@@ -188,7 +188,11 @@ void handle_cmd(string str){
 	if(cmds[0]=="st") cmds[0]="sync_time";
 	if(cmds[0]=="sp") cmds[0]="speed";
 	if(cmds[0]=="ed") cmds[0]="edit";
-
+	if(cmds[0]=="hack1"){
+		void hack1_save_nc1020_12m_rom();
+		hack1_save_nc1020_12m_rom();
+		return;
+	}
 	if(cmds[0]=="warm_reset"){
 		prepare_soft_reset();
 		cpu->reset();

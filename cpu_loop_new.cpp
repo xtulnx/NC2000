@@ -194,20 +194,36 @@ void try_soft_reset(){
 	}
 }
 void debug_pc(){
+	uint8_t & Peek16Debug(uint16_t addr);
 	if(enable_debug_pc||enable_dyn_debug||enable_dyn_debug_next_n){
-		uint8_t & Peek16Debug(uint16_t addr);
 		unsigned char buf[10];
 		buf[0]=Peek16Debug(cpu->PC);
 		buf[1]=Peek16Debug(cpu->PC+1);
 		buf[2]=Peek16Debug(cpu->PC+2);
 		buf[3]=0;
+
 		printf("tick=%lld ",tick /*, reg_pc*/);
 		printf("%02x %02x %02x %02x; ",Peek16Debug(cpu->PC), Peek16Debug(cpu->PC+1),Peek16Debug(cpu->PC+2),Peek16Debug(cpu->PC+3));
 		printf("bs=%02x roa_bbs=%02x ramb=%02x zp=%02x reg=%02x,%02x,%02x,%02x,%03o  pc=%s",ram_io[0x00], ram_io[0x0a], ram_io[0x0d], ram_io[0x0f],cpu->A,cpu->X,cpu->Y,cpu->SP,cpu->P(),disassemble_next(buf,cpu->PC).c_str());
 		printf("\n");
-		if(enable_dyn_debug_next_n>0) enable_dyn_debug_next_n--;
+		if(enable_dyn_debug_next_n>0) {
+			enable_dyn_debug_next_n--;
+			if(enable_dyn_debug_next_n==0){
+				if(enable_quit_after_debug_next_n) {
+					printf("quit after debug next n\n");
+					exit(-1);
+				}
+			}
+		}
 		//getchar();
 	}
+	if(debug_level>=1 || enable_assert){
+		if(Peek16Debug(cpu->PC)==0x00 && Peek16Debug(cpu->PC+1)==0x00 && Peek16Debug(cpu->PC+2)==0x00){
+			if(debug_level>=1)printf("oops brk 0000!!!!!!!!!!!!!!!!!!!!!!\n");
+			if(enable_assert) assert(false);
+		}
+	}
+
 }
 
 bool pc1000mode_normal(){
@@ -265,6 +281,18 @@ void cpu_run3(){
 
 	}
 	tick++;
+
+	if(debug_level >=2){  //not for emulation, just trying to log some peridic debug info
+		if(trigger_x_times_per_s(1)){
+			extern int patch_idx;
+			extern unsigned char patch_table[256];
+			printf("path table= ");
+			for(int i=0x10;i<=0x1f;i++){
+				printf("%02x ",patch_table[i]);	
+			}
+			printf("\n");
+		}
+	}
 
 	bool trigger256=trigger_x_times_per_s(256);
 
@@ -334,6 +362,8 @@ void cpu_run3(){
 				//_ADD_TM1I_BIT() _ADD_TM1I_BIT() is inside KeepTimer01, why set it another time?
 				//this is from wayback
 				//ram_io[0x01] |= 0x10;
+				if(enable_dyn_debug_next_n) printf("time to timer01!!!!\n");
+
 				cpu->set_irq_pending();
 			///////}
 		}
@@ -356,8 +386,12 @@ void cpu_run3(){
 	if(nc1020mode||pc1000mode_normal()){
 		if(trigger_x_times_per_s(250)){
 			if (timeBaseEnable()) {
+				if(enable_dyn_debug_next_n) printf("time to timebase, timebase is enabled!!!!\n");
 				setIrqTimeBase();
 				cpu->set_irq_pending();
+			}
+			else{
+				if(enable_dyn_debug_next_n) printf("time to timebase!!!! but it's not enabled!!!!\n");
 			}
 		}
 	}

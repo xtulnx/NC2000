@@ -71,12 +71,11 @@ extern bool nc1020mode;
 extern bool nc2000mode;
 extern bool nc3000mode;
 extern bool pc1000mode;
+extern bool nc1020tw_mode;
 
 extern CpuVersion cpu_version;
 extern CpuLoopVersion cpu_loop_version;
 extern IoVersion io_version;
-
-const bool nc1020_use_1024k_nor = false;
 
 const bool use_legacy_key_io = false;
 
@@ -106,6 +105,8 @@ extern uint64_t tick;
 
 extern bool enable_dyn_debug;
 extern int enable_dyn_debug_next_n;
+extern bool enable_quit_after_debug_next_n;
+
 extern bool enable_debug_nand;
 extern bool enable_debug_switch;
 extern bool enable_debug_pc;
@@ -125,6 +126,8 @@ extern bool enable_debug_dsp;
 extern bool enable_debug_timer;
 
 extern bool enable_debug_cks;
+
+extern bool enable_assert;
 /*
 ===================
 cpu related

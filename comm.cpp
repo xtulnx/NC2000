@@ -9,6 +9,7 @@ bool nc1020mode = false;
 bool nc2000mode = false;
 bool nc3000mode = false;
 bool pc1000mode = false;
+bool nc1020tw_mode =false;
 
 CpuVersion cpu_version = CPU_HANDYPSP;
 CpuLoopVersion cpu_loop_version = CPU_RUN3;
@@ -38,7 +39,9 @@ string inject_code;
 uint64_t tick=0;  //tick is mostly for debug
 
 bool enable_dyn_debug=false;
-int enable_dyn_debug_next_n=20;
+int enable_dyn_debug_next_n=0;
+bool enable_quit_after_debug_next_n=false;
+
 
 bool enable_debug_nand=false;
 
@@ -57,6 +60,8 @@ bool enable_debug_timer=false;
 bool enable_debug_cks = false;
 
 int debug_level = 0;
+
+bool enable_assert = false;
 
 /*
 ===================
@@ -177,7 +182,7 @@ void init_parameters(){
     rom related
     ===================
     */
-    num_nor_pages =0x10+uint32_t(nc1020mode&&nc1020_use_1024k_nor)*0x10+uint32_t(nc3000mode)*0x10;
+    num_nor_pages =0x10+uint32_t(nc1020mode&&nc1020tw_mode)*0x10+uint32_t(nc3000mode)*0x10;
 
     //this is the nand pages of 528byte each
     num_nand_pages = 0+ uint32_t(nc2000mode)*65536  + uint32_t(nc3000mode)*65536*2;

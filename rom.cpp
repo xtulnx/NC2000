@@ -16,7 +16,7 @@ void LoadRom(const string romPath){
 	if(nc1020mode){
 		rom_size=ROM_SIZE;
 	}
-	if(pc1000mode) {
+	if(pc1000mode|| nc1020tw_mode) {
 		//for pc1000, becausing of remapping, the file size is not equal to sizeof(rom_buff)
 		rom_size=0x8000*128*3;
 	}
@@ -33,24 +33,55 @@ void LoadRom(const string romPath){
 	fclose(file);
 }
 
+void hack1_save_nc1020_12m_rom(){
+	FILE* file = fopen("tw1020/hack.rom", "wb");
+	for(int j=0;j<0x80;j++){
+		fwrite(rom_volume0[128+j], 0x8000, 1, file);
+	}
+		for(int j=0;j<0x80;j++){
+		fwrite(rom_volume1[128+j], 0x8000, 1, file);
+	}
+		for(int j=0;j<0x80;j++){
+		fwrite(rom_volume2[128+j], 0x8000, 1, file);
+	}
+	fclose(file);
+}
+
 void init_rom(){
     memset(&rom_buff,0xff,ROM_SIZE);
 	LoadRom(nc2k_rom.romPath);
 	if(nc1020mode){
-		for (uint32_t i=0; i<num_rom_pages/3; i++) {
-			rom_volume0[i] = rom_buff + (0x8000 * i);
-			rom_volume1[i] = rom_buff + (0x8000 * (0x100 + i));
-			rom_volume2[i] = rom_buff + (0x8000 * (0x200 + i));
+		if(nc1020tw_mode){
+			for (int i = 0; i < 128; i++) {
+				//rom_volume0[i  ]=
+				rom_volume0[i + 128 ] = rom_buff + (0x8000 * i);
+
+				rom_volume1[i + 128 ] = rom_buff + (0x8000 * (128 + i));
+				//rom_volume1[i  ]=rom_volume0[i  ];
+				rom_volume2[i + 128 ] = rom_buff + (0x8000 * (256 + i));
+				//rom_volume2[i  ]=rom_volume0[i  ];
+			}
+			extern uint8_t nor_buff[1024*1024];
+			//memcpy(rom_volume0[0x90]+0x4000, nor_buff +491520,0x1000);
+		}
+		else{
+			for (uint32_t i=128; i<256; i++) {
+				rom_volume0[i] = rom_buff + (0x8000 * i);
+				rom_volume1[i] = rom_buff + (0x8000 * (0x100 + i));
+				rom_volume2[i] = rom_buff + (0x8000 * (0x200 + i));
+			}
 		}
 	}
+
+
 	if(pc1000mode){
 		for (int i = 0; i < 128; i++) {
         	// 0~128 
         	rom_volume0[i] = (unsigned char*)rom_buff + i * 0x8000;
-        	rom_volume1[i] = rom_volume0[i];
+        	rom_volume1[i] = (unsigned char*)rom_buff + i * 0x8000;
 
         	rom_volume0[i + 128] = (unsigned char*)rom_buff + (i + 128) * 0x8000;
-        	rom_volume1[i + 128] = rom_volume0[i + 128] + 128 * 0x8000;
+        	rom_volume1[i + 128] = (unsigned char*)rom_buff + (i + 256) * 0x8000;
     	}
 	}
 

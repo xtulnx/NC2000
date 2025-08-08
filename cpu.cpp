@@ -60,12 +60,13 @@ int CPUInterface::execute(int max_cycles){
     do{
 		if (g_irq && !mI){
 			g_irq = false;
+			if(enable_dyn_debug_next_n) printf("execute irq!!!!!!!\n");
 			cycle+=CpuExecuteIRQ();
 			//cycle+=1;
 		}
 		void debug_pc();
 		debug_pc();
-		if(g_wai) {cycle=max_cycles;break;}
+		if(g_wai) {cycle=max_cycles;if(cycle<=0) cycle=1;break;}
 		cycle += CpuExecuteOP();
     }while(cycle<=max_cycles);
 
@@ -94,6 +95,7 @@ void CPUInterface::irq_now() {
 
 }
 void CPUInterface::set_irq_pending() {
+	if(enable_dyn_debug_next_n) printf("set_irq_pending!!!\n");
 	if(cpu_impl_emux) {
 		cpu_impl_emux->irqPending = true;
 		return;

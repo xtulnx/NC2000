@@ -17,3 +17,4 @@ uint8_t* ram0c = ram_buff + 0x8000+ 0x4000;
 uint8_t* ram0e = ram_buff + 0x8000+ 0x6000;
 
 uint8_t* ram_b = nc2k_states.ram_b;
+uint8_t* ram_b2 = nc2k_states.ram_b2;
