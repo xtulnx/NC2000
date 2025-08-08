@@ -66,6 +66,9 @@ void LoadNor(){
         }
         else assert(false);
     }
+    if(nc1020tw_mode){
+        nor_buff[32758]=0xe0;
+    }
 	free(temp_buff);
 	fclose(file);
 }

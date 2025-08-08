@@ -63,6 +63,7 @@ void process_args(int argc, char *argv[])
 		{"log-on-key-press", required_argument, 0, 1},
 		{"log-all-dsp-io", no_argument, 0, 1},
 		{"battery-level", required_argument, 0, 1},
+		{"nc1020tw", no_argument, 0, 1},
 		{"oops", no_argument, 0, 1},
 		{NULL, 0, 0, 0}
 	};
@@ -264,6 +265,10 @@ void process_args(int argc, char *argv[])
 			}
 			else if (strcmp(long_options[option_index].name,"oops")==0){
 				enable_oops = true;
+			}
+			else if (strcmp(long_options[option_index].name,"nc1020tw")==0){
+				nc1020mode = true;
+				nc1020tw_mode = true;
 			}
 			else
 			{

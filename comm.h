@@ -71,12 +71,11 @@ extern bool nc1020mode;
 extern bool nc2000mode;
 extern bool nc3000mode;
 extern bool pc1000mode;
+extern bool nc1020tw_mode;
 
 extern CpuVersion cpu_version;
 extern CpuLoopVersion cpu_loop_version;
 extern IoVersion io_version;
-
-const bool nc1020_use_1024k_nor = false;
 
 const bool use_legacy_key_io = false;
 

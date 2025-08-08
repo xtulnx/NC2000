@@ -281,6 +281,30 @@ int io_v2_read(int address) {
     if(nc2000mode&&log_all_dsp_io&& address>=0x30 && address<=0x33){
         printf("""[io_v2_read] address=%02x\n",address);
     }
+    if(nc1020tw_mode){
+        if(address==0x08){
+            if (cpu->PC==0xe0ad+2){
+                printf("returning 0x03!!!!!\n");
+                return 0x03;
+            }
+        }
+        /*if(address==0x08){
+            if (cpu->PC==0xe0c4+2){
+                return 0x01;
+            }
+        }*/
+        if(address==0x0b){
+            if (cpu->PC==0xe0b5+2){
+                return 0x01;
+            }
+        }
+        if(address==0x0b){
+            if (cpu->PC==0xe0ca+2){
+                return 0x01;
+            }
+        }
+
+    }
     if(nc1020mode||nc2000mode||nc3000mode||pc1000mode){
         if(address==0x04) return Read04StopTimer0(address);
         if(address==0x05) return Read05StartTimer0(address);
@@ -294,6 +318,7 @@ int io_v2_read(int address) {
                 //enable_key_debug_once=1;
                 //return 0x01;
             }
+
             return ReadPort0(address);
         }
         if(address==0x09){
@@ -487,6 +512,7 @@ void io_v2_write(int address, int value) {
             return Write07PortConfig(address,value);//not important? seems like only hotlink inside
         }
         if(address==0x08){
+
             return Write08Port0(address, value);
         }
         if(address==0x09){
