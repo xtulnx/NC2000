@@ -294,6 +294,10 @@ int io_v2_read(int address) {
             }
         }*/
         if(address==0x0b){
+            return ram_io[0x0b]|0x01;
+        }
+        /*
+        if(address==0x0b){
             if (cpu->PC==0xe0b5+2){
                 return 0x01;
             }
@@ -302,7 +306,7 @@ int io_v2_read(int address) {
             if (cpu->PC==0xe0ca+2){
                 return 0x01;
             }
-        }
+        }*/
 
     }
     if(nc1020mode||nc2000mode||nc3000mode||pc1000mode){

@@ -33,6 +33,20 @@ void LoadRom(const string romPath){
 	fclose(file);
 }
 
+void SaveRomHack(){
+	FILE* file = fopen("tw1020/hack.rom", "wb");
+	for(int j=0;j<80;j++){
+		fwrite(rom_volume0[128+j], 0x8000, 1, file);
+	}
+		for(int j=0;j<80;j++){
+		fwrite(rom_volume1[128+j], 0x8000, 1, file);
+	}
+		for(int j=0;j<80;j++){
+		fwrite(rom_volume2[128+j], 0x8000, 1, file);
+	}
+	fclose(file);
+}
+
 void init_rom(){
     memset(&rom_buff,0xff,ROM_SIZE);
 	LoadRom(nc2k_rom.romPath);
@@ -46,9 +60,9 @@ void init_rom(){
 		}
 		else{
 			for (int i = 0; i < 128; i++) {
-				rom_volume0[i + 128 ] = rom_buff + (0x8000 * i);
-				rom_volume1[i + 128 ] = rom_buff + (0x8000 * (0x100 + i));
-				rom_volume2[i + 128 ] = rom_buff + (0x8000 * (0x200 + i));
+				rom_volume0[i  ]=rom_volume0[i + 128 ] = rom_buff + (0x8000 * i);
+				rom_volume1[i  ]=rom_volume1[i + 128 ] = rom_buff + (0x8000 * (128 + i));
+				rom_volume2[i  ]=rom_volume2[i + 128 ] = rom_buff + (0x8000 * (256 + i));
 			}
 		}
 	}

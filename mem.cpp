@@ -167,6 +167,9 @@ uint8_t* GetBank(uint8_t bank_idx){
 
 	uint8_t volume_idx = ram_io[0x0D];
     if (bank_idx < num_nor_pages) { 
+		if(bank_idx >= 0x10 && nc1020mode && nc1020tw_mode){
+			//printf("bidx=%02x\n",bank_idx);
+		}
 		//todo: improve emulation of non-exist nor pages?
 		//      current behavor is do not switch, is this correct? even if from ext_ram to nor
 		//      maybe whenever fall into nor range, should use last worked bank_idx
@@ -176,6 +179,11 @@ uint8_t* GetBank(uint8_t bank_idx){
 			return NULL;
 		}
 		if(nc1020mode){
+			if((ram_io[0x0D]&0x3)!=0) {
+				printf("nc1020tw_mode  ram_io[0x0D]=%02x!!!!!!!!!!!!\n",ram_io[0x0D]);
+			}
+			
+			assert((volume_idx &0x03)==0);
 			if (volume_idx & 0x01) {
 				return rom_volume1[bank_idx];
 			} else if (volume_idx & 0x02) {
@@ -197,7 +205,9 @@ uint8_t* GetBank(uint8_t bank_idx){
 			else
 			return nc1020_states.ext_ram2; */
 		}
-    }
+    }else{
+		printf("oops GetBank bank_idx=%02x invalid!!!\n",bank_idx);
+	}
     return NULL;
 }
 
@@ -268,7 +278,7 @@ void SwitchBank_2345(){
 			memmap[3]=ram06;
 		}
 	}
-	if(nc1020mode||nc2000mode){
+	if(nc2000mode||nc1020mode){
 		if(bank_idx==0){
 			if(ram_io[0x0a]&0x80){
 				//special case of roa=1 and bs=0;
@@ -282,13 +292,22 @@ void SwitchBank_2345(){
 			}
 		}
 	}
+
+	/*if(nc1020mode){
+		if(bank_idx==0 && (ram_io[0x0a]&0x80)==0 ){
+			if(ram_io[0x0d]&0x01){
+				memmap[2] = nor_banks[0] + 0x4000;
+				memmap[3] = nor_banks[0] + 0x6000;
+			}
+		}
+	}*/
 }
 
 uint8_t** GetVolumm(uint8_t volume_idx){
 	if(nc1020mode){
 		if ((volume_idx & 0x03) == 0x01) {
 			return rom_volume1;
-		} else if ((volume_idx & 0x03) == 0x03) {
+		} else if ((volume_idx & 0x03) == 0x02) {
 			return rom_volume2;
 		} else {
 			return rom_volume0;
@@ -332,6 +351,15 @@ void SwitchBbsBios_67(){
 	if(nc2000mode||nc3000mode||nc1020mode){
 		candidate_for_bbs = nor_banks;
 	}
+	if(nc1020tw_mode){
+		if(ram_io[0x0D]&0x3){
+			if((ram_io[0x0D]&0x3)!=0) {
+				printf("nc1020tw_mode  ram_io[0x0D]=%02x\n",ram_io[0x0D]);
+			}
+			uint8_t volume_idx = ram_io[0x0D]&0x3;
+			candidate_for_bbs = GetVolumm(volume_idx);
+		}
+	}
 
 	for (int i=0; i<4; i++) {
 		bbs_pages[i * 4] = candidate_for_bbs[i]+0x4000;
@@ -358,6 +386,13 @@ void SwitchBbsBios_67(){
 
 		if(pc1000mode){
 			if(ram_io[0x0d]&0x01){
+				memmap[6] = nor_banks[0]+0x6000;
+			}else{
+				memmap[6] = ram04;
+			}
+		}
+		if(nc1020mode){
+			if(ram_io[0x0d]&0x03){
 				memmap[6] = nor_banks[0]+0x6000;
 			}else{
 				memmap[6] = ram04;

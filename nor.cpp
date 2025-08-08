@@ -67,7 +67,11 @@ void LoadNor(){
         else assert(false);
     }
     if(nc1020tw_mode){
-        nor_buff[32758]=0xe0;
+        nor_buff[32758]=0xe0; //fix boot vector
+        //nor_buff[16394]=0xb6;
+        nor_buff[0x0a]=0xb6; // fix int $c205
+        nor_buff[0x0b]=0xc0;
+
     }
 	free(temp_buff);
 	fclose(file);
@@ -277,11 +281,11 @@ void write_nor0(uint16_t addr,uint8_t value){
         }
         else if (fp_type == BLOCK_OR_MASS_ERASE) {
             if (value == 0x30) {
-                if(nc2000mode||nc1020mode){
+                if(nc2000mode||(nc1020mode &&!nc1020tw_mode)){
                     printf("[nor] wanna erase size 2048, addr=0x%04x, bs=0x%02x\n",addr, ram_io[0x00]);
                     //memset(bank + (addr - (addr % 0x800) - 0x4000), 0xFF, 0x800);
                     memset(&memmap[addr>>13][addr&0x1800],0xff,0x800);
-                }else if(pc1000mode||nc3000mode){
+                }else if(pc1000mode||nc3000mode||nc1020tw_mode){
                     printf("[nor] wanna erase size 4096, addr=0x%04x, bs=0x%02x\n",addr, ram_io[0x00]);
                     memset(&memmap[addr>>13][addr&0x1000],0xff,0x1000);
                 }else assert(false);

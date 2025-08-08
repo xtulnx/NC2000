@@ -9,7 +9,7 @@ bool nc1020mode = false;
 bool nc2000mode = false;
 bool nc3000mode = false;
 bool pc1000mode = false;
-bool nc1020tw_mode =true;
+bool nc1020tw_mode =false;
 
 CpuVersion cpu_version = CPU_HANDYPSP;
 CpuLoopVersion cpu_loop_version = CPU_RUN3;
@@ -39,7 +39,7 @@ string inject_code;
 uint64_t tick=0;  //tick is mostly for debug
 
 bool enable_dyn_debug=false;
-int enable_dyn_debug_next_n=20000;
+int enable_dyn_debug_next_n=200;
 
 bool enable_debug_nand=false;
 
