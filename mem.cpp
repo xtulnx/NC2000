@@ -351,7 +351,9 @@ void SwitchBbsBios_67(){
 	if(nc2000mode||nc3000mode||nc1020mode){
 		candidate_for_bbs = nor_banks;
 	}
-	if(nc1020tw_mode){
+
+	//////////////////////////////
+	/*if(nc1020tw_mode){
 		if(ram_io[0x0D]&0x3){
 			if((ram_io[0x0D]&0x3)!=0) {
 				printf("nc1020tw_mode  ram_io[0x0D]=%02x\n",ram_io[0x0D]);
@@ -359,7 +361,7 @@ void SwitchBbsBios_67(){
 			uint8_t volume_idx = ram_io[0x0D]&0x3;
 			candidate_for_bbs = GetVolumm(volume_idx);
 		}
-	}
+	}*/
 
 	for (int i=0; i<4; i++) {
 		bbs_pages[i * 4] = candidate_for_bbs[i]+0x4000;
@@ -391,13 +393,14 @@ void SwitchBbsBios_67(){
 				memmap[6] = ram04;
 			}
 		}
-		if(nc1020mode){
+		///////////////////////////////////
+		/*if(nc1020mode){
 			if(ram_io[0x0d]&0x03){
 				memmap[6] = nor_banks[0]+0x6000;
 			}else{
 				memmap[6] = ram04;
 			}
-		}
+		}*/
 	}
 }
 void SwitchZP40(){

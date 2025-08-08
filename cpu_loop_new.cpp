@@ -400,7 +400,7 @@ void cpu_run3(){
 		if(nc1020mode){ //a hack to make nc1020 physical dumped nor work. todo:fixme
 			static int cnt=0;
 			cnt++;
-			if(cnt%2==0) ram_io[0x0c]|=0x01;
+			if(cnt%10==0) ram_io[0x0c]|=0x01;
 			else ram_io[0x0c]&=0xfe;
 			/*if(trigger256_cnt%2==1){
 					ram_io[0x0c]|=0x01;

@@ -51,18 +51,18 @@ void init_rom(){
     memset(&rom_buff,0xff,ROM_SIZE);
 	LoadRom(nc2k_rom.romPath);
 	if(nc1020mode){
-		if(!nc1020tw_mode){
-			for (uint32_t i=0; i<num_rom_pages/3; i++) {
-				rom_volume0[i] = rom_buff + (0x8000 * i);
-				rom_volume1[i] = rom_buff + (0x8000 * (0x100 + i));
-				rom_volume2[i] = rom_buff + (0x8000 * (0x200 + i));
-			}
-		}
-		else{
+		if(nc1020tw_mode){
 			for (int i = 0; i < 128; i++) {
 				rom_volume0[i  ]=rom_volume0[i + 128 ] = rom_buff + (0x8000 * i);
 				rom_volume1[i  ]=rom_volume1[i + 128 ] = rom_buff + (0x8000 * (128 + i));
 				rom_volume2[i  ]=rom_volume2[i + 128 ] = rom_buff + (0x8000 * (256 + i));
+			}
+		}
+		else{
+			for (uint32_t i=0; i<num_rom_pages/3; i++) {
+				rom_volume0[i] = rom_buff + (0x8000 * i);
+				rom_volume1[i] = rom_buff + (0x8000 * (0x100 + i));
+				rom_volume2[i] = rom_buff + (0x8000 * (0x200 + i));
 			}
 		}
 	}
