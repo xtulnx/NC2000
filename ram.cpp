@@ -17,3 +17,9 @@ uint8_t* ram0c = ram_buff + 0x8000+ 0x4000;
 uint8_t* ram0e = ram_buff + 0x8000+ 0x6000;
 
 uint8_t* ram_b = nc2k_states.ram_b;
+
+extern "C"{
+uint8_t get_io(int addr){
+    return ram_io[addr];
+}
+}

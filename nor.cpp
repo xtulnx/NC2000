@@ -24,6 +24,8 @@ static uint8_t& fp_type = nc2k_states.fp_type;
 //'J' --->简体
 static uint8_t nor_info_block[0x100]={
 0xbd,0xf0,0xd4,0xb6,0xbc,0xfb,'N','C',0xd0,0x07,'J',0x01,0x02,0x03,0x04,0x01,0x01,0x01,0x01,
+0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
+
 //0xbd,0xf0,0xd4,0xb6,0xbc,0xfb,
 };
 enum NOR_CMD{
@@ -69,6 +71,19 @@ void LoadNor(){
     if(nc1020tw_mode){
         nor_buff[32758]=0xe0; //fix boot vector
         //nor_buff[16394]=0xb6;
+        
+        nor_buff[0x00]=0x60; // nor header
+        nor_buff[0x01]=0xea;
+
+        //nor_buff[0x02]=0x06; // int $c001
+        //nor_buff[0x03]=0xd2;
+
+        //nor_buff[0x04]=
+        //nor_buff[0x05]=
+
+
+
+
         nor_buff[0x0a]=0xb6; // fix int $c205
         nor_buff[0x0b]=0xc0;
 
@@ -281,11 +296,11 @@ void write_nor0(uint16_t addr,uint8_t value){
         }
         else if (fp_type == BLOCK_OR_MASS_ERASE) {
             if (value == 0x30) {
-                if(nc2000mode||(nc1020mode &&!nc1020tw_mode)){
+                if(nc2000mode||(nc1020mode )){
                     printf("[nor] wanna erase size 2048, addr=0x%04x, bs=0x%02x\n",addr, ram_io[0x00]);
                     //memset(bank + (addr - (addr % 0x800) - 0x4000), 0xFF, 0x800);
                     memset(&memmap[addr>>13][addr&0x1800],0xff,0x800);
-                }else if(pc1000mode||nc3000mode||nc1020tw_mode){
+                }else if(pc1000mode||nc3000mode){
                     printf("[nor] wanna erase size 4096, addr=0x%04x, bs=0x%02x\n",addr, ram_io[0x00]);
                     memset(&memmap[addr>>13][addr&0x1000],0xff,0x1000);
                 }else assert(false);

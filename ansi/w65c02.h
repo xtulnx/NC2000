@@ -28,6 +28,7 @@ typedef bool BOOL;
 #include <stdlib.h>
 #include <sys/types.h>
 #include <stdint.h>
+#include <stdio.h>
 ////#define __iocallconv __fastcall
 #define __iocallconv
 
@@ -136,9 +137,18 @@ unsigned short GetWord(unsigned short address);
 
 // Don't use ++/-- in addr, or will be execute multi time
 // TODO: should place io operation in first case to prefer io speed (side effect: slown down other normal memory access)
+
 inline uint8_t CPU_PEEK(uint16_t addr){
+
   uint8_t Load2(uint16_t);
-  return Load2(addr);
+  int ret=Load2(addr);
+  uint8_t get_io(int addr);
+  uint8_t bs=get_io(0x00);
+  uint8_t bbs=get_io(0x0a)&0xf;
+  if(addr>=0xc000 && addr<=0xc020 && ret==0x00){
+    printf("access addr %04x, bs=%02x bbs=%02x  value=%02x\n",addr, bs, bbs,ret);
+  }
+  return ret;
   /*
     if(addr >= 0x80) {
       return *(pmemmap[unsigned(addr) >> 0xD] + (addr & 0x1FFF));
