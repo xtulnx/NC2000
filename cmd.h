@@ -264,7 +264,7 @@ WRITE:
    STA $120F
    LDA #$0
    STA $1210  
-   INT $9303       #do write
+   INT $9303       #do write           //9305or 9303???
    JMP WRITE
 PREEND:
      INT $9307     #close
