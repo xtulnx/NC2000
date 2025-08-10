@@ -195,6 +195,17 @@ void try_soft_reset(){
 }
 void debug_pc(){
 	uint8_t & Peek16Debug(uint16_t addr);
+	if(debug_level>=9){
+		unsigned char buf[10];
+		buf[0]=Peek16Debug(cpu->PC);
+		buf[1]=Peek16Debug(cpu->PC+1);
+		buf[2]=Peek16Debug(cpu->PC+2);
+		buf[3]=0;
+		if(buf[0]==0x00){
+			printf("brk %02x %02x %02x\n",buf[0],buf[1],buf[2]);
+			//Store(cpu->PC+2,0x10);
+		}
+	}
 	if(enable_debug_pc||enable_dyn_debug||enable_dyn_debug_next_n){
 		unsigned char buf[10];
 		buf[0]=Peek16Debug(cpu->PC);
