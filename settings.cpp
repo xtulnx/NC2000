@@ -321,7 +321,8 @@ void process_args(int argc, char *argv[])
     }
 	if(nc1020mode){
 		if(rom_path.empty()){
-			rom_path = "roms/nc1020";
+			if(nc1020tw_mode) rom_path = "roms/nc1020tw";
+			else rom_path = "roms/nc1020";
 		}
 		nc2k_rom.romPath = rom_path + ".rom";
 		nc2k_rom.norFlashPath = rom_path + ".nor";
