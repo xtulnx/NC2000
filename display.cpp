@@ -11,8 +11,8 @@ uint8_t lcd_buf[SCREEN_WIDTH * SCREEN_HEIGHT / 8*2];
 MyLCDView*  lcdview;
 
 void init_lcd_stripe(){
-   lcdview = new MyLCDView(("lcdstripe_slice_"+lcdstripe_suffix+".json").c_str());
-   lcdview->loadStripeTexture(("lcdstripe_"+lcdstripe_suffix+".bmp").c_str(), renderer);
+   lcdview = new MyLCDView(("resource/lcdstripe_slice_"+lcdstripe_suffix+".json").c_str());
+   lcdview->loadStripeTexture(("resource/lcdstripe_"+lcdstripe_suffix+".bmp").c_str(), renderer);
 }
 
 unsigned char *lcd_effect_buffer = nullptr;
