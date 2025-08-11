@@ -196,6 +196,53 @@ END:
 */
 
 /*=======
+nc2010
+=======*/
+//for put
+/*
+INT:.MACRO INT_PARAM
+    .DB $00
+    .DW INT_PARAM
+    .ENDM
+ .ORG $3000
+   INT $051D
+CREATE:   
+   LDA #$70
+   STA $08e8
+   LDA #$EF
+   STA $08e9
+   STA $08ea 
+   INT $0515
+WRITE:
+   LDA #$00
+   STA $3f6
+   LDA $3FFF
+   CMP #$00
+   BEQ PREEND
+   LDA $3FFF
+   STA $3200
+   LDA #$00
+   STA $DD
+   LDA #$32
+   STA $DE
+   LDA #$1
+   STA $08e5
+   LDA #$0
+   STA $08e6  
+   STA $08e7  ;not really needed maybe
+   INT $0518
+   CLV
+   BVC WRITE
+PREEND:
+     INT $0517
+     INT $C001
+;END: INT $0528
+;     JMP END 
+*/
+
+
+
+/*=======
 nc3000
 ========*/
 //put
