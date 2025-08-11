@@ -431,6 +431,27 @@ void UpdateKeypadRegisters()
         qDebug("old [0015]:%02x [0009]:%02x [0008]:%02x", w15_port1_DIR107, r09_port1_ID, r08_port0_ID);
         qDebug("new [0015]:%02x [0009]:%02x [0008]:%02x", w15_port1_DIR107, port1data, port0data);
     }
+
+    // this is tmp fix for nc2000 hotkey wakeup
+    // todo: better fix, probably need to handle below:
+    //       when port0[3:0] defined as input, it got "on" function and is pulled high.
+    if(nc2000mode) {
+        if(port1control==0xff&&port0control==0xc0 &&w09_port1_OL==0x00){
+            port0data |=0x03;
+            // note: port0control==0xc0 ----->rw0f_b4_DIR00 ==0x00 && rw0f_b5_DIR01 ==0x00
+            for(int y=0;y<8;y++){ 
+                if(keypadmatrix[y][1]){  // if any of this row is pressed, the pull high value get cleared
+                    port0data&=~0x02;
+                }
+            }
+        }
+    }
+    if(nc1020mode){ //this is a similiar hack since pull high is not implemented correctly yet
+        if(port1control==0x00&&port0control==0x00){
+            port0data|= 0x03;
+        }
+    }
+
     r09_port1_ID = port1data;
     r08_port0_ID = port0data;
 
@@ -448,20 +469,6 @@ void UpdateKeypadRegisters()
     }
     if(enable_key_debug_once) {
         printf("[key_debug] new r08_port0_ID=%02x, r09_port1_ID=%02x, tmpp30tv=%04x\n", r08_port0_ID, r09_port1_ID, tmpp30tv);
-    }
-    // this is tmp fix for nc2000 hotkey wakeup
-    // todo: better fix, probably need to handle below:
-    //       when port0[3:0] defined as input, it got "on" function and is pulled high.
-    if(nc2000mode) {
-        if(port1control==0xff&&port0control==0xc0 &&w09_port1_OL==0x00){
-            // note: port0control==0xc0 ----->rw0f_b4_DIR00 ==0x00 && rw0f_b5_DIR01 ==0x00
-            for(int y=0;y<8;y++){ 
-                if(keypadmatrix[y][1]){
-                    //port0data|= 0x01;
-                    r08_port0_ID|= 0x01;
-                }
-            }
-        }
     }
     if(enable_key_debug_once>0) enable_key_debug_once--;
 }

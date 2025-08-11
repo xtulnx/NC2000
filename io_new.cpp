@@ -282,12 +282,12 @@ int io_v2_read(int address) {
     }
     if(nc1020tw_mode){
         //hack, need to improve keyboard  (pull high)
-        if(address==0x08){
+        /*if(address==0x08){
             if (cpu->PC==0xe0ad+2){
                 if(debug_level>=1||enable_dyn_debug)printf("returning 0x03!!!!!\n");
                 return 0x03;
             }
-        }
+        }*/
         /*if(address==0x0b){
             return ram_io[0x0b]|0x01;
         }*/
