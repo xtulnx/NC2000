@@ -133,6 +133,9 @@ int lcd_effect_charge_a=1;
 int lcd_effect_charge_b=6;
 int lcd_effect_discharge_a=1;
 int lcd_effect_discharge_b=8;
+
+const double rgb_base=0.90;
+double r_scale=rgb_base+0.02,g_scale=rgb_base+0.04,b_scale=rgb_base;
 /*
 ===================
 misc

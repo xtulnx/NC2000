@@ -109,15 +109,18 @@ void Render(uint64_t tick) {
         (unsigned char)(colors[3]+(255-colors[3])/2)
         };
 
-  static const unsigned char white_color[4] = { 0, colors[0], colors[0], colors[0] };
-  static const unsigned char near_white_color[4] = { 0, colors[1], colors[1], colors[1] };
-  static const unsigned char near_black_color[4] = { 0, colors[2], colors[2], colors[2] };
-  static const unsigned char black_color[4] = { 0, colors[3], colors[3], colors[3] };
+  static const unsigned char pure_white_color[4] = { 0, colors[0], colors[0], colors[0] };
+  static const unsigned char pure_white_color_shadow[4] = { 0, shadows[0],shadows[0],shadows[0]};
 
-  static const unsigned char white_color_shadow[4] = { 0, shadows[0], shadows[0], shadows[0] };
-  static const unsigned char near_white_color_shadow[4] = { 0, shadows[1], shadows[1], shadows[1]  };
-  static const unsigned char near_black_color_shadow[4] = { 0, shadows[2], shadows[2], shadows[2]  };
-  static const unsigned char black_color_shadow[4] = { 0, shadows[3], shadows[3], shadows[3] };
+  static const unsigned char white_color[4] = { 0, (unsigned char)(colors[0]*b_scale), (unsigned char)(colors[0]*g_scale), (unsigned char)(colors[0]*r_scale) };
+  static const unsigned char near_white_color[4] = { 0, (unsigned char)(colors[1]*b_scale), (unsigned char)(colors[1]*g_scale), (unsigned char)(colors[1]*r_scale) };
+  static const unsigned char near_black_color[4] = { 0, (unsigned char)(colors[2]*b_scale), (unsigned char)(colors[2]*g_scale), (unsigned char)(colors[2]*r_scale) };
+  static const unsigned char black_color[4] = { 0, (unsigned char)(colors[3]*b_scale), (unsigned char)(colors[3]*g_scale), (unsigned char)(colors[3]*r_scale) };
+
+  static const unsigned char white_color_shadow[4] = { 0, (unsigned char)(shadows[0]*b_scale), (unsigned char)(shadows[0]*g_scale), (unsigned char)(shadows[0]*r_scale) };
+  static const unsigned char near_white_color_shadow[4] = { 0, (unsigned char)(shadows[1]*b_scale), (unsigned char)(shadows[1]*g_scale), (unsigned char)(shadows[1]*r_scale) };
+  static const unsigned char near_black_color_shadow[4] = { 0, (unsigned char)(shadows[2]*b_scale), (unsigned char)(shadows[2]*g_scale), (unsigned char)(shadows[2]*r_scale) };
+  static const unsigned char black_color_shadow[4] = { 0, (unsigned char)(shadows[3]*b_scale), (unsigned char)(shadows[3]*g_scale), (unsigned char)(shadows[3]*r_scale) };
 
   static const unsigned char * index[4]={white_color,near_white_color,near_black_color,black_color};
   static const unsigned char * index_shadow[4]={white_color_shadow, near_white_color_shadow, near_black_color_shadow, black_color_shadow};
@@ -125,8 +128,8 @@ void Render(uint64_t tick) {
   //unsigned char lcd[80*(pixel_size+gap_zize)][160*(pixel_size+gap_zize)][color_size] ;
   //unsigned char lcd[80*(pixel_size+gap_zize)][160*(pixel_size+gap_zize)][color_size] ;
 
-  static const unsigned char black_color_console[4] = { 0, 255, 0, 0 };
-  static const unsigned char black_color_shadow_console[4] = { 0, 0, 255, 0 };
+  static const unsigned char black_color_console[4] = { 0, (unsigned char)(255*1.0), 0, 0 };
+  static const unsigned char black_color_shadow_console[4] = { 0, 0, (unsigned char)(255*1.0), 0 };
   static const unsigned char * index_console[4]={white_color,near_white_color,near_black_color,black_color_console};
   static const unsigned char * index_shadow_console[4]={white_color_shadow, near_white_color_shadow, near_black_color_shadow, black_color_shadow_console};
   //static const unsigned char * index_console[4]={white_color,near_white_color,near_black_color,black_color_console};

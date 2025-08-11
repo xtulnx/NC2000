@@ -66,6 +66,7 @@ void process_args(int argc, char *argv[])
 		{"nc1020tw", no_argument, 0, 1},
 		{"oops", no_argument, 0, 1},
 		{"quit-after-debug-next-n", no_argument, 0, 1},
+		{"rgb-scale", required_argument, 0, 1},
 		{"assert", no_argument, 0, 1},
 		{NULL, 0, 0, 0}
 	};
@@ -277,6 +278,9 @@ void process_args(int argc, char *argv[])
 			}
 			else if (strcmp(long_options[option_index].name,"assert")==0){
 				enable_assert = true;
+			}
+			else if (strcmp(long_options[option_index].name,"rgb-scale")==0){
+				sscanf(optarg,"%lf,%lf,%lf",&r_scale,&g_scale,&b_scale);
 			}
 			else
 			{

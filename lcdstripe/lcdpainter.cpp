@@ -7,6 +7,7 @@
 
 #include "lcdpainter.h"
 #include "json.h"
+#include "comm.h"
 
 struct TStripeMiscInfo
 {
@@ -74,10 +75,16 @@ uint32_t getpixel(SDL_Surface *surface, int x, int y)
 
 void MyLCDView::loadStripeTexture(const char * texpath, SDL_Renderer* render)
 {
-    SDL_Surface* surface = SDL_LoadBMP(texpath);
+    //original BMP should be SDL_PIXELFORMAT_ARGB8888
+    //ARGB means A in MSB
+    SDL_Surface* surface = SDL_LoadBMP(texpath); 
     if (surface == NULL) {
         printf("file %s open failed: %s\n", texpath, SDL_GetError());
         exit(-1);
+    }
+    if(debug_level>=1){
+        const char* formatName = SDL_GetPixelFormatName(surface->format->format);
+        printf("pixel format=%s, bpp=%d\n", formatName, surface->format->BytesPerPixel);
     }
 
     int width = surface->w;
@@ -91,9 +98,24 @@ void MyLCDView::loadStripeTexture(const char * texpath, SDL_Renderer* render)
     for(int i = 0; i < height; i++){
         for(int j=0;j<width;j++){
             uint32_t color= getpixel(surface, j, i);
+            //printf("%08x ",color);
             /*printf("R: %d G: %d B: %d A: %d\n", 
                 (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, (color >> 24) & 0xFF);*/
-            *bufptr = color << 8 | color >> 24;
+            int alpha = (color >> 24) & 0xFF;
+            //if(alpha<0x20) alpha*=0.66; //manually turn icons lighter
+            int r = (color >> 16) & 0xFF;
+            int g = (color >> 8) & 0xFF;
+            int b = color & 0xFF;
+            r=g=b=(r+g+b)/3; // turn into grayscale
+            r = 255-((255-r) * alpha) / 255;  //apply alpha into color
+            g = 255-((255-g) * alpha) / 255;
+            b = 255-((255-b) * alpha) / 255;
+            alpha=0xff;
+            r*=r_scale; 
+            b*=b_scale;
+            g*=g_scale;
+            color = (alpha << 24) | (r << 16) | (g << 8) | b;
+            *bufptr = color << 8 | color >> 24; //turn ARGB to RGBA
             bufptr++;   
         }
     }
@@ -291,9 +313,9 @@ void MyLCDView::paint(SDL_Renderer* render, bool lcdon, bool draw_stripe)
 {
     SDL_SetTextureBlendMode(fLCDTexture, SDL_BLENDMODE_NONE);
     //SDL_SetRenderDrawColor(render, 0xFF, 0xFD, 0xE8, 0xFF);
-    SDL_SetRenderDrawColor(render, 0xFF, 0xFf, 0xff, 0xFF);
+    SDL_SetRenderDrawColor(render, 0xFF*r_scale, 0xFF*g_scale, 0xFF*b_scale, 0xFF);
     SDL_RenderClear(render);
-    SDL_SetTextureBlendMode(fLCDTexture, SDL_BLENDMODE_BLEND);
+    //SDL_SetTextureBlendMode(fLCDTexture, SDL_BLENDMODE_BLEND);
     if (lcdon) {
         auto a=SDL_Rect{ 0, 0, fLCDEmpty.w,fLCDEmpty.h };
         SDL_RenderCopy(render, fLCDTexture, &fLCDEmpty, &a);
