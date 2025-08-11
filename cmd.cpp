@@ -252,6 +252,7 @@ void handle_cmd(string str){
 	}
 
 	if(cmds[0]=="file_manager"||cmds[0]=="f"){
+		if(!nc2000mode&&!nc3000mode) return;
 		cpu->PC=0x3000;
 		/*if(nc1020mode){
 			uint8_t buf[]={0x00,0x2d,0x93,0x18,0x90,0xfa};
@@ -354,6 +355,7 @@ void handle_cmd(string str){
 			return;
 	}
 	if(cmds[0]=="get"){
+			if(!nc2000mode) return;
 			string src=cmds[1];
 			string target=cmds[1];
 			if(cmds.size()>2) target=cmds[2];
