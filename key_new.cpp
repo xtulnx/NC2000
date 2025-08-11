@@ -42,7 +42,7 @@ extern unsigned /*char*/ keypadmatrix[8][8];
 
 //the comments e.g. P00, P30 has no meaning for nc1020/2000/3000, they are copied from wayback and not changed.
 vector<TKeyItem*> items2000_1020 = {
-        new TKeyItem(18, 0x02,0,0,  NULL, NULL, "ON/OFF", {SDLK_F12}),        // GND, P30
+        //new TKeyItem(18, 0x02,0,0,  NULL, NULL, "ON/OFF", {SDLK_F12}),        // GND, P30
     //    new TKeyItem(0, 0x01, 1,0, NULL, NULL, "infra_red", {SDLK_BACKQUOTE}), 
         new TKeyItem(0, 0x01, 1,0, NULL, NULL, "infra_red", {SDLK_LALT}), 
         new TKeyItem(0, 0x0B, 3,1, "英汉", NULL, "汉英",{SDLK_F5}),          // P00, P30
@@ -293,6 +293,7 @@ void init_keyitems(){
     }
     if(nc1020mode||nc2000mode){
       for(auto x: items2000_1020) current_items.push_back(x);
+      if(nc2000mode) current_items.push_back(new TKeyItem(18, 0x02,0,0,  NULL, NULL, "ON/OFF", {SDLK_F12})); 
     }
     if(nc3000mode) {
       for(auto x: items3000) current_items.push_back(x);
@@ -363,6 +364,18 @@ void handle_key_wayback(signed int sym, bool key_down){
           printf("event <%d,%d; %llu>\n", sym,key_down,SDL_GetTicks64()%1000);
         }*/
         auto value=map_key_wayback(sym);
+        if(nc1020mode && sym==SDLK_F12 ){
+          extern uint8_t* ram_io;
+          if(key_down){
+            ram_io[0x0b]|=1;
+          }else {
+            ram_io[0x0b]&=~1;
+            void try_soft_reset();
+            try_soft_reset();
+          }
+          if(debug_level>=2) printf("current value of 0x0b bit0: %d\n", ram_io[0x0b]&0x01);
+
+        }
         if(value.first!=-1 && value.second!=-1){
           SetKeyWayback(value.first,value.second, key_down);
           if(bus_pc1000){

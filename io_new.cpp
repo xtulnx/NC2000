@@ -288,9 +288,9 @@ int io_v2_read(int address) {
                 return 0x03;
             }
         }
-        if(address==0x0b){
+        /*if(address==0x0b){
             return ram_io[0x0b]|0x01;
-        }
+        }*/
     }
     if(nc1020mode||nc2000mode||nc3000mode||pc1000mode){
         if(address==0x04) return Read04StopTimer0(address);
@@ -529,6 +529,7 @@ void io_v2_write(int address, int value) {
             return Write09Port1(address,value);
         }
         if(address==0x0b){
+            if(debug_level>=2)printf("writing %d in 0x0b bit0\n", value&0x1);
             return Write0BPort3LCDStartAddr(address,value);
         }
         if(address==0x0c){

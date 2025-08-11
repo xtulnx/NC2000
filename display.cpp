@@ -63,9 +63,18 @@ void Render(uint64_t tick) {
 
   extern unsigned char lcden;
   extern unsigned char lcdon;
+  bool lcd_on = true;
+  if(nc2000mode||nc1020mode){
+    extern uint8_t* ram_io;
+    if(nc2000mode) lcd_on = (lcden && lcdon);
+    if(nc1020mode) lcd_on = lcdon;
+    if(ram_io[0x05]>>5==7){ //clk off
+      lcd_on=false;
+    }
+  }
   if (console_on){
     draw_console();
-  }else if(nc2000mode&&(!lcden || !lcdon)) {
+  }else if(!lcd_on) {
     memset(lcd_buf, 0, sizeof(lcd_buf));
   }
   else if (!CopyLcdBuffer(lcd_buf)) {
@@ -84,7 +93,7 @@ void Render(uint64_t tick) {
     render_cnt++;
     //if(render_cnt%100==0) printf("Render %d times\n",cnt);
     SDL_RenderSetLogicalSize(renderer, lcdview->getLCDWidth(), lcdview->getLCDHeight());
-    lcdview->paint(renderer, true, !console_on);
+    lcdview->paint(renderer, true, lcd_on&&!console_on);
 
     SDL_RenderSetLogicalSize(renderer, (SCREEN_WIDTH +LEFT_GAP +RIGHT_GAP-1) * lcd_scale *total_size+ (LEFT_GAP_EXTRA+RIGHT_GAP_EXTRA)*lcd_scale, SCREEN_HEIGHT * lcd_scale *total_size);
     //SDL_RenderClear(renderer);

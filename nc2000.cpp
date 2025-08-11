@@ -1,6 +1,7 @@
 #include "nc2000.h"
 #include "comm.h"
 #include "disassembler.h"
+#include "ram.h"
 #include "state.h"
 #include "cpu.h"
 #include "mem.h"
@@ -150,6 +151,10 @@ void LoadNC2k(){
 		if(nc2000mode){
 			if(enable_auto_time_sync) sync_time_2000();
 		}
+	}
+
+	if(nc1020mode){
+		ram_io[0x0b]=0x01;
 	}
 
 	//reset_cpu_states();
