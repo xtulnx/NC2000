@@ -153,24 +153,26 @@ void Render(uint64_t tick) {
         int v=c*total_size;
         if(console_on) {
           handle_pixel(u,v,index_console,value);
-          handle_pixel(u,v+total_size-1,index_shadow_console,value);
+          if(gap_size)handle_pixel(u,v+total_size-1,index_shadow_console,value);
         }
         else {
           handle_pixel(u,v,index,value);
-          handle_pixel(u,v+total_size-1,index_shadow,value);
+          if(gap_size)handle_pixel(u,v+total_size-1,index_shadow,value);
         }
         if(!do_SDL_refresh) continue;
         int v1=*(int*)p[u][v];
         int v2=*(int*)p[u][v+total_size-1];
-        for(int i=0;i<total_size-1;i++){
+        for(int i=0;i<pixel_size;i++){
             int *p2=(int*)p[u+i][v];
-            for(int j=0;j<total_size-1;j++){
+            for(int j=0;j<pixel_size;j++){
                 *(p2++) = v1;
             }
         }
-        for(int i=0;i<total_size;i++){
-            *(int*)p[u+i][v+total_size-1] = v2;
-            *(int*)p[u+total_size-1][v+i] = v2;
+        for(int i=0;i<gap_size;i++){
+          for(int j=0;j<total_size;j++){
+              *(int*)p[u+j][v+pixel_size+i] = v2;
+              *(int*)p[u+pixel_size+i][v+j] = v2;
+          }
         }
 
         //memcpy(bytes, pixel ? black_color : white_color, color_size);
@@ -190,19 +192,21 @@ void Render(uint64_t tick) {
         int u=r*total_size;
         int v=c*total_size;
         handle_pixel(u,v,index,value);
-        handle_pixel(u,v+total_size-1,index_shadow,value);
+        if(gap_size)handle_pixel(u,v+total_size-1,index_shadow,value);
         if(!do_SDL_refresh) continue;
         int v1=*(int*)p[u][v];
         int v2=*(int*)p[u][v+total_size-1];
-        for(int i=0;i<total_size-1;i++){
+        for(int i=0;i<pixel_size;i++){
             int *p2=(int*)p[u+i][v];
-            for(int j=0;j<total_size-1;j++){
+            for(int j=0;j<pixel_size;j++){
                 *(p2++) = v1;
             }
         }
-        for(int i=0;i<total_size;i++){
-            *(int*)p[u+i][v+total_size-1] = v2;
-            *(int*)p[u+total_size-1][v+i] = v2;
+        for(int i=0;i<gap_size;i++){
+          for(int j=0;j<total_size;j++){
+              *(int*)p[u+j][v+pixel_size+i] = v2;
+              *(int*)p[u+pixel_size+i][v+j] = v2;
+          }
         }
       }
     }
