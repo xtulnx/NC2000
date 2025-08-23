@@ -110,7 +110,7 @@ void MyLCDView::loadStripeTexture(const char * texpath, SDL_Renderer* render)
             r = 255-((255-r) * alpha) / 255;  //apply alpha into color
             g = 255-((255-g) * alpha) / 255;
             b = 255-((255-b) * alpha) / 255;
-            alpha=0xff;
+            if(alpha!=0) alpha=0xff;
             r*=r_scale; 
             b*=b_scale;
             g*=g_scale;
@@ -315,7 +315,7 @@ void MyLCDView::paint(SDL_Renderer* render, bool lcdon, bool draw_stripe)
     //SDL_SetRenderDrawColor(render, 0xFF, 0xFD, 0xE8, 0xFF);
     SDL_SetRenderDrawColor(render, 0xFF*r_scale, 0xFF*g_scale, 0xFF*b_scale, 0xFF);
     SDL_RenderClear(render);
-    //SDL_SetTextureBlendMode(fLCDTexture, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureBlendMode(fLCDTexture, SDL_BLENDMODE_BLEND);
     if (lcdon) {
         auto a=SDL_Rect{ 0, 0, fLCDEmpty.w,fLCDEmpty.h };
         SDL_RenderCopy(render, fLCDTexture, &fLCDEmpty, &a);
