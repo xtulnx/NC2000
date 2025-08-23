@@ -352,4 +352,12 @@ void process_args(int argc, char *argv[])
 		nc2k_rom.statesPath=rom_path + ".state";
 	}
 
+	if(lcdstripe_suffix.empty()){
+		if(pixel_size+gap_size==5){
+			lcdstripe_suffix = "w938";
+		}else{
+			lcdstripe_suffix = "w1313";
+		}
+	}
+
 }

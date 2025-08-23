@@ -106,7 +106,7 @@ void Render(uint64_t tick) {
   static const unsigned char shadows[4]={255,
         (unsigned char)(colors[1]+(255-colors[1])/8),
         (unsigned char)(colors[2]+(255-colors[2])/4),
-        (unsigned char)(colors[3]+(255-colors[3])/2)
+        (unsigned char)(colors[3]+(255-colors[3])/2.5)
         };
 
   static const unsigned char pure_white_color[4] = { 0, colors[0], colors[0], colors[0] };

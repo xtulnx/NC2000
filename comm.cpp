@@ -119,7 +119,7 @@ uint32_t NOR_SIZE;
 display related
 ===================
 */
-int pixel_size=3;
+int pixel_size=4;
 int gap_size=1;
 int lcd_scale=1;
 int total_size;
@@ -127,7 +127,7 @@ int total_size;
 bool enable_lcd_latency_effect = true;
 uint32_t LCD_INNER_REFRESH_INTERVAL=8; //unit ms
 uint32_t LCD_OUTER_REFRESH_INTERVAL=16;
-string lcdstripe_suffix="w1313";
+string lcdstripe_suffix;
 
 int lcd_effect_charge_a=1;
 int lcd_effect_charge_b=6;
