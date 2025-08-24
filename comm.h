@@ -236,6 +236,7 @@ misc
 const int int_inf=10*10000*10000;
 extern bool shift_down;
 extern int battery_level;
+extern bool patch_nc1020tw_nor;
 /*
 ===================
 common functions

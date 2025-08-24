@@ -64,6 +64,7 @@ void process_args(int argc, char *argv[])
 		{"log-all-dsp-io", no_argument, 0, 1},
 		{"battery-level", required_argument, 0, 1},
 		{"nc1020tw", no_argument, 0, 1},
+		{"patch-nc1020tw-nor", no_argument, 0, 1},
 		{"oops", no_argument, 0, 1},
 		{"quit-after-debug-next-n", no_argument, 0, 1},
 		{"rgb-scale", required_argument, 0, 1},
@@ -281,6 +282,9 @@ void process_args(int argc, char *argv[])
 			}
 			else if (strcmp(long_options[option_index].name,"rgb-scale")==0){
 				sscanf(optarg,"%lf,%lf,%lf",&r_scale,&g_scale,&b_scale);
+			}
+			else if (strcmp(long_options[option_index].name,"patch-nc1020tw-nor")==0){
+				patch_nc1020tw_nor = true;
 			}
 			else
 			{

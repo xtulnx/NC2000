@@ -69,8 +69,10 @@ void LoadNor(){
         else assert(false);
     }
 
-    void try_fix_dump();
-    try_fix_dump();
+    if(patch_nc1020tw_nor){
+        void try_fix_dump();
+        try_fix_dump();
+    }
 
 	free(temp_buff);
 	fclose(file);

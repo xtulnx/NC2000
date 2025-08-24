@@ -143,6 +143,7 @@ misc
 */
 bool shift_down =false;;
 int battery_level=11;
+bool patch_nc1020tw_nor=false;
 
 
 
