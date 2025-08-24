@@ -29,10 +29,12 @@ PCB layout:
 The rest of Readme is going to be in Chinese, there are a few more english materials in [wiki](https://github.com/wangyu-/NC2000/wiki).
 
 # Screenshots
-<img width="812" alt="image" src="https://github.com/user-attachments/assets/96f03545-daf1-43c4-b825-aea37977e80d" />
+<img width="812" alt="image" src="https://github.com/user-attachments/assets/541a872a-c93b-438b-9c44-86c8df19c784" />
 
-<img width="405" alt="image" src="https://github.com/user-attachments/assets/0a05b378-a533-4d50-927b-6e9019c51d39">
-<img width="405" alt="image" src="https://github.com/user-attachments/assets/5d5ddc49-c9dd-404d-a5df-6efe4c7452c9">
+
+<img width="405" alt="image" src="https://github.com/user-attachments/assets/8946b77e-9426-4a52-8a29-f0f7e988c189" />
+
+<img width="405" alt="image" src="https://github.com/user-attachments/assets/13b3e1d3-822f-42a0-845d-19e1e366426f" />
 
 <br>
 
@@ -66,9 +68,10 @@ The rest of Readme is going to be in Chinese, there are a few more english mater
 * 热键唤醒, 闹铃唤醒
 * 超频
 
-经测试支持的内核:
+经测试支持的rom:
 * nc2000c `官方3.5`
 * nc2600c `官方3.2`, `3.5内核 by Sun`,`4.1内核 by qiqi`, `4.1内核保留剑桥版 by qiqi`, `非常4.2内核 by 41824984`, `5.0内核 by epc`
+* 哈电族nc2000 `官方3.6B`
   
 # 按键
 
@@ -105,6 +108,11 @@ nc2600:
 nc1020:
  nc2000.exe --nc1020 --rom roms/nc1020
 ```
+
+```
+nc2600 非常4.2:
+ nc2000.exe --nc2000 --rom roms/fc42  (24MB扩容内核, 推荐，这个里面内置的软件最多，且都是测试过的。但是单词不能发音)
+```
 更多见wiki[切换不同机型和内核](https://github.com/wangyu-/NC2000/wiki/%E5%88%87%E6%8D%A2%E4%B8%8D%E5%90%8C%E6%9C%BA%E5%9E%8B%E5%92%8C%E5%86%85%E6%A0%B8)
 
 ### 超频
@@ -112,6 +120,22 @@ nc1020:
 ```
 nc2000.exe --oc 2 （超频到2倍速）
 ```
+
+### 调整屏幕
+
+#### 调整背景颜色
+```
+nc2000.exe --rgb-scale 1,1,0.92
+```
+屏幕背景色为红1.0绿1.0蓝0.92，也就是淡黄色背景，效果：
+
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/e6bc079c-eb38-4bae-a706-3b9cd9108615" />
+
+#### 调整屏幕尺寸
+```
+nc2000.exe --pixel-size 3 --gap-size 1 --lcd-scale 1      
+```
+每个wqx像素对应3个屏幕像素，wqx像素间隔对应1个屏幕像素，缩放1倍）
 
 ### 完整参数
 
