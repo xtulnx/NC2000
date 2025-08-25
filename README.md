@@ -36,6 +36,10 @@ The rest of Readme is going to be in Chinese, there are a few more english mater
 
 <img width="405" alt="image" src="https://github.com/user-attachments/assets/13b3e1d3-822f-42a0-845d-19e1e366426f" />
 
+<img width="405" alt="image" src="https://github.com/user-attachments/assets/a0c4e8f3-09b6-4a2f-b8f2-1998a0172351" />
+
+<img width="405" alt="image" src="https://github.com/user-attachments/assets/4ca56d3b-24ce-427c-9646-4f319dbfbe06" />
+
 <br>
 
 <img width="270" alt="image" src="https://github.com/user-attachments/assets/03c426b6-b2bc-434d-adf6-97dbe8f60144">
