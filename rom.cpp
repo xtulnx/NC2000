@@ -13,10 +13,10 @@ void LoadRom(const string romPath){
 
 	int rom_size=-1;
 
-	if(nc1020mode){
+	/*if(nc1020mode){
 		rom_size=ROM_SIZE;
-	}
-	if(pc1000mode|| nc1020tw_mode) {
+	}*/
+	if(pc1000mode|| nc1020mode) {
 		//for pc1000, becausing of remapping, the file size is not equal to sizeof(rom_buff)
 		rom_size=0x8000*128*3;
 	}
@@ -27,6 +27,15 @@ void LoadRom(const string romPath){
         printf("file %s not exist!\n",romPath.c_str());
         exit(-1);
     }
+	fseek(file, 0, SEEK_END);
+	int fsize = ftell(file);
+	fseek(file, 0, SEEK_SET);
+
+	if(fsize!=rom_size){
+		printf("rom size wrong, <expected=%d, actual=%d>; probably your rom is in an old format, try to download a newer one\n",rom_size,fsize);
+		exit(-1);
+	}
+
 	fread(temp_buff, 1, rom_size, file);
 	ProcessBinaryLinear(rom_buff, temp_buff, rom_size);
 	free(temp_buff);
@@ -51,7 +60,7 @@ void init_rom(){
     memset(&rom_buff,0xff,ROM_SIZE);
 	LoadRom(nc2k_rom.romPath);
 	if(nc1020mode){
-		if(nc1020tw_mode){
+		if(true){
 			for (int i = 0; i < 128; i++) {
 				//rom_volume0[i  ]=
 				rom_volume0[i + 128 ] = rom_buff + (0x8000 * i);
@@ -64,7 +73,7 @@ void init_rom(){
 			extern uint8_t nor_buff[1024*1024];
 			//memcpy(rom_volume0[0x90]+0x4000, nor_buff +491520,0x1000);
 		}
-		else{
+		else{//old code for 24m rom from ggv sim
 			for (uint32_t i=128; i<256; i++) {
 				rom_volume0[i] = rom_buff + (0x8000 * i);
 				rom_volume1[i] = rom_buff + (0x8000 * (0x100 + i));
