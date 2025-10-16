@@ -369,3 +369,42 @@ END:
    JMP END 
 
 */
+
+
+/*=======
+nc1020tw
+=======*/
+/*
+for put:
+
+INT:.MACRO INT_PARAM
+    .DB $00
+    .DW INT_PARAM
+    .ENDM
+ .ORG $3000
+CREATE:   
+   INT $1001     ;create file
+WRITE:
+   LDA #$00
+   STA $46E  ;prevent auto shutdown
+   STA $4AE  ;prevent auto shutdown
+   LDA $3FFF
+   CMP #$00
+   BEQ PREEND
+   LDA $3FFF
+   STA $3200
+   LDA #$00
+   STA $120D
+   LDA #$32
+   STA $120E
+   LDA #$1
+   STA $120F
+   LDA #$0
+   STA $1210  
+   INT $1005       ;do write
+   JMP WRITE
+PREEND:
+     INT $1007     ;close
+END: INT $8304     ;jump to time set
+     JMP END  
+*/
