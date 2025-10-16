@@ -453,6 +453,13 @@ void io_v2_write(int address, int value) {
                     case 7: printf("oops clk off\n");speed_scaledown=99;break; 
                     default:assert(false);
                 }
+                /*if(nc1020mode && cks==7){ //if accidentally closed during get, at least save what has already been got
+                    extern deque<char> queue_for_write;
+                    bool dummy_io_for_write(uint16_t addr, uint8_t value);
+                    if(queue_for_write.size()){
+                        dummy_io_for_write(0x3fff,  0);
+                    }
+                }*/
                 if(enable_debug_cks) printf("<cks=%d scaledown=%d>\n",cks,speed_scaledown);
             }
             //purposely not return
