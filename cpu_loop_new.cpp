@@ -310,7 +310,10 @@ void cpu_run3(){
 	if(trigger256){
 		if(nc1020mode||nc2000mode||nc3000mode){
 			if(trigger256_cnt==0){
-				if(!nc1020mode && enable_keepon) Store(1025, 0);//prevent sleep
+				if(enable_keepon){
+					if(nc1020mode) Store(1142, 0);//prevent sleep
+					else Store(1025, 0);
+				}
 				//at the begin of every second
 				setTimeRTC();
 			}
