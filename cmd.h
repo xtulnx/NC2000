@@ -301,7 +301,8 @@ CREATE:
    INT $9301     ;create file
 WRITE:
    LDA #$00
-   STA $3f6      ;avoid shutdown
+   STA $46E  ;prevent auto shutdown
+   STA $4AE  ;prevent auto shutdown
    LDA $3FFF
    CMP #$00
    BEQ PREEND
@@ -337,10 +338,11 @@ OPEN:
    LDA #$00
    STA $1214
    INT $9302
-   ;BCS FAIL
+   BCS PREEND
 READ:
    LDA #$00
-   STA $3f6 ;prevent auto shutdown
+   STA $46E  ;prevent auto shutdown
+   STA $4AE  ;prevent auto shutdown
    LDA #$00 
    STA $120D
    LDA #$32  ;3200--->addr to read
@@ -364,6 +366,6 @@ PREEND:
    INT $9307
 END: 
    INT $8304 ;jump to time set
-   JMP END  
+   JMP END 
 
 */
