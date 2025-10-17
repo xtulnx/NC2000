@@ -17,7 +17,7 @@ char* peek_message();
 /*=======
 nc2600
 =======*/
-//for put:
+//nc2600 put:
 /*
 INT:.MACRO INT_PARAM
     .DB $00
@@ -59,7 +59,7 @@ PREEND:
 ;     JMP END   
 */
 
-//for get:
+//nc2600 get:
 /*
 INT:.MACRO INT_PARAM
     .DB $00
@@ -108,7 +108,7 @@ END:
 /*=======
 nc2000
 =======*/
-//for put
+//nc2000 put
 /*
 INT:.MACRO INT_PARAM
     .DB $00
@@ -150,7 +150,7 @@ PREEND:
 ;     JMP END 
 */
 
-//for get:
+//nc2000 get:
 /*
 INT:.MACRO INT_PARAM
     .DB $00
@@ -196,9 +196,9 @@ END:
 */
 
 /*=======
-nc2010
+nc2000tw
 =======*/
-//for put
+//nc2000tw put
 /*
 INT:.MACRO INT_PARAM
     .DB $00
@@ -245,7 +245,7 @@ PREEND:
 /*=======
 nc3000
 ========*/
-//put
+// nc3000 put
 /*
 INT:.MACRO INT_PARAM
     .DB $00
@@ -290,13 +290,14 @@ END: INT $0528
 nc1020
 =======*/
 /*
-for put:
+nc1020 put:
 
 INT:.MACRO INT_PARAM
     .DB $00
     .DW INT_PARAM
     .ENDM
  .ORG $3000
+   ;INT $9327    ;defrag, but this overwrite some ram
 CREATE:   
    INT $9301     ;create file
 WRITE:
@@ -317,16 +318,15 @@ WRITE:
    LDA #$0
    STA $1210  
    INT $9305       ;do write
-   JMP WRITE
+   CLV
+   BVC WRITE
 PREEND:
      INT $9307     ;close
-END: INT $8304     ;jump to time set
-     JMP END  
+END: INT $C001     ;restart 
 */
 
-
 /*
-for get:
+nc1020 get:
 
 INT:.MACRO INT_PARAM
     .DB $00
@@ -365,8 +365,7 @@ PREEND:
    STA $3FFF
    INT $9307
 END: 
-   INT $8304 ;jump to time set
-   JMP END 
+   INT $C001 ;restart
 
 */
 
@@ -375,13 +374,14 @@ END:
 nc1020tw
 =======*/
 /*
-for put:
+nc1020tw put:
 
 INT:.MACRO INT_PARAM
     .DB $00
     .DW INT_PARAM
     .ENDM
  .ORG $3000
+   ;INT $1027    ;defrag, but this overwrite some ram
 CREATE:   
    INT $1001     ;create file
 WRITE:
@@ -402,9 +402,52 @@ WRITE:
    LDA #$0
    STA $1210  
    INT $1005       ;do write
-   JMP WRITE
+   CLV
+   BVC WRITE
 PREEND:
      INT $1007     ;close
-END: INT $8304     ;jump to time set
-     JMP END  
+END: INT $C001     ;restart
+*/
+
+/*
+nc1020tw get:
+
+INT:.MACRO INT_PARAM
+    .DB $00
+    .DW INT_PARAM
+    .ENDM
+ .ORG $3000
+OPEN:
+   LDA #$00
+   STA $1214
+   INT $1002
+   BCS PREEND
+READ:
+   LDA #$00
+   STA $46E  ;prevent auto shutdown
+   STA $4AE  ;prevent auto shutdown
+   LDA #$00 
+   STA $120D
+   LDA #$32  ;3200--->addr to read
+   STA $120E
+   LDA #$01
+   STA $120F
+   LDA #$00  ;0001--->read 1byte each time
+   STA $1210
+   INT $1004
+   LDA $120F ;load acutal read byte
+   BEQ PREEND
+   LDA #$1
+   STA $3FFF
+   LDA $3200
+   STA $3FFF
+   CLV
+   BVC READ
+PREEND:
+   LDA #$0
+   STA $3FFF
+   INT $1007
+END: 
+   INT $C001 ;restart
+
 */
