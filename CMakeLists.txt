@@ -9,6 +9,10 @@ find_package(SDL2 REQUIRED)
 
 include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+if(ENABLE_UDP_SERVER)
+    add_definitions(-DENABLE_UDP_SERVER)
+endif()
 #target_link_libraries(a.out PRIVATE "-Wl,-stack_size -Wl,3f00000")
 #target_link_directories(a.out PUBLIC "/opt/homebrew/lib")
 #find_package(SDL2 REQUIRED PATH /opt/homebrew/lib)

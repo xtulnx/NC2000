@@ -2,6 +2,7 @@
 #include <thread>
 #include "cmd.h"
 
+#if defined (ENABLE_UDP_SERVER)
 #if defined(__MINGW32__)
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -105,8 +106,9 @@ int init_ws()
 #endif
 return 0;
 }
-
+#endif
 void init_udp_server(int listen_port){
+#if defined (ENABLE_UDP_SERVER)
     init_ws();
 
 	if ((udp_fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
@@ -131,4 +133,5 @@ void init_udp_server(int listen_port){
 	std::thread task1(read_loop, "hi");
 	task1.detach();
 	return ;
+#endif
 }
