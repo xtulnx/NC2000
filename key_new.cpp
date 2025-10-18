@@ -44,7 +44,7 @@ extern unsigned /*char*/ keypadmatrix[8][8];
 vector<TKeyItem*> items2000_1020 = {
         //new TKeyItem(18, 0x02,0,0,  NULL, NULL, "ON/OFF", {SDLK_F12}),        // GND, P30
     //    new TKeyItem(0, 0x01, 1,0, NULL, NULL, "infra_red", {SDLK_BACKQUOTE}), 
-        new TKeyItem(0, 0x01, 1,0, NULL, NULL, "infra_red", {SDLK_LALT}), 
+        //new TKeyItem(0, 0x01, 1,0, NULL, NULL, "infra_red", {SDLK_LALT}), 
         new TKeyItem(0, 0x0B, 3,1, "英汉", NULL, "汉英",{SDLK_F5}),          // P00, P30
         new TKeyItem(1, 0x0C, 4,1, "名片", NULL, "通讯",{SDLK_F6}),          // P01, P30
         new TKeyItem(2, 0x0D, 5,1, "计算", NULL, "换算",{SDLK_F7}),          // P02, P30
@@ -293,7 +293,13 @@ void init_keyitems(){
     }
     if(nc1020mode||nc2000mode){
       for(auto x: items2000_1020) current_items.push_back(x);
-      if(nc2000mode) current_items.push_back(new TKeyItem(18, 0x02,0,0,  NULL, NULL, "ON/OFF", {SDLK_F12})); 
+      if(nc2000mode) {
+        current_items.push_back(new TKeyItem(18, 0x02,0,0,  NULL, NULL, "ON/OFF", {SDLK_F12}));
+        current_items.push_back(new TKeyItem(0, 0x01, 1,0, NULL, NULL, "infra_red", {SDLK_LALT})); 
+      }
+      if(nc1020mode){
+        current_items.push_back(new TKeyItem(0, -1, 2,0, NULL, NULL, "infra_red", {SDLK_LALT})); 
+      }
     }
     if(nc3000mode) {
       for(auto x: items3000) current_items.push_back(x);

@@ -88,6 +88,9 @@ void main_loop() {
             void sync_time_2000();
             sync_time_2000();
         }
+        if(nc1020mode){
+            void sync_time_1020();
+            sync_time_1020();}
       }
     }
 
@@ -151,6 +154,11 @@ void main_loop() {
             printf("sync time on power save resume\n");
             void sync_time_2000();
             sync_time_2000();
+          }
+          if(nc1020mode){
+            printf("sync time on power save resume\n");
+            void sync_time_1020();
+            sync_time_1020();
           }
         }
       }

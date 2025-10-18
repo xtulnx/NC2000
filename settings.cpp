@@ -334,6 +334,10 @@ void process_args(int argc, char *argv[])
 		}
 		nc2k_rom.romPath = rom_path + ".rom";
 		nc2k_rom.norFlashPath = rom_path + ".nor";
+		extern uint8_t nor_info_block[100];
+		nor_info_block[8]=0xfc;
+		nor_info_block[9]=0x03;
+
 	}
 	if(pc1000mode){
 		if(rom_path.empty()){

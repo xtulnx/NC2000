@@ -178,6 +178,10 @@ void sync_time_2000(){
 		printf("sync_time() called\n");
 		time_t current_time = time(NULL);
 		struct tm *local_time = localtime(&current_time);
+		if(local_time->tm_year + 1900 >2031) {
+			printf("skip sync_time(), since current year %d is too large for wqx\n",local_time->tm_year + 1900);
+			return;
+		}
 		Store(0x3fa, local_time->tm_year - 103 +0x7a);
 		Store(0x3fb, local_time->tm_mon);
 		Store(0x3fc, local_time->tm_mday-1);
@@ -185,6 +189,24 @@ void sync_time_2000(){
 		rtc_reg[2]=local_time->tm_hour;
 		rtc_reg[1]=local_time->tm_min;
 		rtc_reg[0]=local_time->tm_sec;
+}
+
+void sync_time_1020(){
+	if(nc1020tw_mode) return;
+	printf("sync_time() called\n");
+	time_t current_time = time(NULL);
+	struct tm *local_time = localtime(&current_time);
+	if(local_time->tm_year + 1900 >2031) {
+		printf("skip sync_time(), since current year %d is too large for wqx\n",local_time->tm_year + 1900);
+		return;
+	}
+	Store(0x472, local_time->tm_year - 103 +0x7a);
+	Store(0x473, local_time->tm_mon);
+	Store(0x474, local_time->tm_mday-1);
+	//Store(0x3fd, local_time->tm_wday);
+	rtc_reg[2]=local_time->tm_hour;
+	rtc_reg[1]=local_time->tm_min;
+	rtc_reg[0]=local_time->tm_sec;
 }
 bool soft_reset=0;
 void try_soft_reset(){
@@ -289,7 +311,23 @@ void cpu_run3(){
 				if(enable_auto_time_sync) sync_time_2000();
 			}
 		}
-
+	}
+	if(nc1020mode){
+		if(!nc1020tw_mode){
+			static bool time_adjusted_phase2=0;
+			if(!time_adjusted && Peek16(0x472)==0x79 /*&&rtc_reg[0]==1*/){
+				time_adjusted=1;
+				if(enable_auto_time_sync) {
+					sync_time_1020();
+				}
+			}
+			if(!time_adjusted_phase2 &&time_adjusted && rtc_reg[0]==1){
+				time_adjusted_phase2=1;
+				if(enable_auto_time_sync) {
+					sync_time_1020();
+				}
+			}
+		}
 	}
 	tick++;
 

@@ -511,6 +511,10 @@ void handle_cmd(string str){
 			extern void sync_time_2000();
 			sync_time_2000();
 		}
+		if(nc1020mode){
+			extern void sync_time_1020();
+			sync_time_1020();
+		}
 		return ;
 	}
 	printf("unknow command <%s>\n",cmds[0].c_str());

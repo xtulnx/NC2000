@@ -147,9 +147,13 @@ void LoadNC2k(){
 	if(enable_load_state){
 		load_state();
 		prepare_soft_reset();
-		void sync_time_2000();
 		if(nc2000mode){
+			void sync_time_2000();
 			if(enable_auto_time_sync) sync_time_2000();
+		}
+		if(nc1020mode){
+			void sync_time_1020();
+			if(enable_auto_time_sync) sync_time_1020();
 		}
 	}
 

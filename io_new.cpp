@@ -526,7 +526,7 @@ void io_v2_write(int address, int value) {
             return Write06LCDStartAddr(address, value);
         }
         if(address==0x07){
-            if(debug_level>=1)printf("write07PortConfig %02x xt=%02x\n",value,value&0x7);
+            if(debug_level>=2)printf("write07PortConfig %02x xt=%02x\n",value,value&0x7);
             return Write07PortConfig(address,value);//not important? seems like only hotlink inside
         }
         if(address==0x08){
