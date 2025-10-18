@@ -315,13 +315,15 @@ void cpu_run3(){
 	if(nc1020mode){
 		if(!nc1020tw_mode){
 			static bool time_adjusted_phase2=0;
+			static uint64_t time_adjusted_cycle=0;
 			if(!time_adjusted && Peek16(0x472)==0x79 /*&&rtc_reg[0]==1*/){
 				time_adjusted=1;
+				time_adjusted_cycle=cycles;
 				if(enable_auto_time_sync) {
 					sync_time_1020();
 				}
 			}
-			if(!time_adjusted_phase2 &&time_adjusted && rtc_reg[0]==1){
+			else if(!time_adjusted_phase2 &&time_adjusted && cycles - time_adjusted_cycle > CYCLES_SECOND/100){
 				time_adjusted_phase2=1;
 				if(enable_auto_time_sync) {
 					sync_time_1020();
