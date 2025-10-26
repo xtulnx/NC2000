@@ -221,5 +221,7 @@ int main(int argc, char* args[]) {
     save_state("");
   }
 
+  shutdown_audio();
+
   return 0;
 }
