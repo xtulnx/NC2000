@@ -366,6 +366,13 @@ void SetKeyWayback(int code_y,int code_x, bool down_or_up){
 
 }
 void handle_key_wayback(signed int sym, bool key_down){
+        if(sym==SDLK_F12 && shift_down&& ctrl_down){
+            if(key_down==1){
+              void code_reset();
+              code_reset();
+            }
+            return;
+        }
         /*if(enable_debug_key_shoot){
           printf("event <%d,%d; %llu>\n", sym,key_down,SDL_GetTicks64()%1000);
         }*/

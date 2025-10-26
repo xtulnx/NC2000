@@ -119,6 +119,10 @@ void main_loop() {
             shift_down=it->second;
             continue;
           }
+          if(it->first==SDLK_LCTRL || it->first==SDLK_RCTRL){
+            ctrl_down=it->second;
+            continue;
+          }
           bool console_on_saved=console_on;
           handle_console(it->first, it->second);
           if(console_on_saved){

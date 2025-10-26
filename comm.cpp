@@ -141,7 +141,8 @@ double r_scale=rgb_base+0.02,g_scale=rgb_base+0.04,b_scale=rgb_base;
 misc
 ===================
 */
-bool shift_down =false;;
+bool shift_down =false;
+bool ctrl_down =false;
 int battery_level=11;
 bool patch_nc1020tw_nor=false;
 

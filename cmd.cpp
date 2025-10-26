@@ -200,8 +200,8 @@ void handle_cmd(string str){
 		return;
 	}
 	if(cmds[0]=="cold_reset"){
-		memset(ram_io,0,0x40);
-		cpu->reset();
+		void code_reset();
+		code_reset();
 		return;
 	}
 	if(cmds[0]=="exit"){

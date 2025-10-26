@@ -215,6 +215,10 @@ void try_soft_reset(){
 		printf("soft reset!!\n");
 	}
 }
+void code_reset(){
+	memset(ram_io,0,0x40);
+	cpu->reset();
+}
 void debug_pc(){
 	uint8_t & Peek16Debug(uint16_t addr);
 	if(debug_level>=9){
