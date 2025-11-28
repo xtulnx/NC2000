@@ -336,14 +336,14 @@ pair<int,int> map_key_wayback(int32_t sym){
 }
 
 void SetKeyWayback(int code_y,int code_x, bool down_or_up){
-  if(pc1000mode || nc1020mode|| nc3000mode){
+  if(pc1000mode || nc3000mode){
     //todo not really works
     if(code_x==0 && code_y==0 && down_or_up){
       void try_soft_reset();
       try_soft_reset();
     }
   }
-  if(nc2000mode){
+  if(nc2000mode||nc1020mode){
       if(code_x<2&& down_or_up){
         void try_soft_reset();
         try_soft_reset();

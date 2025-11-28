@@ -435,7 +435,7 @@ void UpdateKeypadRegisters()
     // this is tmp fix for nc2000 hotkey wakeup
     // todo: better fix, probably need to handle below:
     //       when port0[3:0] defined as input, it got "on" function and is pulled high.
-    if(nc2000mode) {
+    if(nc2000mode||nc1020mode) {
         if(port1control==0xff&&port0control==0xc0 &&w09_port1_OL==0x00){
             bool hot_key_pressed=false;
             // note: port0control==0xc0 ----->rw0f_b4_DIR00 ==0x00 && rw0f_b5_DIR01 ==0x00
@@ -451,6 +451,7 @@ void UpdateKeypadRegisters()
         }
     }
     if(nc1020mode){ //this is a similiar hack since pull high is not implemented correctly yet
+        //seems like only 1020tw uses this
         if(port1control==0x00&&port0control==0x00){
             port0data|= 0x03;
         }
