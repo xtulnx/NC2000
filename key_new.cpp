@@ -366,6 +366,9 @@ void SetKeyWayback(int code_y,int code_x, bool down_or_up){
 
 }
 void handle_key_wayback(signed int sym, bool key_down){
+        if(debug_level>=2){
+          printf("key %d %s\n", sym, key_down ? "down" : "up");
+        }
         if(sym==SDLK_F12 && shift_down&& ctrl_down){
             if(key_down==1){
               void code_reset();
@@ -380,9 +383,9 @@ void handle_key_wayback(signed int sym, bool key_down){
         if(nc1020mode && sym==SDLK_F12 ){
           extern uint8_t* ram_io;
           if(key_down){
-            ram_io[0x0b]|=1;
-          }else {
             ram_io[0x0b]&=~1;
+          }else {
+            ram_io[0x0b]|=1;
             void try_soft_reset();
             try_soft_reset();
           }

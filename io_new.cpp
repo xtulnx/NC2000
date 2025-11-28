@@ -412,6 +412,9 @@ void io_v2_write(int address, int value) {
         if(nc3000mode){
         if(address==0x05){
             uint8_t cks=value>>5;
+            if(debug_level>=2) {
+                printf("cks set to %d\n",cks);
+            }
             if (cks!=ram_io[0x05]>>5){
                 //the defintion is not same as spdc1024
                 switch(cks){
