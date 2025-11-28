@@ -240,8 +240,8 @@ void debug_pc(){
 		buf[3]=0;
 
 		printf("tick=%lld ",tick /*, reg_pc*/);
-		printf("%02x %02x %02x %02x; ",Peek16Debug(cpu->PC), Peek16Debug(cpu->PC+1),Peek16Debug(cpu->PC+2),Peek16Debug(cpu->PC+3));
-		printf("bs=%02x roa_bbs=%02x ramb=%02x zp=%02x reg=%02x,%02x,%02x,%02x,%03o  pc=%s",ram_io[0x00], ram_io[0x0a], ram_io[0x0d], ram_io[0x0f],cpu->A,cpu->X,cpu->Y,cpu->SP,cpu->P(),disassemble_next(buf,cpu->PC).c_str());
+		//printf("%02x %02x %02x %02x; ",Peek16Debug(cpu->PC), Peek16Debug(cpu->PC+1),Peek16Debug(cpu->PC+2),Peek16Debug(cpu->PC+3));
+		printf("%s",disassemble2(cpu->PC).c_str());
 		printf("\n");
 		if(enable_dyn_debug_next_n>0) {
 			enable_dyn_debug_next_n--;
@@ -341,7 +341,7 @@ void cpu_run3(){
 		if(trigger_x_times_per_s(1)){
 			extern int patch_idx;
 			extern unsigned char patch_table[256];
-			printf("path table= ");
+			printf("patch table= ");
 			for(int i=0x10;i<=0x1f;i++){
 				printf("%02x ",patch_table[i]);	
 			}
