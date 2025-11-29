@@ -239,7 +239,7 @@ void debug_pc(){
 		buf[2]=Peek16Debug(cpu->PC+2);
 		buf[3]=0;
 
-		printf("tick=%lld ",tick /*, reg_pc*/);
+		//printf("tick=%lld ",tick /*, reg_pc*/);
 		//printf("%02x %02x %02x %02x; ",Peek16Debug(cpu->PC), Peek16Debug(cpu->PC+1),Peek16Debug(cpu->PC+2),Peek16Debug(cpu->PC+3));
 		printf("%s",disassemble2(cpu->PC).c_str());
 		printf("\n");

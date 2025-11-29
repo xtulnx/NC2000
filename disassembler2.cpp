@@ -339,6 +339,8 @@ uint16_t GetWord(uint16_t addr){
 
 string LogDisassembly(WORD offset)
 {
+    static long long debug_inst_cnt=0;
+
     char addresstext[40] = "";
     char bytestext[10]   = "";
     char output[100]    = "";
@@ -412,14 +414,11 @@ string LogDisassembly(WORD offset)
     }*/
     string res;
 
-    for(int i=0;i<4;i++){
-        sprintf(output,"%02x ", GetByte((offset + i) & 0xffff));
-        res+=output;
-    }
-    sprintf(output,"(%d); ",bytes);
+    sprintf(output,"idx=%03lld,%03lld,%03lld; ",debug_inst_cnt/(1000*1000),debug_inst_cnt/1000%1000,debug_inst_cnt%1000);
+    debug_inst_cnt++;
     res+=output;
 
-    sprintf(output,"bs=%02x roa_bbs=%02x ramb=%02x zp=%02x reg=%02x,%02x,%02x,%03o sp=%02d; ",ram_io[0x00], ram_io[0x0a], ram_io[0x0d], ram_io[0x0f],cpu->A,cpu->X,cpu->Y,cpu->P(), 256-cpu->SP);
+    sprintf(output,"bs=%02x roa_bbs=%02x vol=%02x zp=%02x reg=%02x,%02x,%02x,%03o sp=%02d; ",ram_io[0x00], ram_io[0x0a], ram_io[0x0d], ram_io[0x0f],cpu->A,cpu->X,cpu->Y,cpu->P(), 256-cpu->SP);
     res+=output;
 
     sprintf(output,
@@ -428,6 +427,14 @@ string LogDisassembly(WORD offset)
             instruction[inst].mnemonic,         // ORA_
             addresstext                         // ($49,X)
     );
+    res+=output;
+
+    res+="pc-> ";
+    for(int i=0;i<4;i++){
+        sprintf(output,"%02x ", GetByte((offset + i) & 0xffff));
+        res+=output;
+    }
+    sprintf(output,"(%d); ",bytes);
     res+=output;
 
     if(ptr!=-1){
