@@ -120,3 +120,12 @@ void prepare_soft_reset(){
 	ram_io[2]=1;
 	//ram_io[3]=1;
 }
+
+
+int invalid_op_extra_skip(int op){
+	if(op==0x3){
+		//nctools has this illegal opcode, if not handled, "S h" will not work.
+		return 1;
+	}
+	return 0;
+}
