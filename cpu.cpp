@@ -123,9 +123,172 @@ void prepare_soft_reset(){
 
 
 int invalid_op_extra_skip(int op){
-	if(op==0x3){
-		//nctools has this illegal opcode, if not handled, "S h" will not work.
-		return 1;
+	static unsigned char mp[256];
+	bool initialized = false;
+	if(!initialized){
+		memset(mp,0,sizeof(mp));
+		initialized = true;
+
+		//03 fixes nctools (all version) "S h"
+		//13 and 1f fixes nctools 4.0's "制作应用程序" and "系统信息->文件列表"
+
+		// below value from https://www.masswerk.at/6502/6502_instruction_set.html
+
+		//ALR(asr)
+		mp[0x4b]=2;
+
+		//ANC
+		mp[0x0b]=2;
+
+		//ANC(ANC2)
+		mp[0x2b]=2;
+
+		//ANE(XAA)
+		mp[0x8b]=2;
+
+		//ARR
+		mp[0x6b]=2;
+
+		//DCP(DCM)
+		mp[0xc7]=2;
+		mp[0xd7]=2;
+		mp[0xcf]=3;
+		mp[0xdf]=3;
+		mp[0xdb]=3;
+		mp[0xc3]=2;
+		mp[0xd3]=2;
+
+		//ISC(ISB,INS)
+		mp[0xe7]=2;
+		mp[0xf7]=2;
+		mp[0xef]=3;
+		mp[0xff]=3;
+		mp[0xfb]=3;
+		mp[0xe3]=2;
+		mp[0xf3]=2;
+
+		//LAS (LAR)
+		mp[0xbb]=3;
+
+		//LAX
+		mp[0xa7]=2;
+		mp[0xb7]=2;
+		mp[0xaf]=3;
+		mp[0xbf]=3;
+		mp[0xa3]=2;
+		mp[0xb3]=2;
+
+		//LXA(LAX immediate)
+		mp[0xab]=2;
+
+		//RLA
+		mp[0x27]=2;
+		mp[0x37]=2;
+		mp[0x2f]=3;
+		mp[0x3f]=3;
+		mp[0x3b]=3;
+		mp[0x23]=2;
+		mp[0x33]=2;
+
+		//RRA
+		mp[0x67]=2;
+		mp[0x77]=2;
+		mp[0x6f]=3;
+		mp[0x7f]=3;
+		mp[0x7b]=3;
+		mp[0x63]=2;
+		mp[0x73]=2;
+
+		//SAX(AXS,AAX)
+		mp[0x87]=2;
+		mp[0x97]=2;
+		mp[0x8f]=3;
+		mp[0x83]=2;
+
+		//SBX(AXS,SAX)
+		mp[0xcb]=2;
+
+		//SHA(AHX,AXA)
+		mp[0x9f]=3;
+		mp[0x93]=2;
+
+		//SHX(A11,SXA,XAS)
+		mp[0x9e]=3;
+
+		//SHY(A11,SYA,SAY)
+		mp[0x9c]=3;
+
+		//SLO(ASO)
+		mp[0x07]=2;
+		mp[0x17]=2;
+		mp[0x0f]=3;
+		mp[0x1f]=3;
+		mp[0x1b]=3;
+		mp[0x03]=2;
+		mp[0x13]=2;
+
+		//SRE(LSE)
+		mp[0x47]=2;
+		mp[0x57]=2;
+		mp[0x4f]=3;
+		mp[0x5f]=3;
+		mp[0x5b]=3;
+		mp[0x43]=2;
+		mp[0x53]=2;
+
+		//TAS(XAS,SHS)
+		mp[0x9b]=3;
+
+		//USBC(SBC)
+		mp[0xeb]=2;
+
+		//NOPS(including DOP, TOP)
+		mp[0x1a]=1;
+		mp[0x3a]=1;
+		mp[0x5a]=1;
+		mp[0x7a]=1;
+		mp[0xda]=1;
+		mp[0xfa]=1;	
+		mp[0x80]=2;
+		mp[0x82]=2;
+		mp[0x89]=2;
+		mp[0xc2]=2;
+		mp[0xe2]=2;
+		mp[0x04]=2;
+		mp[0x44]=2;
+		mp[0x64]=2;
+		mp[0x14]=2;
+		mp[0x34]=2;
+		mp[0x54]=2;
+		mp[0x74]=2;
+		mp[0xd4]=2;
+		mp[0xf4]=2;
+		mp[0x0c]=3;
+		mp[0x1c]=3;
+		mp[0x3c]=3;
+		mp[0x5c]=3;
+		mp[0x7c]=3;
+		mp[0xdc]=3;
+		mp[0xfc]=3;
+
+		//JAM (KIL,HLT)
+		mp[0x02]=1;
+		mp[0x12]=1;
+		mp[0x22]=1;
+		mp[0x32]=1;
+		mp[0x42]=1;
+		mp[0x52]=1;
+		mp[0x62]=1;
+		mp[0x72]=1;
+		mp[0x92]=1;
+		mp[0xb2]=1;
+		mp[0xd2]=1;
+		mp[0xf2]=1;
 	}
-	return 0;
+	if(mp[op]==0){
+		if(debug_level>=1) printf("invalid op %02x, but not know how to skip extra bytes\n",op);
+		return 0;
+	}
+	if(debug_level>=1) printf("skipped extra %d bytes for invalid op %02x\n",mp[op]-1,op);
+	return mp[op]-1;
 }

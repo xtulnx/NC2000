@@ -337,7 +337,7 @@ void cpu_run3(){
 	}
 	tick++;
 
-	if(debug_level >=2){  //not for emulation, just trying to log some peridic debug info
+	if(debug_level >=9){  //not for emulation, just trying to log some peridic debug info
 		if(trigger_x_times_per_s(1)){
 			extern int patch_idx;
 			extern unsigned char patch_table[256];
