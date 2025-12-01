@@ -43,7 +43,7 @@ public:
 private:
 	int getCodeW();
 	int readAddress(int address);
-	void XXX_xx();
+	void XXX_xx(int code);
 	void BRK_00();
 	void NOP_ea();
 	void BIT_24();

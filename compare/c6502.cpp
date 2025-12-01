@@ -131,10 +131,24 @@ int C6502::readAddress(int address) {
     return bus->read(address) | (bus->read(address + 1) << 8);
 }
 
-void C6502::XXX_xx() {
-    printf("invalid instruction %x at %x bs=%02x roabbs=%02x vol=%02x\n",bus->read(PC - 1),PC-1,bus->read(0),bus->read(0xa),bus->read(0xd));
-    int invalid_op_extra_skip(int op);
-    PC += invalid_op_extra_skip(bus->read(PC - 1));
+void C6502::XXX_xx(int code) {
+    //uint8_t & Peek16Debug(uint16_t addr);
+    printf("illegal instruction %x at %x bs=%02x roabbs=%02x vol=%02x\n",code,PC-1,bus->read(0),bus->read(0xa),bus->read(0xd));
+
+    extern unsigned char illegal_op_byte[256];
+    extern unsigned char illegal_op_cycle[256];
+
+    if(illegal_op_byte[code]) {
+        assert(illegal_op_cycle[code]!=0);
+
+        PC += illegal_op_byte[code]-1;
+        clk += illegal_op_cycle[code];
+        printf("skipped %d extra bytes\n", illegal_op_byte[code]-1);
+    }
+    else{
+        printf("but not know how to skip\n");
+    }
+
     ///////////throw bus->read(PC - 1);
     //throw new Error("不支持的指令 " + Integer.toHexString(bus->read(PC - 1)));
 }
@@ -1597,7 +1611,7 @@ void C6502::doCode(int code) {
             break;
 
         default:
-            XXX_xx();
+            XXX_xx(code);
     }
 }
 

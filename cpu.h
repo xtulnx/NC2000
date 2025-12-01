@@ -57,3 +57,5 @@ public:
 };
 
 extern CPUInterface* cpu;
+
+void initalize_illegal_op_tables();

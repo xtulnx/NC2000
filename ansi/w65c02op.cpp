@@ -6,6 +6,10 @@ extern "C" {
 }
 
 #include <stdio.h>
+#include <cassert>
+
+const bool enable_illegal_op_fix=true;
+const bool enable_irq_nmi_cycle_fix=true;
 
 // Read/Write Cycle definitions
 #define CPU_RDWR_CYC    1
@@ -74,6 +78,24 @@ DWORD CpuExecuteOP(void)
     mOpcode = CPU_PEEK(mPC);
     TRACE_CPU2("Update() PC=$%04x, Opcode=%02x", mPC, mOpcode);
     mPC++;
+
+    extern unsigned char illegal_op_byte[256];
+    extern unsigned char illegal_op_cycle[256];
+    if(enable_illegal_op_fix && illegal_op_byte[mOpcode]) {
+        assert(illegal_op_cycle[mOpcode]!=0);
+
+        extern int debug_level;
+        extern int enable_dyn_debug_next_n;
+        extern int enable_dyn_debug;
+        uint8_t & Peek16Debug(uint16_t addr);
+        if(debug_level>=1 || enable_dyn_debug || enable_dyn_debug_next_n>0) {
+            printf("illegal opcode %02x at pc=$%04x, bs=%02x roabbs=%02x vol=%02x, skipped %d extra bytes\n",mOpcode,mPC-1, Peek16Debug(0), Peek16Debug(0xa), Peek16Debug(0xd), illegal_op_byte[mOpcode]-1);
+        }
+
+        mPC += illegal_op_byte[mOpcode]-1;
+        cycle = illegal_op_cycle[mOpcode];
+        return cycle;
+    } //below CPU code is a w65c02 implementation, so the illegal opcodes has to be put before
 
     // Execute Opcode
 
@@ -1469,6 +1491,8 @@ DWORD CpuExecuteNMI(void) {
         // Mark the NMI as services
         //g_nmi = FALSE;
         cycle += 6; // NMI?
+
+        if(enable_irq_nmi_cycle_fix) cycle++;
         //mProcessingInterrupt++;
 
         // Push processor status
@@ -1523,6 +1547,7 @@ DWORD CpuExecuteIRQ(void) {
         // Clear the interrupt status line
         //g_irq = FALSE;
         cycle += 6;
+        if(enable_irq_nmi_cycle_fix) cycle++;
     }
     return cycle;
 }

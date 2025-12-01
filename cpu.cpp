@@ -121,174 +121,167 @@ void prepare_soft_reset(){
 	//ram_io[3]=1;
 }
 
+unsigned char illegal_op_byte[256];
+unsigned char illegal_op_cycle[256];
+void initalize_illegal_op_tables(){
+	unsigned char * byte=illegal_op_byte;
+	unsigned char * cycle=illegal_op_cycle;
 
-int invalid_op_extra_skip(int op){
-	static unsigned char mp[256];
-	bool initialized = false;
-	if(!initialized){
-		memset(mp,0,sizeof(mp));
-		initialized = true;
+	//03 fixes nctools (all version) "S h"
+	//13 and 1f fixes nctools 4.0's "制作应用程序" and "系统信息->文件列表"
 
-		//03 fixes nctools (all version) "S h"
-		//13 and 1f fixes nctools 4.0's "制作应用程序" and "系统信息->文件列表"
+	// below value from https://www.masswerk.at/6502/6502_instruction_set.html
 
-		// below value from https://www.masswerk.at/6502/6502_instruction_set.html
+	//ALR(asr)
+	byte[0x4b]=2;cycle[0x4b]=2;
 
-		//ALR(asr)
-		mp[0x4b]=2;
+	//ANC
+	byte[0x0b]=2;cycle[0x0b]=2;
 
-		//ANC
-		mp[0x0b]=2;
+	//ANC(ANC2)
+	byte[0x2b]=2;cycle[0x2b]=2;
 
-		//ANC(ANC2)
-		mp[0x2b]=2;
+	//ANE(XAA)
+	byte[0x8b]=2;cycle[0x8b]=2;
 
-		//ANE(XAA)
-		mp[0x8b]=2;
+	//ARR
+	byte[0x6b]=2;cycle[0x6b]=2;
 
-		//ARR
-		mp[0x6b]=2;
+	//DCP(DCM)
+	byte[0xc7]=2;cycle[0xc7]=5;
+	byte[0xd7]=2;cycle[0xd7]=6;
+	byte[0xcf]=3;cycle[0xcf]=6;
+	byte[0xdf]=3;cycle[0xdf]=7;
+	byte[0xdb]=3;cycle[0xdb]=7;
+	byte[0xc3]=2;cycle[0xc3]=8;
+	byte[0xd3]=2;cycle[0xd3]=8;
 
-		//DCP(DCM)
-		mp[0xc7]=2;
-		mp[0xd7]=2;
-		mp[0xcf]=3;
-		mp[0xdf]=3;
-		mp[0xdb]=3;
-		mp[0xc3]=2;
-		mp[0xd3]=2;
+	//ISC(ISB,INS)
+	byte[0xe7]=2;cycle[0xe7]=5;
+	byte[0xf7]=2;cycle[0xf7]=6;
+	byte[0xef]=3;cycle[0xef]=6;
+	byte[0xff]=3;cycle[0xff]=7;
+	byte[0xfb]=3;cycle[0xfb]=7;
+	byte[0xe3]=2;cycle[0xe3]=8;
+	byte[0xf3]=2;cycle[0xf3]=8;
 
-		//ISC(ISB,INS)
-		mp[0xe7]=2;
-		mp[0xf7]=2;
-		mp[0xef]=3;
-		mp[0xff]=3;
-		mp[0xfb]=3;
-		mp[0xe3]=2;
-		mp[0xf3]=2;
+	//LAS (LAR)
+	byte[0xbb]=3;cycle[0xbb]=4;
 
-		//LAS (LAR)
-		mp[0xbb]=3;
+	//LAX
+	byte[0xa7]=2;cycle[0xa7]=3;
+	byte[0xb7]=2;cycle[0xb7]=4;
+	byte[0xaf]=3;cycle[0xaf]=4;
+	byte[0xbf]=3;cycle[0xbf]=4;
+	byte[0xa3]=2;cycle[0xa3]=6;
+	byte[0xb3]=2;cycle[0xb3]=5;
 
-		//LAX
-		mp[0xa7]=2;
-		mp[0xb7]=2;
-		mp[0xaf]=3;
-		mp[0xbf]=3;
-		mp[0xa3]=2;
-		mp[0xb3]=2;
+	//LXA(LAX immediate)
+	byte[0xab]=2;cycle[0xab]=2;
 
-		//LXA(LAX immediate)
-		mp[0xab]=2;
+	//RLA
+	byte[0x27]=2;cycle[0x27]=5;
+	byte[0x37]=2;cycle[0x37]=6;
+	byte[0x2f]=3;cycle[0x2f]=6;
+	byte[0x3f]=3;cycle[0x3f]=7;
+	byte[0x3b]=3;cycle[0x3b]=7;
+	byte[0x23]=2;cycle[0x23]=8;
+	byte[0x33]=2;cycle[0x33]=8;
 
-		//RLA
-		mp[0x27]=2;
-		mp[0x37]=2;
-		mp[0x2f]=3;
-		mp[0x3f]=3;
-		mp[0x3b]=3;
-		mp[0x23]=2;
-		mp[0x33]=2;
+	//RRA
+	byte[0x67]=2;cycle[0x67]=5;
+	byte[0x77]=2;cycle[0x77]=6;
+	byte[0x6f]=3;cycle[0x6f]=6;
+	byte[0x7f]=3;cycle[0x7f]=7;
+	byte[0x7b]=3;cycle[0x7b]=7;
+	byte[0x63]=2;cycle[0x63]=8;
+	byte[0x73]=2;cycle[0x73]=8;
 
-		//RRA
-		mp[0x67]=2;
-		mp[0x77]=2;
-		mp[0x6f]=3;
-		mp[0x7f]=3;
-		mp[0x7b]=3;
-		mp[0x63]=2;
-		mp[0x73]=2;
+	//SAX(AXS,AAX)
+	byte[0x87]=2;cycle[0x87]=3;
+	byte[0x97]=2;cycle[0x97]=4;
+	byte[0x8f]=3;cycle[0x8f]=4;
+	byte[0x83]=2;cycle[0x83]=6;
 
-		//SAX(AXS,AAX)
-		mp[0x87]=2;
-		mp[0x97]=2;
-		mp[0x8f]=3;
-		mp[0x83]=2;
+	//SBX(AXS,SAX)
+	byte[0xcb]=2;cycle[0xcb]=2;
 
-		//SBX(AXS,SAX)
-		mp[0xcb]=2;
+	//SHA(AHX,AXA)
+	byte[0x9f]=3;cycle[0x9f]=5;
+	byte[0x93]=2;cycle[0x93]=6;
 
-		//SHA(AHX,AXA)
-		mp[0x9f]=3;
-		mp[0x93]=2;
+	//SHX(A11,SXA,XAS)
+	byte[0x9e]=3;cycle[0x9e]=5;
 
-		//SHX(A11,SXA,XAS)
-		mp[0x9e]=3;
+	//SHY(A11,SYA,SAY)
+	byte[0x9c]=3;cycle[0x9c]=5;
 
-		//SHY(A11,SYA,SAY)
-		mp[0x9c]=3;
+	//SLO(ASO)
+	byte[0x07]=2;cycle[0x07]=5;
+	byte[0x17]=2;cycle[0x17]=6;
+	byte[0x0f]=3;cycle[0x0f]=6;
+	byte[0x1f]=3;cycle[0x1f]=7;
+	byte[0x1b]=3;cycle[0x1b]=7;
+	byte[0x03]=2;cycle[0x03]=8;
+	byte[0x13]=2;cycle[0x13]=8;
 
-		//SLO(ASO)
-		mp[0x07]=2;
-		mp[0x17]=2;
-		mp[0x0f]=3;
-		mp[0x1f]=3;
-		mp[0x1b]=3;
-		mp[0x03]=2;
-		mp[0x13]=2;
+	//SRE(LSE)
+	byte[0x47]=2;cycle[0x47]=5;
+	byte[0x57]=2;cycle[0x57]=6;
+	byte[0x4f]=3;cycle[0x4f]=6;
+	byte[0x5f]=3;cycle[0x5f]=7;
+	byte[0x5b]=3;cycle[0x5b]=7;
+	byte[0x43]=2;cycle[0x43]=8;
+	byte[0x53]=2;cycle[0x53]=8;
 
-		//SRE(LSE)
-		mp[0x47]=2;
-		mp[0x57]=2;
-		mp[0x4f]=3;
-		mp[0x5f]=3;
-		mp[0x5b]=3;
-		mp[0x43]=2;
-		mp[0x53]=2;
+	//TAS(XAS,SHS)
+	byte[0x9b]=3;cycle[0x9b]=5;
 
-		//TAS(XAS,SHS)
-		mp[0x9b]=3;
+	//USBC(SBC)
+	byte[0xeb]=2;cycle[0xeb]=2;
 
-		//USBC(SBC)
-		mp[0xeb]=2;
+	//NOPS(including DOP, TOP)
+	byte[0x1a]=1;cycle[0x1a]=2;
+	byte[0x3a]=1;cycle[0x3a]=2;
+	byte[0x5a]=1;cycle[0x5a]=2;
+	byte[0x7a]=1;cycle[0x7a]=2;
+	byte[0xda]=1;cycle[0xda]=2;
+	byte[0xfa]=1;cycle[0xfa]=2;
+	byte[0x80]=2;cycle[0x80]=2;
+	byte[0x82]=2;cycle[0x82]=2;
+	byte[0x89]=2;cycle[0x89]=2;
+	byte[0xc2]=2;cycle[0xc2]=2;
+	byte[0xe2]=2;cycle[0xe2]=2;
+	byte[0x04]=2;cycle[0x04]=3;
+	byte[0x44]=2;cycle[0x44]=3;
+	byte[0x64]=2;cycle[0x64]=3;
+	byte[0x14]=2;cycle[0x14]=4;
+	byte[0x34]=2;cycle[0x34]=4;
+	byte[0x54]=2;cycle[0x54]=4;
+	byte[0x74]=2;cycle[0x74]=4;
+	byte[0xd4]=2;cycle[0xd4]=4;
+	byte[0xf4]=2;cycle[0xf4]=4;
+	byte[0x0c]=3;cycle[0x0c]=4;
+	byte[0x1c]=3;cycle[0x1c]=4;
+	byte[0x3c]=3;cycle[0x3c]=4;
+	byte[0x5c]=3;cycle[0x5c]=4;
+	byte[0x7c]=3;cycle[0x7c]=4;
+	byte[0xdc]=3;cycle[0xdc]=4;
+	byte[0xfc]=3;cycle[0xfc]=4;
 
-		//NOPS(including DOP, TOP)
-		mp[0x1a]=1;
-		mp[0x3a]=1;
-		mp[0x5a]=1;
-		mp[0x7a]=1;
-		mp[0xda]=1;
-		mp[0xfa]=1;	
-		mp[0x80]=2;
-		mp[0x82]=2;
-		mp[0x89]=2;
-		mp[0xc2]=2;
-		mp[0xe2]=2;
-		mp[0x04]=2;
-		mp[0x44]=2;
-		mp[0x64]=2;
-		mp[0x14]=2;
-		mp[0x34]=2;
-		mp[0x54]=2;
-		mp[0x74]=2;
-		mp[0xd4]=2;
-		mp[0xf4]=2;
-		mp[0x0c]=3;
-		mp[0x1c]=3;
-		mp[0x3c]=3;
-		mp[0x5c]=3;
-		mp[0x7c]=3;
-		mp[0xdc]=3;
-		mp[0xfc]=3;
+	const int jam_cycles=6;//jam hangs the cpu it doesn't really has cycles, use 6 as a placeholder
 
-		//JAM (KIL,HLT)
-		mp[0x02]=1;
-		mp[0x12]=1;
-		mp[0x22]=1;
-		mp[0x32]=1;
-		mp[0x42]=1;
-		mp[0x52]=1;
-		mp[0x62]=1;
-		mp[0x72]=1;
-		mp[0x92]=1;
-		mp[0xb2]=1;
-		mp[0xd2]=1;
-		mp[0xf2]=1;
-	}
-	if(mp[op]==0){
-		if(debug_level>=1) printf("invalid op %02x, but not know how to skip extra bytes\n",op);
-		return 0;
-	}
-	if(debug_level>=1) printf("skipped extra %d bytes for invalid op %02x\n",mp[op]-1,op);
-	return mp[op]-1;
+	//JAM (KIL,HLT)
+	byte[0x02]=1;cycle[0x02]=jam_cycles;
+	byte[0x12]=1;cycle[0x12]=jam_cycles;
+	byte[0x22]=1;cycle[0x22]=jam_cycles;
+	byte[0x32]=1;cycle[0x32]=jam_cycles;
+	byte[0x42]=1;cycle[0x42]=jam_cycles;
+	byte[0x52]=1;cycle[0x52]=jam_cycles;
+	byte[0x62]=1;cycle[0x62]=jam_cycles;
+	byte[0x72]=1;cycle[0x72]=jam_cycles;
+	byte[0x92]=1;cycle[0x92]=jam_cycles;
+	byte[0xb2]=1;cycle[0xb2]=jam_cycles;
+	byte[0xd2]=1;cycle[0xd2]=jam_cycles;
+	byte[0xf2]=1;cycle[0xf2]=jam_cycles;
 }

@@ -128,10 +128,9 @@ void xILLEGAL(void)
     extern int enable_dyn_debug_next_n;
     extern int enable_dyn_debug;
     uint8_t & Peek16Debug(uint16_t addr);
-    if(debug_level>=1 || enable_dyn_debug || enable_dyn_debug_next_n>0) printf("illegal opcode %02x at pc=$%04x, bs=%02x roabbs=%02x vol=%02x\n",mOpcode,mPC-1, Peek16Debug(0), Peek16Debug(0xa), Peek16Debug(0xd));
-
-    int invalid_op_extra_skip(int op);
-    mPC += invalid_op_extra_skip(mOpcode);
+    if(debug_level>=1 || enable_dyn_debug || enable_dyn_debug_next_n>0) {
+        printf("illegal opcode %02x at pc=$%04x, bs=%02x roabbs=%02x vol=%02x, but not know how to handle\n",mOpcode,mPC-1, Peek16Debug(0), Peek16Debug(0xa), Peek16Debug(0xd));
+    }
 }
 
 // Answers value of the Processor Status register
