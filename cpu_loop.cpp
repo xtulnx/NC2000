@@ -41,6 +41,8 @@ static bool& should_wake_up = nc2k_states.should_wake_up;
 
 
 double speed_multiplier=1.0;
+int fast_forward_limit=0;
+
 
 #if 0
 void reset_cpu_states(){

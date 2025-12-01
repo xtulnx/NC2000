@@ -222,7 +222,13 @@ bool CopyLcdBuffer(uint8_t* buffer){
 void RunTimeSlice(uint32_t time_slice, bool speed_up) {
 	uint32_t new_cycles = time_slice * CYCLES_MS;
 
-	new_cycles= new_cycles * speed_multiplier;
+	if(!fast_forward) {
+		new_cycles= new_cycles * speed_multiplier;
+	}else if(fast_forward_limit==0){
+		new_cycles= new_cycles;
+	}else{
+		new_cycles= new_cycles * fast_forward_limit;
+	}
 
 	uint64_t target_cycles=nc2k_states.cycles +new_cycles;
 

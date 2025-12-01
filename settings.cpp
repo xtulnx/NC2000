@@ -68,6 +68,7 @@ void process_args(int argc, char *argv[])
 		{"oops", no_argument, 0, 1},
 		{"quit-after-debug-next-n", no_argument, 0, 1},
 		{"rgb-scale", required_argument, 0, 1},
+		{"fast-forward-limit", required_argument, 0, 1},
 		{"assert", no_argument, 0, 1},
 		{NULL, 0, 0, 0}
 	};
@@ -285,6 +286,9 @@ void process_args(int argc, char *argv[])
 			}
 			else if (strcmp(long_options[option_index].name,"patch-nc1020tw-nor")==0){
 				patch_nc1020tw_nor = true;
+			}
+			else if (strcmp(long_options[option_index].name,"fast-forward-limit")==0){
+				fast_forward_limit = stoi(optarg);
 			}
 			else
 			{

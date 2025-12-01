@@ -188,7 +188,8 @@ void handle_cmd(string str){
 	if(cmds[0]=="cfh") cmds[0]="create_folder_hex";
 	if(cmds[0]=="st") cmds[0]="sync_time";
 	if(cmds[0]=="sp") cmds[0]="speed";
-	if(cmds[0]=="ed") cmds[0]="edit";
+	if(cmds[0]=="ed"||cmds[0]=="ec") cmds[0]="edit";
+	if(cmds[0]=="ffl") cmds[0]="fast_forward_limit";
 	if(cmds[0]=="hack1"){
 		void hack1_save_nc1020_12m_rom();
 		hack1_save_nc1020_12m_rom();
@@ -354,6 +355,16 @@ void handle_cmd(string str){
 	if(cmds[0]=="nolog"){
 			enable_dyn_debug=false;
 			return;
+	}
+	if(cmds[0]=="fast_forward_limit"){
+		if(cmds.size()==1) {
+			fast_forward_limit=0;
+		}
+		else{
+			fast_forward_limit= stoi(cmds[1]);
+		}
+		printf("set fast forward limit to %d\n",fast_forward_limit);
+		return;
 	}
 	if(cmds[0]=="get"){
 			//if(!nc2000mode) return;

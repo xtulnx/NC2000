@@ -171,7 +171,7 @@ void main_loop() {
     expected_tick+=SLICE_INTERVAL;
     uint64_t actual_tick= current_time - start_tick;
 
-  if(fast_forward) {
+  if(fast_forward && !fast_forward_limit) {
       expected_tick =actual_tick;
   }
 
