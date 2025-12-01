@@ -58,9 +58,9 @@ The rest of Readme is going to be in Chinese, there are a few more english mater
 <img width="270" alt="image" src="https://github.com/wangyu-/NC2000/assets/4922024/b699cf4a-4831-4203-9446-9b6f7f257caa">
 <img width="270" alt="image" src="https://github.com/wangyu-/NC2000/assets/4922024/07fc2e49-46f8-4d84-8402-7bbdbd33d239">
 
-# NC2000
+# NC2000/NC1020模拟器
 
-文曲星nc2000/nc2600。跨平台，可以运行在windows/linux/mac。另外也顺便支持nc1020。
+文曲星nc2000/nc2600/nc1020模拟器。跨平台，可以运行在windows/linux/mac。
 
 支持以下feature：
 * 运行从真机dump的rom
@@ -76,6 +76,8 @@ The rest of Readme is going to be in Chinese, there are a few more english mater
 * nc2000c `官方3.5`
 * nc2600c `官方3.2`, `3.5内核 by Sun`,`4.1内核 by qiqi`, `4.1内核保留剑桥版 by qiqi`, `非常4.2内核 by 41824984`, `5.0内核 by epc`
 * 哈电族nc2000 `官方3.6B`
+* nc1020 `官方3.6` `4.3内核by SAILOR-HB` `4.9内核 by ZHY` `5.3内核 by 逍遥人`
+* 哈电族nc1020 `官方5.2`
   
 # 按键
 
