@@ -16,7 +16,8 @@ extern unsigned short gThreadFlags;
 extern nc2k_states_t nc2k_states;
 static uint64_t& cycles = nc2k_states.cycles;
 static uint64_t& last_cycles = nc2k_states.last_cycles;
-static uint8_t * rtc_reg=nc2k_states.rtc_reg;
+static uint8_t * rtc_reg=nc2k_states.ext_reg;
+static uint8_t * ext_reg=nc2k_states.ext_reg;
 static uint8_t& interr_flag = nc2k_states.interr_flag;
 struct BusPC1000 *bus_pc1000=0;
 extern IBus6502 *dummy_bus;
@@ -54,9 +55,9 @@ bool trigger_every_x_ms(int x){
 	return (cycles/target_cycles > last_cycles/target_cycles);
 }
 
-bool trigger_x_times_per_s(int x){
+int trigger_x_times_per_s(int x){
 	uint32_t target_cycles=CYCLES_SECOND/x;
-	return (cycles/target_cycles > last_cycles/target_cycles);
+	return cycles/target_cycles - last_cycles/target_cycles;
 }
 
 void setTime1000() {
@@ -171,7 +172,6 @@ void setTimeRTC(){
       }
     }
 }
-uint8_t trigger256_cnt=0;// uint8 here, will wrap back to 0
 
 bool time_adjusted=0;
 void sync_time_2000(){
@@ -358,23 +358,6 @@ void cpu_run3(){
 		}
 	}
 
-	bool trigger256=trigger_x_times_per_s(256);
-
-	if(trigger256){
-		if(nc1020mode||nc2000mode||nc3000mode){
-			if(trigger256_cnt==0){
-				if(enable_keepon){
-					if(nc1020mode) Store(1143, 0);//prevent sleep
-					else Store(1025, 0);
-				}
-				//at the begin of every second
-				setTimeRTC();
-			}
-			//bump the 1/256 second
-			rtc_reg[4]=trigger256_cnt;
-		}
-	}
-
 	uint32_t target_cycles=cpu_batch;
 	uint32_t CycleDelta;
 	if(is_clk_off()){
@@ -397,8 +380,8 @@ void cpu_run3(){
 	}
 
 	//magic number to fit timerA and pc1000emux's timer0 and timer1 code
-	if(trigger_x_times_per_s(576*50)){
-		//printf("trigger1!\n");
+    if(int trigger_cnt=trigger_x_times_per_s(576*50)){
+	  for(int i=0;i<trigger_cnt;i++){
 		if(nc1020mode||nc2000mode||nc3000mode||pc1000mode_normal()) {
 			setTimerA();
 		}
@@ -417,7 +400,8 @@ void cpu_run3(){
 				//printf("irq2!\n");
 			}
 		}
-	}
+	  }
+    }
 
 	if(nc1020mode||nc2000mode||nc3000mode||(pc1000mode_normal())) {
 		bool KeepTimer01( unsigned int cpuTick);
@@ -477,7 +461,28 @@ void cpu_run3(){
 		}
 	}
 
-	if(trigger256){
+
+	int trigger256=trigger_x_times_per_s(256);
+
+	// for future proof, in some extreme cases, it may trigger multiple times
+	// e.g. when speed_scaledown=512 and CYCLES_SECOND is very low
+	// but practically, trigger256 should be either 0 or 1
+	for(int i=0;i<trigger256;i++)
+	{
+		rtc_reg[TR_ms]++;
+		auto &trigger256_cnt= rtc_reg[TR_ms];
+		if(nc1020mode||nc2000mode||nc3000mode){
+			if(trigger256_cnt==0){
+				if(enable_keepon){
+					if(nc1020mode) Store(1143, 0);//prevent sleep
+					else Store(1025, 0);
+				}
+				//at the begin of every second
+				setTimeRTC();
+			}
+			//bump the 1/256 second
+		}
+		
 		if(nc1020mode||nc2000mode||nc3000mode){
 			if(trigger256_cnt%128==0){
 				if(trigger256_cnt==0&& chk_ar()){
@@ -499,7 +504,7 @@ void cpu_run3(){
 					if(nc1020mode||nc2000mode||nc3000mode){
 						if(debug_level>=1) printf("nmi!\n");
 					}
-					cpu->NMI();
+					cpu->set_nmi_pending();
 				}
 			}
 		}
@@ -516,11 +521,7 @@ void cpu_run3(){
 	if(pc1000mode_emux()&&trigger_x_times_per_s(2)){
 		setTime1000();
 		if (bus_pc1000->nmiEnable()){
-			cpu->NMI();
+			cpu->set_nmi_pending();
 		}
-	}
-
-	if(trigger256){
-		trigger256_cnt++;
 	}
 }

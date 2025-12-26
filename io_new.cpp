@@ -30,7 +30,7 @@ unsigned char inner_interrupt_status=0;
 
 unsigned int speed_scaledown=1;
 
-static uint8_t * rtc_reg=nc2k_states.rtc_reg;
+static uint8_t * rtc_reg=nc2k_states.ext_reg;
 static uint8_t& interr_flag = nc2k_states.interr_flag;
 
 static unsigned char* ioReg=nc2k_states.ram_io;

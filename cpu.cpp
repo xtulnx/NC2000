@@ -76,7 +76,7 @@ int CPUInterface::execute(int max_cycles){
     return res;
 }
 
-void CPUInterface::NMI() {
+void CPUInterface::set_nmi_pending() {
 	if(cpu_impl_emux) return cpu_impl_emux->NMI();
 
 	g_nmi = true;

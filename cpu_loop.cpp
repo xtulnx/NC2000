@@ -428,7 +428,7 @@ void cpu_run2(){
 		gThreadFlags &= 0xFFF7u; // remove 0x08 NMI Flag
 		// FIXME: NO MORE REVERSE
 		g_nmi = TRUE; // next CpuExecute will execute two instructions
-		cpu->NMI();
+		cpu->set_nmi_pending();
 		qDebug("ggv wanna NMI.");
 		//fprintf(stderr, "ggv wanna NMI.\n");
 		gDeadlockCounter--; // wrong behavior of wqxsim

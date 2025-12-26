@@ -39,7 +39,7 @@ public:
 
     void reset();
     int execute(int max_cycles);
-    void NMI();
+    void set_nmi_pending();
 	void irq_now();
     int P();
 
