@@ -434,7 +434,7 @@ void UpdateKeypadRegisters()
 
     // this is tmp fix for nc2000 hotkey wakeup
     // todo: better fix, probably need to handle below:
-    //       when port0[3:0] defined as input, it got "on" function and is pulled high.
+    //       when port0[3:0] defined as input, it got "on" function and is pulled high. (it's controled by P0PU)
     if(nc2000mode||nc1020mode) {
         if(port1control==0xff&&port0control==0xc0 &&w09_port1_OL==0x00){
             bool hot_key_pressed=false;
