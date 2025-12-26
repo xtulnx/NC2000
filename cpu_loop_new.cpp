@@ -209,8 +209,17 @@ void sync_time_1020(){
 	rtc_reg[0]=local_time->tm_sec;
 }
 bool soft_reset=0;
+bool is_clk_off(){
+	return ram_io[0x05]>>5==7;
+}
+void set_clk_on(){
+	uint8_t value=ram_io[0x05];
+	value&= 0x1f;
+	value|=0x3<<5;
+	Store(0x05,value);
+}
 void try_soft_reset(){
-	if(ram_io[0x05]>>5==7){//clk off
+	if(is_clk_off()){//clk off
 		soft_reset=1;
 		printf("soft reset!!\n");
 	}
@@ -276,9 +285,9 @@ void cpu_run3(){
 		soft_reset=0;
 		prepare_soft_reset();
 		cpu->reset();
+		set_clk_on();
 		//nc1020_states.last_cycles=0;
 		//nc1020_states.cycles=0;
-		speed_scaledown=1;
 	}
 	//assert(cycles==cpu->getTotalCycles()/12);
 	char *peeked_msg=peek_message();
@@ -368,7 +377,12 @@ void cpu_run3(){
 
 	uint32_t target_cycles=cpu_batch;
 	uint32_t CycleDelta;
-	if(enable_emulate_cks){
+	if(is_clk_off()){
+		CycleDelta=target_cycles;
+		last_cycles=cycles;
+		cycles+=CycleDelta;
+	}
+	else if(enable_emulate_cks){
 		//TODO FIX ME
 		//todo study datasheet of how speed affect timers
 		target_cycles/=speed_scaledown;
