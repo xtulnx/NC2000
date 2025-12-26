@@ -26,7 +26,7 @@ const int IO_TIMERAB_CTRL = 0x14;
 
 const int INT_TIME_BASE = 8;
 
-unsigned char inner_interrupt_status=0;
+unsigned char inner_interrupt_control=0;
 
 unsigned int speed_scaledown=1;
 
@@ -246,7 +246,7 @@ void setTimerA() {
         if (tmaValue >= 0x10000) {
             tmaValue = tmaReload;
             if(debug_level>=1) printf("timer A interrupt triggered");
-            if ((inner_interrupt_status & 1) != 0){
+            if ((inner_interrupt_control & 1) != 0){
                 ioReg[io01_int_status] |= 1;
                 cpu->set_irq_pending();  //newly added, not exist in pc1000emux
             }
@@ -260,7 +260,7 @@ void setIrqTimeBase() {
 }
 
 bool nmiEnable() {
-    return (inner_interrupt_status & 0x10) == 0;
+    return (inner_interrupt_control & 0x10) == 0;
 }
 
 bool timeBaseEnable() {
@@ -614,7 +614,7 @@ void io_v2_write(int address, int value) {
             /////////////bankSwitch();
             return;
         case io01_int_enable://0x01
-            inner_interrupt_status = value;
+            inner_interrupt_control = value;
             return;
         case io0A_bios_bsw://0x0a
             ioReg[io0A_bios_bsw] = value;
