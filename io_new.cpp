@@ -9,6 +9,7 @@
 #include "io.h"
 #include <cassert>
 #include "CC800IOName.h"
+#include "iv_uart.h"
 
 extern nc2k_states_t nc2k_states;
 extern Dsp dsp;
@@ -31,7 +32,7 @@ unsigned char inner_interrupt_control=0;
 unsigned int speed_scaledown=1;
 
 static uint8_t * rtc_reg=nc2k_states.ext_reg;
-static uint8_t& interr_flag = nc2k_states.interr_flag;
+static uint8_t * ext_reg=nc2k_states.ext_reg;
 
 static unsigned char* ioReg=nc2k_states.ram_io;
 
@@ -315,17 +316,16 @@ int io_v2_read(int address) {
         }
     }
     if(nc1020mode||nc2000mode||nc3000mode){
-        if(address==0x3b){
-            if((ioReg[0x3d]&3)==0){
-                return rtc_reg[0x3b]&0xfe;
-            }else{
-                return ioReg[0x3b];
-            }
-           //return Read3B(address);
-        }
+        if(address==0x3a) return read_3a();
+        if(address==0x3b) return read_3b();
+        if(address==0x3c) return read_3c();
+        if(address==0x3d) return read_3d();
+
         if(address==0x3f){
-            return rtc_reg[ioReg[0x3e]];
-            //return Read3F(address);
+            uint8_t idx= ioReg[0x3e];
+            if(idx==0x0a) return read_rcr0();
+            if(idx==0x0b) return read_rcr1();
+            return rtc_reg[idx];
         }
     }
     if(nc1020mode||pc1000mode) {
@@ -558,10 +558,11 @@ void io_v2_write(int address, int value) {
         }*/
     }
     if(nc1020mode||nc2000mode||nc3000mode){
-        if(address==0x3d){
-            ioReg[0x3d]= ioReg[0x3d] &0xf8 |value &7;
-            return;
-        }
+        if(address==0x3a) return write_3a(value);
+        if(address==0x3b) return write_3b(value);
+        if(address==0x3c) return write_3c(value);
+        if(address==0x3d) return write_3d(value);
+
         if(address==0x3f){
             int index=ioReg[0x3e];
             if(debug_level>=1){
@@ -574,21 +575,11 @@ void io_v2_write(int address, int value) {
             }
             ioReg[0x3f]=value;
             if(index<7){
+                //drop invalid value
                 if((signed char)rtc_reg[0x0b]<0) return;
-            }else{
-                if(index==10){
-                    rtc_reg[10]=value;
-                    interr_flag= interr_flag|value&7;
-                    return;
-                }
-                if(index==0x0b){
-                    if((value&1)==0){
-                        return ;
-                    }
-                    ioReg[0x3d]=0xf8;
-                    return;
-                }
-            }
+            }            
+            if(index==0x0a) return write_rcr0(value);
+            if(index==0x0b) return write_rcr1(value);
             rtc_reg[index]=value;
             return;
             //return Write3F(address,value);
