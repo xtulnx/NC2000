@@ -9,14 +9,8 @@ using namespace std;
 extern BusPC1000 *bus_pc1000;
 
 struct TKeyItem {
-    //TKeyItem(int ID, const char* graphic, const char* subscript);
     TKeyItem(int ID, int keycode,int code_y, int code_x, const char* graphic, const char* subscript, const char* label,vector<int>);
 
-    //int fRow;
-    //int fColumn;
-    //const char* fGraphic; // TODO:
-    //const char* fSubscript;
-    //const char* fSuperLabel; // label on top
     int code=0;
     int code_y=-1;
     int code_x=-1;
@@ -26,12 +20,7 @@ struct TKeyItem {
 
 // ID keycode are no longer used, but they are kept for comparsion with wayback and nc1020
 TKeyItem::TKeyItem( int ID, int keycode, int code_y, int code_x, const char* graphic, const char* subscript, const char* label, vector<int> sdl_keys0)
-    :// fRow(ID / 10)
-    //, fColumn(ID % 10)
-    //fGraphic(graphic)
-    //, fSubscript(subscript)
-    //, fSuperLabel(label)
-    sdl_keys(sdl_keys0)
+    :sdl_keys(sdl_keys0)
 {
     code=keycode;
     this->code_y = code_y;
@@ -311,13 +300,6 @@ void init_keyitems(){
             if (current_items[i] == NULL) {
                 //keypadmatrix[y][x] = 2;
             } else {
-                //int row = item[y][x]->fRow;
-                //int col = item[y][x]->fColumn;
-                //int index = row * 10 + col;
-                //MyRectButton* button = [MyRectButton buttonWithType:UIButtonTypeRoundedRect];
-                //button.contentScaleFactor = 1;
-                //button.layer.contentsScale = 1;
-                //item[y][x]->tag = y * 0x10 + x;
                 assert(current_items[i]->code_y>=0);
                 assert(current_items[i]->code_x>=0);
                 for(auto e: current_items[i]->sdl_keys){
@@ -349,16 +331,6 @@ void SetKeyWayback(int code_y,int code_x, bool down_or_up){
         try_soft_reset();
       }
   }
-    /*
-    unsigned int y = key_id / 16;
-    unsigned int x = key_id % 16;
-    if (y < 8 && x < 8) {
-        keypadmatrix[y][x] = down_or_up;
-    }*/
-
-    // below make it compatible with nc1020's code
-    //unsigned int y = key_id % 8;
-    //unsigned int x = key_id / 8;
 
     if (code_y < 8 && code_x < 8) {
         keypadmatrix[code_y][code_x] = down_or_up;

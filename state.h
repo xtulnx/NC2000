@@ -24,44 +24,39 @@ struct nc2k_states_t{
 
 	uint8_t SAVE_STATE_END;
 
-	//uint8_t bak_40[0x40];
+	uint8_t fp_step;
+	uint8_t fp_type;
+
+	uint64_t cycles;
+	uint64_t last_cycles;
+
+	uint8_t interr_flag;
+
+/*
+===================
+below are all legacy fields, only used in old cpu_loop or io
+===================
+*/
 
 	uint8_t clock_buff[80];
 	uint8_t clock_flags;
-
-
-	uint8_t interr_flag;
 
 	uint8_t jg_wav_data[0x20];
 	uint8_t jg_wav_flags;
 	uint8_t jg_wav_idx;
 	bool jg_wav_playing;
-
-	uint8_t fp_step;
-	uint8_t fp_type;
-	//uint8_t fp_bank_idx;
-	//uint8_t fp_bak1;
-	//uint8_t fp_bak2;
-	//uint8_t fp_buff[0x100];
-
+    
 	bool slept;
 	bool should_wake_up;
 	bool pending_wake_up;
 	uint8_t wake_up_flags;
 
 	bool timer0_toggle;
-	uint64_t cycles;
-	uint64_t last_cycles;
+
 	uint64_t unknown_timer_cycles;
 	uint64_t timer0_cycles;
 	uint64_t timer1_cycles;
 	uint64_t timebase_cycles;
 	uint64_t nmi_cycles;
-	/////////bool should_irq;
-
-	//uint32_t lcd_addr;
 	uint8_t keypad_matrix[8];
-
-	bool grey_mode;
-	//long long previous_cycles;
 };

@@ -280,18 +280,6 @@ int io_v2_read(int address) {
     if(nc2000mode&&log_all_dsp_io&& address>=0x30 && address<=0x33){
         printf("""[io_v2_read] address=%02x\n",address);
     }
-    if(nc1020tw_mode){
-        //hack, need to improve keyboard  (pull high)
-        /*if(address==0x08){
-            if (cpu->PC==0xe0ad+2){
-                if(debug_level>=1||enable_dyn_debug)printf("returning 0x03!!!!!\n");
-                return 0x03;
-            }
-        }*/
-        /*if(address==0x0b){
-            return ram_io[0x0b]|0x01;
-        }*/
-    }
     if(nc1020mode||nc2000mode||nc3000mode||pc1000mode){
         if(address==0x04) return Read04StopTimer0(address);
         if(address==0x05) return Read05StartTimer0(address);
@@ -452,7 +440,6 @@ void io_v2_write(int address, int value) {
                     case 4: speed_scaledown=64;break;
                     case 5: speed_scaledown=32;break;
                     case 6: speed_scaledown=16;break;
-                    //if this value is too large, rtc won't bump correctly because of the code of cpu loop
                     case 7: printf("oops clk off\n");speed_scaledown=int_inf;break; 
                     default:assert(false);
                 }

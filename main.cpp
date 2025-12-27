@@ -193,10 +193,6 @@ void main_loop() {
     }
   }
 
-  /*while((actual_tick=SDL_GetTicks64() - start_tick) <expected_tick) {
-    //{SDL_Delay(expected_tick-actual_tick);}
-  }*/
-    //SDL_Delay(FRAME_INTERVAL < tick ? 0 : FRAME_INTERVAL - tick);
   }
 }
 
@@ -215,8 +211,6 @@ int main(int argc, char* args[]) {
   if (!InitAudioVideo())
     return -1;
 
-  //SDL_SetThreadPriority(SDL_THREAD_PRIORITY_HIGH);
-  //SDL_SetThreadPriority(SDL_THREAD_PRIORITY_TIME_CRITICAL);
   main_loop();
   if(save_flash_on_exit){
     save_flash("");

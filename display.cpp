@@ -28,25 +28,17 @@ inline void handle_pixel(int u,int v,const unsigned char * color_arr[], int idx)
         if( color_arr[idx][i]<p[u][v][i] ){//value smaller means darker, which mean higher voltage on wqx
           //voltage increasing
           unsigned int delta=p[u][v][i]- color_arr[idx][i];
-          //delta=delta*1/4;
           delta*=lcd_effect_charge_a;
           delta/=lcd_effect_charge_b;
           if(delta==0) delta++;
           p[u][v][i]-=delta;
-            /*int tmp=p[u][v][i]-100;
-            if(tmp <color_arr[idx][i]) tmp=color_arr[idx][i];
-            p[u][v][i]=tmp;*/
         }if(color_arr[idx][i]>p[u][v][i]){
           //voltage reducing
           unsigned int delta=color_arr[idx][i]-p[u][v][i];
-          //delta=delta*1/8;
           delta*=lcd_effect_discharge_a;
           delta/=lcd_effect_discharge_b;
           if(delta==0) delta++;
           p[u][v][i]+=delta;
-            /*int tmp=p[u][v][i]+30;
-            if(tmp >color_arr[idx][i]) tmp=color_arr[idx][i];
-            p[u][v][i]=tmp;*/
         }else{
         }
       }
@@ -125,8 +117,6 @@ void Render(uint64_t tick) {
   static const unsigned char * index[4]={white_color,near_white_color,near_black_color,black_color};
   static const unsigned char * index_shadow[4]={white_color_shadow, near_white_color_shadow, near_black_color_shadow, black_color_shadow};
   static const size_t color_size = sizeof(black_color);
-  //unsigned char lcd[80*(pixel_size+gap_zize)][160*(pixel_size+gap_zize)][color_size] ;
-  //unsigned char lcd[80*(pixel_size+gap_zize)][160*(pixel_size+gap_zize)][color_size] ;
 
   static const unsigned char black_color_console[4] = { 0, (unsigned char)(255*1.0), 0, 0 };
   static const unsigned char black_color_shadow_console[4] = { 0, 0, (unsigned char)(255*1.0), 0 };
@@ -137,7 +127,6 @@ void Render(uint64_t tick) {
   unsigned char (*p)[SCREEN_WIDTH*total_size][4] ;
   p = (decltype(p)) lcd_effect_buffer;
 
-  //p=(unsigned char (*)[160*total_size][color_size] ) bytes;
   if(!is_grey_mode()){
     for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT/8; ++i) {
       for (int j = 0; j < 8; ++j) {
@@ -175,8 +164,6 @@ void Render(uint64_t tick) {
           }
         }
 
-        //memcpy(bytes, pixel ? black_color : white_color, color_size);
-        //bytes += color_size;
       }
     }
   }else{
@@ -213,13 +200,7 @@ void Render(uint64_t tick) {
   }
   if(!do_SDL_refresh) return;
   memcpy(bytes,lcd_effect_buffer,SCREEN_HEIGHT*total_size* SCREEN_WIDTH*total_size * 4);
-  /*
-  for(int i=0;i<80;i++){
-    for(int j=0;j<160;j++){
-      memcpy(bytes, index[lcd[i][j]],color_size);
-      bytes+=color_size;
-    }
-  }*/
+
   SDL_UnlockTexture(texture);
 
     static SDL_Rect destination =

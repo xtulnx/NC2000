@@ -13,10 +13,6 @@ extern uint8_t* memmap[8];
 
 static uint8_t& fp_step = nc2k_states.fp_step;
 static uint8_t& fp_type = nc2k_states.fp_type;
-//static uint8_t& fp_bank_idx = nc1020_states.fp_bank_idx;
-//static uint8_t& fp_bak1 = nc1020_states.fp_bak1;
-//static uint8_t& fp_bak2 = nc1020_states.fp_bak2;
-//static uint8_t* fp_buff = nc1020_states.fp_buff;
 
 
 //0x28,0x0a ---->2600
