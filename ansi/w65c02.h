@@ -137,8 +137,8 @@ unsigned short GetWord(unsigned short address);
 // Don't use ++/-- in addr, or will be execute multi time
 // TODO: should place io operation in first case to prefer io speed (side effect: slown down other normal memory access)
 inline uint8_t CPU_PEEK(uint16_t addr){
-  uint8_t Load2(uint16_t);
-  return Load2(addr);
+  uint8_t LoadC(uint16_t);
+  return LoadC(addr);
   /*
     if(addr >= 0x80) {
       return *(pmemmap[unsigned(addr) >> 0xD] + (addr & 0x1FFF));
@@ -153,8 +153,8 @@ inline uint16_t CPU_PEEKW(uint16_t addr){
 
 inline void CPU_POKE(uint16_t addr, uint8_t a)   
 { 
-  void       Store2(uint16_t addr, uint8_t value);
-  Store2(addr,a);
+  void       StoreC(uint16_t addr, uint8_t value);
+  StoreC(addr,a);
   /*
   if ((addr >= 0x80)) { 
     if (addr < 0x4000) {

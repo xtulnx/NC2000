@@ -82,6 +82,9 @@ bool enable_emulate_cks = false;
 bool forced_erase_before_write = true;
 
 bool fast_forward=false;
+
+double speed_multiplier=1.0;
+int fast_forward_limit=0;
 /*
 ===================
 cycles related
