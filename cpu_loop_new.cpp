@@ -157,17 +157,17 @@ bool chk_ar(){
   }
   return 0;
 }
-void setTimeRTC(){
-	rtc_reg[0]++;
-	if (rtc_reg[0] == 60) {
-      rtc_reg[0] = '\0';
-      rtc_reg[1] = rtc_reg[1] + '\x01';
-      if (rtc_reg[1] == 60) {
-        rtc_reg[1] = '\0';
-        rtc_reg[2] = rtc_reg[2] + '\x01';
-        if (rtc_reg[2] == 24) {
-          rtc_reg[2] = '\0';
-          rtc_reg[3] = rtc_reg[3] + '\x01';
+void bumpRTC(){
+	rtc_reg[TR_s]++;
+	if (rtc_reg[TR_s] == 60) {
+      rtc_reg[TR_s] = 0;
+      rtc_reg[TR_m] = rtc_reg[TR_m] + 1;
+      if (rtc_reg[TR_m] == 60) {
+        rtc_reg[TR_m] = 0;
+        rtc_reg[TR_h] = rtc_reg[TR_h] + 1;
+        if (rtc_reg[TR_h] == 24) {
+          rtc_reg[TR_h] = 0;
+          rtc_reg[TR_d] = rtc_reg[TR_d] + 1;
         }
       }
     }
@@ -478,7 +478,7 @@ void cpu_run3(){
 					else Store(1025, 0);
 				}
 				//at the begin of every second
-				setTimeRTC();
+				bumpRTC();
 			}
 			//bump the 1/256 second
 		}
