@@ -91,8 +91,8 @@ void setTime1000() {
 #define	AR_h		0x07
 #define	RTC_CTRL	0x0a
 #define	INT_CLEAR	0x0b
-// nc3000lee1.1 version, only for compare
-unsigned char chk_ar0()
+// from nc3000lee1.1 version
+unsigned char chk_ar()
 {
 	unsigned char alm=0;
 	if(!(rtc_reg[RTC_CTRL]&0x02)||!(interr_flag&0x02))
@@ -118,45 +118,6 @@ unsigned char chk_ar0()
 	return	alm;
 }
 
-bool chk_ar(){
-  uint8_t bVar1;
-  uint8_t uVar2;
-  
-  if ((rtc_reg[10] >> 1 & 1) == 0) {
-    return 0;
-  }
-  if (((byte)interr_flag >> 1 & 1) == 0) {
-    return 0;
-  }
-  if ((signed char)rtc_reg[7] < (signed char)'\0') {
-    if (((rtc_reg[2] ^ rtc_reg[7]) & 0x1f) != 0) {
-      return 0;
-    }
-    uVar2 = 1;
-    bVar1 = rtc_reg[6];
-  }
-  else {
-    uVar2 = 0;
-    bVar1 = rtc_reg[6];
-  }
-  if ((signed char)bVar1 < (signed char)'\0') {
-    if (((rtc_reg[1] ^ bVar1) & 0x3f) != 0) {
-      return 0;
-    }
-    uVar2 = 1;
-    bVar1 = rtc_reg[5];
-  }
-  else {
-    bVar1 = rtc_reg[5];
-  }
-  if (-1 < (signed char)bVar1) {
-    return uVar2;
-  }
-  if (((rtc_reg[0] ^ bVar1) & 0x3f) == 0) {
-    return 1;
-  }
-  return 0;
-}
 void bumpRTC(){
 	rtc_reg[TR_s]++;
 	if (rtc_reg[TR_s] == 60) {
