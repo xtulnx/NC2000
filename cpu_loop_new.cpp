@@ -343,8 +343,11 @@ void cpu_run3(){
 	//magic number to fit timerA and pc1000emux's timer0 and timer1 code
     if(int trigger_cnt=trigger_x_times_per_s(576*50)){
 	  for(int i=0;i<trigger_cnt;i++){
-		if(nc1020mode||nc2000mode||nc3000mode||pc1000mode_normal()) {
-			setTimerA();
+		if(nc1020mode||nc2000mode||nc3000mode||pc1000mode_normal()) {//todo: need better emulation
+			if(setTimerA()){
+				//note: in orignally pc1000emux, it doesn't set irq pending here
+				cpu->set_irq_pending();
+			}
 		}
 		if(pc1000mode_emux()) {
 			bus_pc1000->setTimer();
@@ -435,8 +438,10 @@ void cpu_run3(){
 		if(nc1020mode||nc2000mode||nc3000mode){
 			if(trigger256_cnt==0){
 				if(enable_keepon){
+					//prevents from sleep
+					//not exist in physical devide, but 
 					if(nc1020mode) Store(1143, 0);//prevent sleep
-					else Store(1025, 0);
+					else if(nc2000mode||nc3000mode) Store(1025, 0);
 				}
 				//at the begin of every second
 				bumpRTC();

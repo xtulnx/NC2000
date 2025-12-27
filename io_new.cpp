@@ -239,7 +239,7 @@ void dsp33write_cmd_data(int value){
 
 //timerA from pc1000emux
 // 实现的不全，缺TMACT
-void setTimerA() {
+bool setTimerA() {
     int temp = ioReg[IO_TIMERAB_CTRL] >> 4;
     if (temp != 0) {
         tmaValue += (256 >> temp);
@@ -248,10 +248,11 @@ void setTimerA() {
             if(debug_level>=1) printf("timer A interrupt triggered");
             if ((inner_interrupt_control & 1) != 0){
                 ioReg[io01_int_status] |= 1;
-                cpu->set_irq_pending();  //newly added, not exist in pc1000emux
+                return true;
             }
         }
     }
+    return false;
 }
 //todo timerB
 
@@ -409,7 +410,7 @@ void io_v2_write(int address, int value) {
             patch_idx++;
         }
     }
-        if(nc3000mode){
+    if(nc3000mode){
         if(address==0x05){
             uint8_t cks=value>>5;
             if(debug_level>=2) {

@@ -40,10 +40,6 @@ static uint64_t& nmi_cycles = nc2k_states.nmi_cycles;
 static bool& should_wake_up = nc2k_states.should_wake_up;
 
 
-double speed_multiplier=1.0;
-int fast_forward_limit=0;
-
-
 #if 0
 void reset_cpu_states(){
 	//nc1020_states.should_irq = false;
@@ -64,7 +60,7 @@ void reset_cpu_states(){
 	CreateHotlinkMapping();
 }
 #endif
-void AdjustTime(){
+void AdjustTime(){ //legacy code, only used in old cpu loop
 	uint8_t* clock_buff = nc2k_states.clock_buff;
     if (++ clock_buff[0] >= 60) {
         clock_buff[0] = 0;
@@ -78,7 +74,7 @@ void AdjustTime(){
     }
 }
 
-bool IsCountDown(){
+bool IsCountDown(){//legacy code, only used in old cpu loop
 	uint8_t* clock_buff = nc2k_states.clock_buff;
 	uint8_t& clock_flags = nc2k_states.clock_flags;
     if (!(clock_buff[10] & 0x02) ||
@@ -122,7 +118,7 @@ void inject(){
 }
 
 
-void CheckTimebaseAndSetIRQTBI()
+void CheckTimebaseAndSetIRQTBI()//legacy code, only used in old cpu loop
 {
 	//////////TODO: remove the or true
     if (zpioregs[io04_general_ctrl] & 0x0F) {
@@ -132,7 +128,7 @@ void CheckTimebaseAndSetIRQTBI()
     }
 }
 
-void CheckTimebaseSetTimer0IntStatusAddIRQFlag()
+void CheckTimebaseSetTimer0IntStatusAddIRQFlag()//legacy code, only used in old cpu loop
 {
     if ( zpioregs[io04_general_ctrl] & 0x0F )
     {
@@ -142,7 +138,7 @@ void CheckTimebaseSetTimer0IntStatusAddIRQFlag()
     }
 }
 
-void EnableWatchDogFlag()
+void EnableWatchDogFlag()//legacy code, only used in old cpu loop
 {
     gThreadFlags |= 0x80;
 }
