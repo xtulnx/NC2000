@@ -23,6 +23,12 @@ uint8_t get_iv();
 uint8_t read_rcr0();
 void write_rcr0(uint8_t value);
 
+inline uint32_t get_sample_hz(){
+    uint32_t high=RCR0>>4;
+    if(high==0||high==0xf) return 0;
+    return 1<<(high-1);
+}
+
 uint8_t read_rcr1();
 void write_rcr1(uint8_t value);
 

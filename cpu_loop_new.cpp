@@ -465,6 +465,13 @@ void cpu_run3(){
 			}
 		}
 	}
+
+	uint32_t sample_hz=get_sample_hz();
+	if(sample_hz>0 && trigger_x_times_per_s(sample_hz)){
+		if(debug_level>=2) printf("IV_SAMPLE triggered\n");
+		put_iv(IV_SAMPLE);
+	}
+
 	if(peek_iv()!=IV_NONE){
 		cpu->set_irq_pending();
 	}
