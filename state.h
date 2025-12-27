@@ -30,7 +30,7 @@ struct nc2k_states_t{
 	uint64_t cycles;
 	uint64_t last_cycles;
 
-	uint8_t interr_flag;
+	//uint8_t interr_flag;
 
 /*
 ===================

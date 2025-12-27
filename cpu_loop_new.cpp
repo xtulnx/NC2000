@@ -8,6 +8,7 @@
 #include "disassembler.h"
 #include "compare/pc1000bus.h"
 #include "io_new.h"
+#include "iv_uart.h"
 
 #define qDebug(...)
 
@@ -18,7 +19,7 @@ static uint64_t& cycles = nc2k_states.cycles;
 static uint64_t& last_cycles = nc2k_states.last_cycles;
 static uint8_t * rtc_reg=nc2k_states.ext_reg;
 static uint8_t * ext_reg=nc2k_states.ext_reg;
-static uint8_t& interr_flag = nc2k_states.interr_flag;
+//static uint8_t& interr_flag = nc2k_states.interr_flag;
 struct BusPC1000 *bus_pc1000=0;
 extern IBus6502 *dummy_bus;
 
@@ -93,8 +94,6 @@ void setTime1000() {
 unsigned char chk_ar()
 {
 	unsigned char alm=0;
-	if(!(rtc_reg[RTC_CTRL]&0x02)||!(interr_flag&0x02))
-		return alm;
 	if((rtc_reg[AR_h]&0x80))
 		{
 		alm=1;
@@ -438,16 +437,12 @@ void cpu_run3(){
 		
 		if(nc1020mode||nc2000mode||nc3000mode){
 			if(trigger256_cnt%128==0){
-				if(trigger256_cnt==0&& chk_ar()){
+				if(trigger256_cnt==0&& (RCR0&RCR0_ALARM) && chk_ar()){
 					if(debug_level>=1) printf("chk_ar() return true!\n");
-					ram_io[0x3d] = 0x10;
-					interr_flag&=0xfd;	
-					try_soft_reset();
-				}else{
-					if(rtc_reg[10]&1 &&interr_flag&1){
-						ram_io[0x3d] =0;
-						cpu->set_irq_pending();
-					}
+					put_iv(IV_ALARM);
+				}
+				if((RCR0&RCR0_2HZ) ){
+					put_iv(IV_2HZ);
 				}
 			}
 		}
@@ -469,6 +464,9 @@ void cpu_run3(){
 					ram_io[0x0c]&=0xfe;
 			}
 		}
+	}
+	if(peek_iv()!=IV_NONE){
+		cpu->set_irq_pending();
 	}
 
 	if(pc1000mode_emux()&&trigger_x_times_per_s(2)){
