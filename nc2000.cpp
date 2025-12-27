@@ -25,51 +25,8 @@ BusWrapper *dummy_bus = nullptr;
 
 //static uint32_t& version = nc1020_states.version;
 
-static bool& slept = nc2k_states.slept;
-static bool& should_wake_up = nc2k_states.should_wake_up;
-
 static uint8_t* keypad_matrix = nc2k_states.keypad_matrix;
-//static uint32_t& lcd_addr = nc1020_states.lcd_addr;
 
-static bool& wake_up_pending = nc2k_states.pending_wake_up;
-static uint8_t& wake_up_key = nc2k_states.wake_up_flags;
-
-/*void ResetStates(){
-	//version = VERSION;
-	memset(&nc1020_states,0,sizeof(nc1020_states_t));
-	init_mem();
-	reset_cpu_states();
-	//cpu->reset();
-}*/
-
-/*
-void Reset() {
-	init_nor();
-	ResetStates();
-}*/
-
-#if 0
-void LoadStates(){
-	FILE* file = fopen(nc1020_rom.statesPath.c_str(), "rb");
-	if (file == NULL) {
-		return;
-	}
-	fread(&nc1020_states, 1, sizeof(nc1020_states), file);
-	fclose(file);
-	/*
-	if (version != VERSION) {
-		return;
-	}*/
-	super_switch();
-}
-
-void SaveStates(){
-	FILE* file = fopen(nc1020_rom.statesPath.c_str(), "wb");
-	fwrite(&nc1020_states, 1, sizeof(nc1020_states), file);
-	fflush(file);
-	fclose(file);
-}
-#endif
 
 void save_state(string file_name){
 	if(file_name.empty()) file_name=nc2k_rom.statesPath;
@@ -116,24 +73,6 @@ void LoadNC2k(){
 	void CreateHotlinkMapping();
 	CreateHotlinkMapping();
 
-	/*
-	if(cpu_loop_version==CPU_RUN1) {
-		init_cpu();
-	}
-	if(cpu_loop_version==CPU_RUN2) {
-		if(io_version==IO_V1) {
-			init_cpu();
-		}else if(io_version==IO_V2) {
-			init_cpu_new();
-		} else {
-			assert(false);
-		}
-	}
-	if(cpu_loop_version==CPU_RUN3) { 
-		init_cpu_new();
-	}*/
-
-	//rom_switcher();
 	init_nor();
 	if(pc1000mode||nc1020mode) {
 		init_rom();
@@ -169,13 +108,7 @@ void LoadNC2k(){
 		//nc3000c-lee has it but seems like no need?
 		//ram_io[0x18]=0x20;
 	}
-	//LoadStates();
 }
-/*
-void SaveNC1020(){
-	SaveNor();
-	//SaveStates();
-}*/
 
 bool is_grey_mode(){
 	if(console_on) return false;
@@ -218,7 +151,6 @@ bool CopyLcdBuffer(uint8_t* buffer){
 	assert(false);
 }
 
-
 void RunTimeSlice(uint32_t time_slice, bool speed_up) {
 	uint32_t new_cycles = time_slice * CYCLES_MS;
 
@@ -232,8 +164,6 @@ void RunTimeSlice(uint32_t time_slice, bool speed_up) {
 
 	uint64_t target_cycles=nc2k_states.cycles +new_cycles;
 
-	//auto old=sound_stream.size();
-	//printf("<%u,%u, %lld>",cycles,end_cycles,SDL_GetTicks64());
 	while (nc2k_states.cycles < target_cycles) {
 		if(cpu_loop_version == CPU_RUN1){
 			cpu_run();
@@ -248,14 +178,7 @@ void RunTimeSlice(uint32_t time_slice, bool speed_up) {
 
 	post_cpu_run_sound_handling();
 
-	//nc1020_states.previous_cycles+=end_cycles;
-	//nc1020_states.cycles -= end_cycles;
-	//nc1020_states.timer0_cycles -= end_cycles;
-	//nc1020_states.timer1_cycles -= end_cycles;
-
-
 }
-
 
 void save_flash(string file){
 	write_nand0_file(file);

@@ -23,8 +23,6 @@ struct BusPC1000 *bus_pc1000=0;
 extern IBus6502 *dummy_bus;
 
 void init_cpu_new(){
-	//assert(use_emux_cpu);
-	// assert(use_emux_bus);
 	if(io_version == IO_V1 || io_version == IO_V2){
 		if(cpu_version== CPU_HANDYPSP) {
 			cpu=new CPUInterface();
@@ -247,10 +245,7 @@ void cpu_run3(){
 		prepare_soft_reset();
 		cpu->reset();
 		set_clk_on();
-		//nc1020_states.last_cycles=0;
-		//nc1020_states.cycles=0;
 	}
-	//assert(cycles==cpu->getTotalCycles()/12);
 	char *peeked_msg=peek_message();
 	if(peeked_msg){
 		bool need_wait=false;
@@ -376,16 +371,8 @@ void cpu_run3(){
 			delta= scaled_cycles - scaled_last_cycles;
 		}
 		if(KeepTimer01(delta)){
-			//adapted from wayback
-			////if ( ram_io[0x04] & 0x0F ) { //why check timebase for timer01?
-				//why only set flag for timer0? why not set 0x20
-				//_ADD_TM1I_BIT() _ADD_TM1I_BIT() is inside KeepTimer01, why set it another time?
-				//this is from wayback
-				//ram_io[0x01] |= 0x10;
 				if(enable_dyn_debug_next_n) printf("time to timer01!!!!\n");
-
 				cpu->set_irq_pending();
-			///////}
 		}
 	}
 	if(nc2000mode||nc3000mode){

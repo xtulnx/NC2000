@@ -164,18 +164,6 @@ void CStore(uint16_t addr, uint8_t value){
 }
 
 uint8_t* GetBank(uint8_t bank_idx){
-	/*if (pc1000mode){
-		if(ram_io[0x0a] &0x80){
-			return nor_banks[bank_idx&0xf];
-		}else{
-			if (ram_io[0x0D] & 0x01) {
-				return rom_volume1[bank_idx];
-			}else{
-				return rom_volume0[bank_idx];
-			}
-		}
-		return NULL;
-	}*/
 
 	if((ram_io[0x0D]&0x3)!=0) {
 		if(debug_level>=99) printf("vol=%02x!!!!!!!!!!!!\n",ram_io[0x0D]&0x3);
@@ -213,12 +201,6 @@ uint8_t* GetBank(uint8_t bank_idx){
 			//assert(bank_idx==0x80);
 
 			return nc2k_states.ext_ram;
-
-			/*
-			if(bank_idx%2==0)
-			return nc1020_states.ext_ram;
-			else
-			return nc1020_states.ext_ram2; */
 		}
     }else{
 		if(debug_level>=1) printf("oops GetBank bank_idx=%02x invalid roa_bbs=%02x \n",bank_idx, ram_io[0x0a]);
@@ -342,7 +324,6 @@ uint8_t** GetVolumm(uint8_t volume_idx){
 }
 void Switch0x2000(){
 	if(nc1020mode){
-		//memmap[1] = (roa_bbs & 0x04 ? ram_b : ram02); // this is wrong???? should be ram_io[0x0d]&0x04
 		memmap[1] = (ram_io[0x0d]&0x04 ? ram_b : ram02);
 		/*if(nc1020tw_mode){
 			if(ram_io[0x0d]&0x4){
