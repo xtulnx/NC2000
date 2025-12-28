@@ -5,8 +5,11 @@
 #include <map>
 #include "compare/pc1000bus.h"
 #include "console.h"
+#include "state.h"
 using namespace std;
 extern BusPC1000 *bus_pc1000;
+extern nc2k_states_t nc2k_states;
+static uint8_t * ext_reg=nc2k_states.ext_reg;
 
 struct TKeyItem {
     TKeyItem(int ID, int keycode,int code_y, int code_x, const char* graphic, const char* subscript, const char* label,vector<int>);
@@ -358,6 +361,7 @@ void handle_key_wayback(signed int sym, bool key_down){
             ram_io[0x0b]&=~1;
           }else {
             ram_io[0x0b]|=1;
+            ext_reg[0x24]|=0x0f; //TODO: is this the hardware behavior? or is it a hack?
             void try_soft_reset();
             try_soft_reset();
           }

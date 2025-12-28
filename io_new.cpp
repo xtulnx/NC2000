@@ -574,6 +574,11 @@ void io_v2_write(int address, int value) {
                     printf("write to 0x3f idx=0x26 %02x\n",value);
                 }
             }
+            if(debug_level>=1){
+                if(index==0x24){
+                    printf("write to 0x3f idx=0x24 %02x\n",value);
+                }
+            }
             ioReg[0x3f]=value;
             if(index<7){
                 //drop invalid value

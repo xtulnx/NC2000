@@ -18,6 +18,9 @@ extern "C" {
 
 #define qDebug(...)
 
+extern nc2k_states_t nc2k_states;
+static uint8_t * ext_reg=nc2k_states.ext_reg;
+
 bool timer0run = false;
 bool timer1run_tmie = false;
 
@@ -293,6 +296,8 @@ unsigned /*char*/ keypadmatrix[8][8] = {0,};
 int enable_key_debug_once=0;
 void UpdateKeypadRegisters()
 {
+    const bool use_pull_high_emulation = true;
+    // if( (~ext_reg[0x24])&0xf) enable_key_debug_once=1;
     // TODO: 2pass check
     // 设port0/port1都有下拉电阻, 并且输入没有锁存. 也即如果设置为输入, 没有导电橡胶从别的线路拉高时候, 自动会变0
     // 计算可以用2种方法, 1, 循环matrix, 对每个节点求传导. 2循环
@@ -303,6 +308,11 @@ void UpdateKeypadRegisters()
     }
     unsigned char port1controlbit = 1; // aka, y control bit
     unsigned char tmpdest0 = 0, tmpdest1 = 0;
+    if(use_pull_high_emulation){
+        if(nc1020mode||nc2000mode||nc3000mode){//handle port0 pull high
+                tmpdest0 = (~ext_reg[0x24])&0xf;
+        }
+    }
     unsigned short tmpp30tv = 0;
     // 我已在WritePort0和WritePort1时候, 传导了输出状态的引脚的电平到输入
     // 不不, 这里应该先取输出锁存器的
@@ -359,8 +369,14 @@ void UpdateKeypadRegisters()
             if (ysend != xsend) {
                 if (ysend) {
                     // port1y-> port0x, and x is receive
-                    if (keypadmatrix[y][x]==1 && ((port1data & port1controlbit) != 0)) {
-                        tmpdest0 |= xbit;
+                    if (keypadmatrix[y][x]==1 ) {
+                        if((port1data & port1controlbit) != 0){
+                            tmpdest0 |= xbit;
+                        }else if(use_pull_high_emulation){//needed by the pull high case
+                            if(xbit &0x0f && (ext_reg[0x24] & xbit) ==0){//in theory this if is not needed
+                                tmpdest0 &= ~xbit;
+                            }
+                        }
                     }
                 } else {
                     // port0x -> port1y, and y is receive
@@ -432,6 +448,7 @@ void UpdateKeypadRegisters()
         qDebug("new [0015]:%02x [0009]:%02x [0008]:%02x", w15_port1_DIR107, port1data, port0data);
     }
 
+  if(!use_pull_high_emulation){ //no longer needed, but kept for compare
     // this is tmp fix for nc2000 hotkey wakeup
     // todo: better fix, probably need to handle below:
     //       when port0[3:0] defined as input, it got "on" function and is pulled high. (it's controled by P0PU)
@@ -456,6 +473,7 @@ void UpdateKeypadRegisters()
             port0data|= 0x03;
         }
     }
+  }
 
     r09_port1_ID = port1data;
     r08_port0_ID = port0data;
@@ -473,7 +491,7 @@ void UpdateKeypadRegisters()
         }
     }
     if(enable_key_debug_once) {
-        printf("[key_debug] new r08_port0_ID=%02x, r09_port1_ID=%02x, tmpp30tv=%04x\n", r08_port0_ID, r09_port1_ID, tmpp30tv);
+        printf("[key_debug] new r08_port0_ID=%02x, r09_port1_ID=%02x, tmpp30tv=%04x, tmpdest0=%02x tmpdest1=%02x\n", r08_port0_ID, r09_port1_ID, tmpp30tv, tmpdest0, tmpdest1);
     }
     if(enable_key_debug_once>0) enable_key_debug_once--;
 }
