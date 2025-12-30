@@ -58,6 +58,10 @@ void write_rcr1(uint8_t value){
     //the 3 low bits are self clear
     RCR1= value&0xf8;
 }
+uint8_t RHR,THR;
+uint8_t BSR;
+uint8_t CSTOP;
+uint8_t GPC;
 
 uint8_t read_3a(){
     return ram_io[0x3a];
@@ -65,6 +69,12 @@ uint8_t read_3a(){
 void write_3a(uint8_t value){
     ram_io[0x3a]=value;
 }
+
+uint8_t LSR,LCR;
+uint8_t IRCR;
+uint8_t CSTART;
+uint8_t RESERVED;
+
 
 uint8_t read_3b(){
     if((ram_io[0x3d]&3)==0){
@@ -77,6 +87,12 @@ void write_3b(uint8_t value){
     ram_io[0x3b]=value;
 }
 
+
+uint8_t MCR;
+uint8_t MSR;
+uint8_t TMR;
+uint8_t P05;
+
 uint8_t read_3c(){
     return ram_io[0x3c];
 }
@@ -84,6 +100,11 @@ void write_3c(uint8_t value){
     ram_io[0x3c]=value;
 }
 
+
+//uint8_t IVR; not needed
+uint8_t FCR;
+uint8_t IER;
+//uint8_t BK_ONLY;
 uint8_t read_3d(){
     if(bk==0) return get_iv()<<3;
     return ram_io[0x3d];
