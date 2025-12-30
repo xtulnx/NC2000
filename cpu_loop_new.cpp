@@ -59,7 +59,7 @@ int trigger_x_times_per_s(int x){
 	return cycles/target_cycles - last_cycles/target_cycles;
 }
 
-void setTime1000() {
+void setTime1000emux() {
 	const int ADDR_POWER_UP_FLAG = 0x435;
 	const int ADDR_WATCH_DOG = 0x468;
 	const int ADDR_IDLESEC = 0x471;
@@ -411,17 +411,15 @@ void cpu_run3(){
 		}
 	}
 
-
-	int trigger256=trigger_x_times_per_s(256);
-
-	// for future proof, in some extreme cases, it may trigger multiple times
-	// e.g. when speed_scaledown=512 and CYCLES_SECOND is very low
-	// but practically, trigger256 should be either 0 or 1
-	for(int i=0;i<trigger256;i++)
-	{
-		rtc_reg[TR_ms]++;
-		auto &trigger256_cnt= rtc_reg[TR_ms];
-		if(nc1020mode||nc2000mode||nc3000mode){
+	if(nc1020mode||nc2000mode||nc3000mode){
+		int trigger256=trigger_x_times_per_s(256);
+		// in some extreme cases, rtc might trigger faster than cpu execution
+		// e.g. when speed_scaledown=512 and CYCLES_SECOND is underclocked to a low value
+		// but practically, trigger256 should be either 0 or 1
+		for(int i=0;i<trigger256;i++)
+		{
+			rtc_reg[TR_ms]++;
+			auto &trigger256_cnt= rtc_reg[TR_ms];
 			if(trigger256_cnt==0){
 				if(enable_keepon){
 					//prevents from sleep
@@ -429,13 +427,10 @@ void cpu_run3(){
 					if(nc1020mode) Store(1143, 0);//prevent sleep
 					else if(nc2000mode||nc3000mode) Store(1025, 0);
 				}
-				//at the begin of every second
+				//bump the 1/256 second
 				bumpRTC();
 			}
-			//bump the 1/256 second
-		}
-		
-		if(nc1020mode||nc2000mode||nc3000mode){
+			
 			if(trigger256_cnt%128==0){
 				if(trigger256_cnt==0&& (RCR0&RCR0_ALARM) && chk_ar()){
 					if(debug_level>=1) printf("chk_ar() return true!\n");
@@ -445,8 +440,7 @@ void cpu_run3(){
 					put_iv(IV_2HZ);
 				}
 			}
-		}
-		if(nc1020mode||nc2000mode||nc3000mode|| pc1000mode_normal()) {
+
 			if(trigger256_cnt%128==64){ //avoid nmi triggerd at same time as rtc irq
 				if (nmiEnable()){
 					if(nc1020mode||nc2000mode||nc3000mode){
@@ -455,31 +449,36 @@ void cpu_run3(){
 					cpu->set_nmi_pending();
 				}
 			}
-		}
-		if(nc1020mode){ //a hack to make nc1020 physical dumped nor work. todo:fixme
-			if(trigger256_cnt%20==10){
-					ram_io[0x0c]|=0x01;
+
+			if(nc1020mode){ //a hack to make nc1020 physical dumped nor work. todo:fixme
+				if(trigger256_cnt%20==10){
+						ram_io[0x0c]|=0x01;
+				}
+				else{
+						ram_io[0x0c]&=0xfe;
+				}
 			}
-			else{
-					ram_io[0x0c]&=0xfe;
+
+			uint32_t sample_hz=get_sample_hz();
+			if(sample_hz>0 && trigger_x_times_per_s(sample_hz)){
+				if(debug_level>=2) printf("IV_SAMPLE triggered\n");
+				put_iv(IV_SAMPLE);
+			}
+
+			uint8_t iv=peek_iv();
+			if(iv!=IV_NONE){
+				cpu->set_irq_pending();
+				try_soft_reset();
 			}
 		}
 	}
-
-	uint32_t sample_hz=get_sample_hz();
-	if(sample_hz>0 && trigger_x_times_per_s(sample_hz)){
-		if(debug_level>=2) printf("IV_SAMPLE triggered\n");
-		put_iv(IV_SAMPLE);
+	if(pc1000mode_normal() && trigger_x_times_per_s(2)){
+		if (nmiEnable()){
+			cpu->set_nmi_pending();
+		}
 	}
-
-	uint8_t iv=peek_iv();
-	if(iv!=IV_NONE){
-		cpu->set_irq_pending();
-		try_soft_reset();
-	}
-
-	if(pc1000mode_emux()&&trigger_x_times_per_s(2)){
-		setTime1000();
+	if(pc1000mode_emux() && trigger_x_times_per_s(2)){
+		setTime1000emux();
 		if (bus_pc1000->nmiEnable()){
 			cpu->set_nmi_pending();
 		}
