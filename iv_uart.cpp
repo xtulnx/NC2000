@@ -4,6 +4,7 @@
 #include <set>
 #include "iv_uart.h"
 #include "state.h"
+#include <libserialport.h>
 using namespace std;
 
 extern nc2k_states_t nc2k_states;
