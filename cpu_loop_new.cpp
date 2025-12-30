@@ -472,8 +472,10 @@ void cpu_run3(){
 		put_iv(IV_SAMPLE);
 	}
 
-	if(peek_iv()!=IV_NONE){
+	uint8_t iv=peek_iv();
+	if(iv!=IV_NONE){
 		cpu->set_irq_pending();
+		try_soft_reset();
 	}
 
 	if(pc1000mode_emux()&&trigger_x_times_per_s(2)){
