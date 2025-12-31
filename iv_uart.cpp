@@ -5,7 +5,10 @@
 #include "iv_uart.h"
 #include "state.h"
 #include <libserialport.h>
+#include <sys/types.h>
 using namespace std;
+
+int uart_debug_level=1;
 
 extern nc2k_states_t nc2k_states;
 static uint8_t * ram_io=nc2k_states.ram_io;
@@ -64,10 +67,33 @@ uint8_t CSTOP;
 uint8_t GPC;
 
 uint8_t read_3a(){
-    return ram_io[0x3a];
+    if(bk==0){
+        //TODO receive data
+    } else if(bk==1){
+        return BSR;
+    } else if(bk==2){
+        return CSTOP;
+    } else if(bk==3){
+        return GPC;
+    }
+    assert(false);
 }
 void write_3a(uint8_t value){
-    ram_io[0x3a]=value;
+    if(bk==0){
+        //TODO send data
+    }else if(bk==1){
+        BSR=value;
+        BSR&=0xcf;// 4 5 are zero when read back
+        if(uart_debug_level>=1){
+            printf("write BSR=%02x baudrate=%x\n",value,value &7);
+        }
+    }else if(bk==2){
+        CSTOP=value;
+    } else if(bk==3){
+        GPC=value;
+        //extern uint8_t P05;
+        //P05&=~GPC;
+    }else assert(false);
 }
 
 uint8_t LSR,LCR;
@@ -75,16 +101,41 @@ uint8_t IRCR;
 uint8_t CSTART;
 uint8_t RESERVED;
 
-
 uint8_t read_3b(){
-    if((ram_io[0x3d]&3)==0){
-        return ext_reg[0x3b]&0xfe;
-    }else{
-        return ram_io[0x3b];
+    if(bk==0){//LSR
+        //handle shift and transmit register emtpy
+        //handle rxRDY
+
+        //lda LSReg
+        //and #10011110b
+        //bne wait_empty_err
+
+        //
+
+        return 0x60;
+    }else if(bk==1){
+        return IRCR;
+    }else if(bk==2){
+        return CSTART;
+    }else if(bk==3){
+        return RESERVED;
     }
+    assert(false);
 }
 void write_3b(uint8_t value){
-    ram_io[0x3b]=value;
+    if(bk==0){
+        LCR=value;
+    }else if(bk==1){
+        //irda control register
+        IRCR=value;
+    }else if(bk==2){
+        CSTART=value;
+    }else if(bk==3){
+        RESERVED=value;
+    }else{
+        assert(false);
+    }
+    //ram_io[0x3b]=value;
 }
 
 
@@ -94,22 +145,120 @@ uint8_t TMR;
 uint8_t P05;
 
 uint8_t read_3c(){
-    return ram_io[0x3c];
+    if(bk==0){
+        if(MCR &0x10){
+            //lda     #00000010b
+            //sta     MCReg           ;clear
+
+            // handle "clear"?
+
+            // handle fifo reach trigger level
+        }
+        return MCR;
+    } else if(bk==1){
+        return MSR;
+    } else if(bk==2){
+        return TMR;
+    } else if(bk==3){
+        //output value are read back
+        //how to handle input value?
+        return P05;
+    }
+    assert(false);
 }
 void write_3c(uint8_t value){
-    ram_io[0x3c]=value;
+    if(bk==0){
+        MCR=value;
+    } else if(bk==1){
+        MSR=value;
+    } else if(bk==2){
+        TMR=value;
+        if(value &0x20){
+            //UART enable
+        }else{
+            //UART disable
+        }
+    } else if(bk==3){
+        //save output value for read back
+        P05=value&GPC;
+    }
+    else assert(false);
 }
 
-
-//uint8_t IVR; not needed
+uint8_t IVR; //only for UCE bit
 uint8_t FCR;
 uint8_t IER;
 //uint8_t BK_ONLY;
-uint8_t read_3d(){
-    if(bk==0) return get_iv()<<3;
-    return ram_io[0x3d];
+uint8_t read_3d_inner(){
+    if(bk==0) {
+        return get_iv()<<3|(IVR&0x04)|bk;
+    }
+    else if(bk==1){
+        return FCR|bk;
+    }
+    else if(bk==2){
+        return IER|bk;
+    }
+    else if(bk==3){
+        return bk;
+    }
+    assert(false);
 }
 void write_3d(uint8_t value){
-    ram_io[0x3d]= ram_io[0x3d] &0xf8 |value &7;
-    bk=value &7;
+    if(uart_debug_level>=2){
+        printf("write_3d(), value %02x\n",value);
+    }
+    uint8_t new_bk=value &3;
+    value&=0xfc;
+    if(bk==0){
+        //UCE: enable UART clock
+        IVR=value &0x4;
+        if(value&0x4){
+            //TODO enable uart clock
+        }else{
+            //TODO disable uart clock
+        }
+
+        //TODO how to handle IV write?
+    }
+    else if(bk==1){
+        if(value & 0x10){
+            if(uart_debug_level>=1) printf("RFRST\n");
+            //TODO RFRST
+        }
+        if(value & 0x20){
+            if(uart_debug_level>=1) printf("TFRST\n");
+            //TODO TFRST
+        }
+        if(value & 0x80){
+            if(uart_debug_level>=1) printf("BKRT\n");
+        }
+        if(value & 0xc0){
+            if(uart_debug_level>=1) printf("FIFO trigger not zero !!! value= %x\n",value>>6);
+        }
+        // 3 is zero when read back
+        // 45 should be zero when read back as well??
+        FCR=value&0xc8;
+    }
+    else if(bk==2){
+        if(value!=0){
+            if(uart_debug_level>=1) printf("IER not zero!!! value= %2x\n",value);
+        }
+        IER=value;
+    }
+    else if(bk==3){
+        //no action
+    }
+    else{
+        assert(false);
+    }
+    bk=new_bk;
+}
+
+uint8_t read_3d(){
+    uint8_t ret= read_3d_inner();
+    if(uart_debug_level>=2){
+        printf("read_3d(), returned %02x\n",ret);
+    }
+    return ret;
 }

@@ -1,4 +1,6 @@
 #include "comm.h"
+#include <cstdint>
+#include <sys/types.h>
 
 /*
 ===================
@@ -256,4 +258,3 @@ int read_file_noexit(string name,vector<char> &v){
     fclose(f);
     return 0;
 }
-
