@@ -70,6 +70,7 @@ void process_args(int argc, char *argv[])
 		{"rgb-scale", required_argument, 0, 1},
 		{"fast-forward-limit", required_argument, 0, 1},
 		{"assert", no_argument, 0, 1},
+		{"uart-log-level", required_argument, 0, 1},
 		{NULL, 0, 0, 0}
 	};
 	int option_index = 0;
@@ -289,6 +290,10 @@ void process_args(int argc, char *argv[])
 			}
 			else if (strcmp(long_options[option_index].name,"fast-forward-limit")==0){
 				fast_forward_limit = stoi(optarg);
+			}
+			else if (strcmp(long_options[option_index].name,"uart-log-level")==0){
+				extern int uart_log_level;
+				uart_log_level = stoi(optarg);
 			}
 			else
 			{

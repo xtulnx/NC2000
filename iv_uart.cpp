@@ -8,7 +8,7 @@
 #include <sys/types.h>
 using namespace std;
 
-int uart_debug_level=1;
+int uart_log_level=1;
 
 extern nc2k_states_t nc2k_states;
 static uint8_t * ram_io=nc2k_states.ram_io;
@@ -84,7 +84,7 @@ void write_3a(uint8_t value){
     }else if(bk==1){
         BSR=value;
         BSR&=0xcf;// 4 5 are zero when read back
-        if(uart_debug_level>=1){
+        if(uart_log_level>=1){
             printf("write BSR=%02x baudrate=%x\n",value,value &7);
         }
     }else if(bk==2){
@@ -110,8 +110,22 @@ uint8_t read_3b(){
         //and #10011110b
         //bne wait_empty_err
 
-        //
-
+        /*
+0000   A5 3D      L0000     LDA $3D
+0002   29 FC                AND #$FC
+0004   85 3D                STA $3D
+0006   A5 3B                LDA $3B
+0008   29 07                AND #$07
+000A   D0 09                BNE L0015
+000C   A5 3B                LDA $3B
+000E   29 CB                AND #$CB
+0010   C9 CB                CMP #$CB
+0012   D0 EC                BNE L0000
+0014   60                   RTS
+0015   A9 01      L0015     LDA #$01
+0017   60                   RTS
+                            .END
+        */
         return 0x60;
     }else if(bk==1){
         return IRCR;
@@ -205,7 +219,7 @@ uint8_t read_3d_inner(){
     assert(false);
 }
 void write_3d(uint8_t value){
-    if(uart_debug_level>=2){
+    if(uart_log_level>=2){
         printf("write_3d(), value %02x\n",value);
     }
     uint8_t new_bk=value &3;
@@ -223,18 +237,18 @@ void write_3d(uint8_t value){
     }
     else if(bk==1){
         if(value & 0x10){
-            if(uart_debug_level>=1) printf("RFRST\n");
+            if(uart_log_level>=1) printf("RFRST\n");
             //TODO RFRST
         }
         if(value & 0x20){
-            if(uart_debug_level>=1) printf("TFRST\n");
+            if(uart_log_level>=1) printf("TFRST\n");
             //TODO TFRST
         }
         if(value & 0x80){
-            if(uart_debug_level>=1) printf("BKRT\n");
+            if(uart_log_level>=1) printf("BKRT\n");
         }
         if(value & 0xc0){
-            if(uart_debug_level>=1) printf("FIFO trigger not zero !!! value= %x\n",value>>6);
+            if(uart_log_level>=1) printf("FIFO trigger not zero !!! value= %x\n",value>>6);
         }
         // 3 is zero when read back
         // 45 should be zero when read back as well??
@@ -242,7 +256,7 @@ void write_3d(uint8_t value){
     }
     else if(bk==2){
         if(value!=0){
-            if(uart_debug_level>=1) printf("IER not zero!!! value= %2x\n",value);
+            if(uart_log_level>=1) printf("IER not zero!!! value= %2x\n",value);
         }
         IER=value;
     }
@@ -257,7 +271,7 @@ void write_3d(uint8_t value){
 
 uint8_t read_3d(){
     uint8_t ret= read_3d_inner();
-    if(uart_debug_level>=2){
+    if(uart_log_level>=2){
         printf("read_3d(), returned %02x\n",ret);
     }
     return ret;
