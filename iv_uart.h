@@ -14,7 +14,7 @@ const int IV_2HZ = 0x00;
 const int IV_SAMPLE= 0x01;
 const int IV_ALARM= 0x02;
 const int IV_NONE= 0x1f;
-void iv_uart_reset();
+void clear_iv();
 void put_iv(uint8_t value);
 void del_iv(uint8_t value);
 uint8_t peek_iv();

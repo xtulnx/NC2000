@@ -17,14 +17,12 @@ static uint8_t * ext_reg=nc2k_states.ext_reg;
 
 static uint8_t bk=0;
 
+set<uint8_t> iv_set;
 uint8_t &RCR0=ext_reg[0x0a];
 uint8_t &RCR1=ext_reg[0x0b];
 
-set<uint8_t> iv_set;
-void iv_uart_reset(){
+void clear_iv(){
     iv_set.clear();
-    RCR0=0;
-    RCR1=0;
 }
 void put_iv(uint8_t value){
     assert(value!=IV_NONE);
@@ -176,8 +174,7 @@ void clear_read_buffer(const char *hint){
 void handle_uart_parameter_change(){
     if(!uart_advance) return;
     if(!uart_port) return ;
-    extern uint8_t LCR,BSR;
-    int baud=BSR & 0x0f;
+    int baud=nc2k_states.BSR & 0x0f;
     if(baud>12) baud=12;
     int translated_baudrate;
     switch (baud){
@@ -202,20 +199,20 @@ void handle_uart_parameter_change(){
         check(sp_set_baudrate(uart_port, translated_baudrate));
         current_baudrate=translated_baudrate;
     }
-    int wordlen= (LCR &0x01) ?8:7;
+    int wordlen= (nc2k_states.LCR &0x01) ?8:7;
     if(wordlen != current_wordlen){
         if(uart_log_level>=1) printf("changing wordlen to %d\n", wordlen);
         check(sp_set_bits(uart_port, wordlen));
         current_wordlen=wordlen;
     }
-    int stopbits= (LCR &0x02) ?2:1;
+    int stopbits= (nc2k_states.LCR &0x02) ?2:1;
     if(stopbits != current_stopbits){
         if(uart_log_level>=1) printf("changing stopbits to %d\n", stopbits);
         check(sp_set_stopbits(uart_port, stopbits));
         current_stopbits=stopbits;
     }
     enum sp_parity parity = SP_PARITY_NONE;
-    int paritybits= (LCR >>2) &0x7;
+    int paritybits= (nc2k_states.LCR >>2) &0x7;
     if(paritybits == 0) parity=SP_PARITY_NONE;
     else if(paritybits == 1) parity=SP_PARITY_ODD;
     else if(paritybits == 3) parity=SP_PARITY_EVEN;
@@ -237,19 +234,18 @@ uart wqx io handle
 ====================
 */
 
-uint8_t RHR,THR;
-uint8_t BSR;
-uint8_t CSTOP;
-uint8_t GPC;
+uint8_t &RHR=nc2k_states.RHR, &THR=nc2k_states.THR;
+uint8_t &BSR=nc2k_states.BSR;
+uint8_t &CSTOP=nc2k_states.CSTOP;
+uint8_t &GPC=nc2k_states.GPC;
 
 uint8_t read_3a_inner(){
     if(bk==0){
-        extern uint8_t TMR,IVR;
         /*if( (TMR&0x20) == 0 and (IVR&0x04) ==0){
             printf("uart read but both not enabled\n");
             return 0xff ;
         }*/
-        if((TMR&0x20) == 0 ){
+        if((nc2k_states.TMR&0x20) == 0 ){
             if(uart_log_level>=1) printf("uart read but uart not enabled\n");
             return 0xff;
         }
@@ -279,12 +275,11 @@ void write_3a(uint8_t value){
         printf("write_3a(), value %02x\n",value);
     }
     if(bk==0){
-        extern uint8_t TMR,IVR;
         /*if( (TMR&0x20) == 0 and (IVR&0x04) ==0){
             printf("uart write but both not enabled\n");
             return ;
         }*/
-        if((TMR&0x20) == 0 ){
+        if((nc2k_states.TMR&0x20) == 0 ){
             if(uart_log_level>=1) printf("uart write but uart not enabled\n");
             return ;
         }
@@ -309,10 +304,10 @@ void write_3a(uint8_t value){
     }else assert(false);
 }
 
-uint8_t LSR,LCR;
-uint8_t IRCR;
-uint8_t CSTART;
-uint8_t RESERVED;
+uint8_t &LSR=nc2k_states.LSR, &LCR=nc2k_states.LCR;
+uint8_t &IRCR=nc2k_states.IRCR;
+uint8_t &CSTART=nc2k_states.CSTART;
+uint8_t &RESERVED=nc2k_states.RESERVED;
 
 uint8_t read_3b_inner(){
     if(bk==0){//LSR
@@ -320,10 +315,9 @@ uint8_t read_3b_inner(){
         //and #10011110b
         //bne wait_empty_err
 
-        extern uint8_t TMR,IVR;
         uint8_t ret=0;
         if(is_write_ready()) ret|=0x60;
-        if(TMR&0x20 /*&& IVR&0x04*/){ //uart enabled
+        if(nc2k_states.TMR&0x20 /*&& IVR&0x04*/){ //uart enabled
             if(is_read_ready()) ret|=0x01;
         }
         return ret;
@@ -364,10 +358,10 @@ void write_3b(uint8_t value){
 }
 
 
-uint8_t MCR;
-uint8_t MSR;
-uint8_t TMR;
-uint8_t P05;
+uint8_t &MCR=nc2k_states.MCR;
+uint8_t &MSR=nc2k_states.MSR;
+uint8_t &TMR=nc2k_states.TMR;
+uint8_t &P05=nc2k_states.P05;
 
 uint8_t read_3c_inner(){
     if(bk==0){
@@ -377,7 +371,6 @@ uint8_t read_3c_inner(){
             // handle "clear"?
         }
         MCR&=0xef;
-        extern uint8_t IVR;
         if(TMR&0x20 /*&& IVR&0x04*/){ //uart enabled
             if(is_read_ready()){
                 MCR|=0x10;
@@ -429,9 +422,9 @@ void write_3c(uint8_t value){
     else assert(false);
 }
 
-uint8_t IVR; //only for UCE bit
-uint8_t FCR;
-uint8_t IER;
+uint8_t &IVR=nc2k_states.IVR; //only for UCE bit
+uint8_t &FCR=nc2k_states.FCR;
+uint8_t &IER=nc2k_states.IER;
 //uint8_t BK_ONLY;
 uint8_t read_3d_inner(){
     if(bk==0) {
@@ -512,4 +505,3 @@ uint8_t read_3d(){
     }
     return ret;
 }
-

@@ -22,6 +22,25 @@ struct nc2k_states_t{
 	
 	uint8_t ext_reg[256];
 
+	uint8_t RHR,THR;
+	uint8_t BSR;
+	uint8_t CSTOP;
+	uint8_t GPC;
+
+	uint8_t LSR,LCR;
+	uint8_t IRCR;
+	uint8_t CSTART;
+	uint8_t RESERVED;
+
+	uint8_t MCR;
+	uint8_t MSR;
+	uint8_t TMR;
+	uint8_t P05;
+
+	uint8_t IVR; //only for UCE bit
+	uint8_t FCR;
+	uint8_t IER;
+
 	uint8_t SAVE_STATE_END; //TODO: in theory some IO's internal state need to be saved too
 
 	uint8_t fp_step;

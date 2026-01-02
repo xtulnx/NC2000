@@ -213,6 +213,8 @@ void handle_cmd(string str){
 	if(cmds[0]=="warm_reset"){
 		prepare_soft_boot();
 		cpu->reset();
+		void io_warm_reset();
+		io_warm_reset();
 		return;
 	}
 	if(cmds[0]=="cold_reset"){
