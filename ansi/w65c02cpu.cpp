@@ -76,6 +76,11 @@ void CpuInitialize()
     g_irq = FALSE; // MERGE
     g_wai = FALSE;
     g_wai_saved = FALSE;
+
+
+    if(true){
+        setPS(0x24); // originally in NekoDriverMem.cpp, moved here
+    }
 }
 
 //void SetRegs(C6502_REGS &regs)

@@ -29,7 +29,6 @@ public:
     CPUInterface():A(mA), X(mX), Y(mY), SP(mSP), PC(mPC) {
         printf("using handypsp cpu\n");
         CpuInitialize();
-        setPS(0x24); // seems like no need?
     };
     CPUInterface(C6502 *cpu) :A(cpu->A), X(cpu->X), Y(cpu->Y), SP(cpu->SP), PC(cpu->PC) {
         printf("using emux cpu\n");
@@ -40,7 +39,7 @@ public:
     void reset();
     int execute(int max_cycles);
     void set_nmi_pending();
-	void irq_now();
+	void irq_now();//only used for old code
     int P();
 
     void set_irq_pending();

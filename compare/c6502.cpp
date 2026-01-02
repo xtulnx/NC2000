@@ -51,7 +51,7 @@ void C6502::reset() {
     nmiPending = false;
     nmiRequest = false;
 
-    if(false){ //this has so many bad consequences with new cpu loop
+    if(false){ //disabled because it has many bad consequences with new cpu loop
         total_cycles = 0;
     }
 }
