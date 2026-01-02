@@ -85,7 +85,8 @@ void LoadNC2k(){
 	init_mem();
 	if(enable_load_state){
 		load_state();
-		prepare_soft_reset();
+		void prepare_soft_boot();
+		prepare_soft_boot();
 		if(nc2000mode){
 			void sync_time_2000();
 			if(enable_auto_time_sync) sync_time_2000();

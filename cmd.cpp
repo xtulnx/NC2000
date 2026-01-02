@@ -42,6 +42,21 @@ bool is_nc2010_rom(){
 	return false;
 }
 
+// call this function when you want to cheat wqx to do a soft boot
+// other wise wqx will do cold boot
+// this is only a trick, mianly used in this cmd.cpp, not part of emulation
+void prepare_soft_boot(){
+/*
+    lda io_timer0_val
+    ora io_timer1_val
+    beq cold_start
+*/
+	// tmp code
+	// as long as one is non-zero, it will pass the check
+	ram_io[2]=1;
+	//ram_io[3]=1;
+}
+
 
 void push_message(string msg){
 	if(msg.empty()) return;
@@ -196,7 +211,7 @@ void handle_cmd(string str){
 		return;
 	}
 	if(cmds[0]=="warm_reset"){
-		prepare_soft_reset();
+		prepare_soft_boot();
 		cpu->reset();
 		return;
 	}
@@ -302,7 +317,7 @@ void handle_cmd(string str){
 
 			}
 			if(nc2000mode){
-				prepare_soft_reset();
+				prepare_soft_boot();
 				if(is_nc2600_rom()){
 					copy_to_addr(0x08d6, (uint8_t*)dir_name.c_str(), dir_name.size()+1);
 					//Peek16(0x0912)=0x02; //not really useful?
@@ -374,7 +389,7 @@ void handle_cmd(string str){
 			file_name_for_write=target;
 			dummy_io_write_cnt = 0;
 			if(nc2000mode){
-				prepare_soft_reset();
+				prepare_soft_boot();
 				if(is_nc2600_rom()){
 					copy_to_addr(0x08d6, (uint8_t*)src.c_str(), src.size()+1);
 					uint8_t buf[]={0xA9,0x80,0x8D,0x12,0x09,0xA9,0xEF,0x8D,0x13,0x09,0x8D,0x14,0x09,0x00,0x14,0x05,
@@ -400,7 +415,7 @@ void handle_cmd(string str){
 				}
 			}
 			if(nc1020mode){
-				prepare_soft_reset();
+				prepare_soft_boot();
 				copy_to_addr(0x121c, (uint8_t*)(src+"                    ").c_str(), 16);
 				if(nc1020tw_mode){
 					uint8_t buf[]={0xA9,0x00,0x8D,0x14,0x12,0x00,0x02,0x10,0xB0,0x32,0xA9,0x00,0x8D,0x6E,0x04,0x8D,
@@ -442,7 +457,7 @@ void handle_cmd(string str){
 				Peek16(0x122F)=0xFF;
 				Peek16(0x1230)=0xFF; 
 				Peek16(0x1231)=0xFF;
-				prepare_soft_reset();
+				prepare_soft_boot();
 				if(nc1020tw_mode){
 					uint8_t buf[]={0xea,0xea,0xea,0x00,0x01,0x10,0xA9,0x00,0x8D,0x6E,0x04,0x8D,0xAE,0x04,0xAD,0xFF,
 	0x3F,0xC9,0x00,0xF0,0x20,0xAD,0xFF,0x3F,0x8D,0x00,0x32,0xA9,0x00,0x8D,0x0D,0x12,
@@ -471,7 +486,7 @@ void handle_cmd(string str){
 						printf("<%02x>",value2);
 					}
 					printf("\n");*/
-					prepare_soft_reset();
+					prepare_soft_boot();
 					uint8_t buf[]={0x00,0x1C,0x05,0xA9,0x70,0x8D,0x12,0x09,0xA9,0xEF,0x8D,0x13,0x09,0x8D,0x14,0x09,
 					0x00,0x14,0x05,0xA9,0x00,0x8D,0xF6,0x03,0xAD,0xFF,0x3F,0xC9,0x00,0xF0,0x21,0xAD,
 					0xFF,0x3F,0x8D,0x00,0x32,0xA9,0x00,0x85,0xDD,0xA9,0x32,0x85,0xDE,0xA9,0x01,0x8D,
@@ -479,7 +494,7 @@ void handle_cmd(string str){
 					0x00,0x16,0x05,0x00,0x01,0xC0,};
 					copy_to_addr(0x3000,buf,sizeof(buf));
 				}else{
-					prepare_soft_reset();
+					prepare_soft_boot();
 					if(is_nc2000_rom()){
 						if(debug_level>=1) printf("is nc2000 rom\n");
 						copy_to_addr(0x08be, (uint8_t*)target.c_str(), target.size()+1);

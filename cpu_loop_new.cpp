@@ -241,7 +241,7 @@ bool pc1000mode_emux(){
 void cpu_run3(){
 	if(soft_reset){
 		soft_reset=0;
-		prepare_soft_reset();
+		//prepare_soft_reset(); //shouldn't call here
 		cpu->reset();
 		set_clk_on();
 	}
