@@ -130,8 +130,8 @@ vector<TKeyItem*> items = {
         NULL,       // P06, P17
         NULL,       // P07, P17
         //newly added
-        new TKeyItem(0, 0x14, 4,2, "xx", NULL, "xx",{SDLK_QUOTE}),
-        new TKeyItem(0, 0x15, 5,2,"xx", NULL, "xx",{SDLK_SEMICOLON}),
+        new TKeyItem(0, 0x14, 4,2, "报时", NULL, "xx",{SDLK_QUOTE}),
+        new TKeyItem(0, 0x15, 5,2,"发音", NULL, "xx",{SDLK_SEMICOLON}),
         //new TKeyItem(0, 0x01, 1,0, NULL, NULL, "xx", {SDLK_BACKQUOTE}), 
     };
 
@@ -190,8 +190,8 @@ vector<TKeyItem*> pro_mode_items = {
         NULL,       // P06, P17
         NULL,       // P07, P17
         //newly added
-        new TKeyItem(0, 0x14, 4,2, "xx", NULL, "xx",{ SDLK_EQUALS}),
-        new TKeyItem(0, 0x15, 5,2,"xx", NULL, "xx",{ SDLK_MINUS }),
+        new TKeyItem(0, 0x14, 4,2, "报时", NULL, "xx",{ SDLK_EQUALS}),
+        new TKeyItem(0, 0x15, 5,2,"发音", NULL, "xx",{ SDLK_MINUS }),
         //new TKeyItem(0, 0x01, 1,0, NULL, NULL, "xx", {SDLK_BACKQUOTE}), 
     };
 
@@ -344,10 +344,10 @@ void handle_key_wayback(signed int sym, bool key_down){
         if(debug_level>=2){
           printf("key %d %s\n", sym, key_down ? "down" : "up");
         }
-        if(sym==SDLK_F12 && shift_down&& ctrl_down){
+        if(sym==SDLK_F12 && shift_down&& ctrl_down){ // shift+ctrl+F12 triggers reset button
             if(key_down==1){
-              void code_reset();
-              code_reset();
+              void cold_reset();
+              cold_reset();
             }
             return;
         }
@@ -356,6 +356,7 @@ void handle_key_wayback(signed int sym, bool key_down){
         }*/
         auto value=map_key_wayback(sym);
         if(nc1020mode && sym==SDLK_F12 ){
+          //nc1020's on/off is not on the 8x8 keyboard scanning matrix, it is an independent pin
           extern uint8_t* ram_io;
           if(key_down){
             ram_io[0x0b]&=~1;
@@ -369,8 +370,8 @@ void handle_key_wayback(signed int sym, bool key_down){
 
         }
         if(value.first!=-1 && value.second!=-1){
-          SetKeyWayback(value.first,value.second, key_down);
-          if(bus_pc1000){
+          SetKeyWayback(value.first,value.second, key_down); //set up the 8x8 key scan matrix
+          if(bus_pc1000){ //for compatibility with pc1000emux bus
             if(key_down){
               bus_pc1000->keyDown2(value.first, value.second);
             }else{
@@ -379,12 +380,13 @@ void handle_key_wayback(signed int sym, bool key_down){
           }
         }
         if(log_on_key_press==1 &&sym != SDLK_F11 || (log_on_key_press >1 && sym== log_on_key_press)){
+          // --log-on-key-press, enable logging for debug when interested key is pressed
           if(key_down && shift_down){
             enable_dyn_debug_next_n=100*1000000;
           }
         }
         switch ( sym) {
-          case SDLK_BACKQUOTE:
+          case SDLK_BACKQUOTE:    //handles the "pro-key" mode
             if(shift_down){
               if(key_down==1){
                 pro_key^= 0x1;
@@ -397,7 +399,7 @@ void handle_key_wayback(signed int sym, bool key_down){
             }
             break;
 
-          case SDLK_TAB:
+          case SDLK_TAB:       //handles fast forward toggle
             if(key_down==1){
                 extern bool fast_forward;
                 fast_forward^= 0x1;

@@ -124,7 +124,7 @@ void main_loop() {
             continue;
           }
           bool console_on_saved=console_on;
-          handle_console(it->first, it->second);
+          handle_console(it->first, it->second);// handles 1. console toggle 2. console itself
           if(console_on_saved){
             continue;
           }

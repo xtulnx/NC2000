@@ -201,8 +201,8 @@ void handle_cmd(string str){
 		return;
 	}
 	if(cmds[0]=="cold_reset"){
-		void code_reset();
-		code_reset();
+		void cold_reset();
+		cold_reset();
 		return;
 	}
 	if(cmds[0]=="exit"){

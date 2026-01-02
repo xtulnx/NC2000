@@ -182,7 +182,7 @@ void try_soft_reset(){
 		printf("soft reset!!\n");
 	}
 }
-void code_reset(){
+void cold_reset(){
 	memset(ram_io,0,0x40);
 	cpu->reset();
 }
