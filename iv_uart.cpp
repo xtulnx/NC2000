@@ -9,6 +9,7 @@
 using namespace std;
 
 int uart_log_level=0;
+bool uart_advance=0;
 
 extern nc2k_states_t nc2k_states;
 static uint8_t * ram_io=nc2k_states.ram_io;
@@ -95,6 +96,10 @@ static int check(enum sp_return result)
     }
 }
 struct sp_port *uart_port=nullptr;
+int current_baudrate = 115200;
+int current_wordlen = 8;
+enum sp_parity current_parity = SP_PARITY_NONE;
+int current_stopbits = 1;
 void open_serial_port(char *port_name){
     printf("Looking for port %s.\n", port_name);
     check(sp_get_port_by_name(port_name, &uart_port));
@@ -102,13 +107,12 @@ void open_serial_port(char *port_name){
     printf("Opening port.\n");
     sp_open(uart_port, SP_MODE_READ_WRITE);
 
-    int my_baudrate = 115200;
     //my_baudrate=9600;
-    printf("Setting port to %d 8N1, no flow control.\n", my_baudrate);
-    check(sp_set_baudrate(uart_port, my_baudrate));
-    check(sp_set_bits(uart_port, 8));
-    check(sp_set_parity(uart_port, SP_PARITY_NONE));
-    check(sp_set_stopbits(uart_port, 1));
+    printf("Setting port to %d 8N1, no flow control.\n", current_baudrate);
+    check(sp_set_baudrate(uart_port, current_baudrate));
+    check(sp_set_bits(uart_port, current_wordlen));
+    check(sp_set_parity(uart_port, current_parity));
+    check(sp_set_stopbits(uart_port, current_stopbits));
     check(sp_set_flowcontrol(uart_port, SP_FLOWCONTROL_NONE));
 }
 bool is_write_ready() {
@@ -135,7 +139,7 @@ void write_one_byte(uint8_t byte) {
         return ;
     }
     unsigned int timeout_ms = 1;
-    if(uart_log_level>=1) printf("write one byte %02x , write pedning=%d\n",byte, sp_output_waiting(uart_port));
+    if(uart_log_level>=2) printf("write one byte %02x , write pedning=%d\n",byte, sp_output_waiting(uart_port));
     int result = sp_blocking_write(uart_port, &byte, 1, timeout_ms);
     assert(result==1);
 }
@@ -150,7 +154,7 @@ uint8_t read_one_byte() {
     unsigned char buf[2];
     int result = sp_blocking_read(uart_port, buf, 1, timeout_ms);
     assert(result==1);
-    if(uart_log_level>=1) printf("read one byte %02x, read pending=%d\n",buf[0], sp_input_waiting(uart_port));
+    if(uart_log_level>=2) printf("read one byte %02x, read pending=%d\n",buf[0], sp_input_waiting(uart_port));
     return buf[0];
 }
 
@@ -165,7 +169,66 @@ void clear_read_buffer(const char *hint){
         assert(result==1);
     }
     if(cnt>0){
-        if(uart_log_level>=1) printf("uart clear read buffer, cleared %d bytes hint=%s\n",cnt,hint);
+        if(uart_log_level>=2) printf("uart clear read buffer, cleared %d bytes hint=%s\n",cnt,hint);
+    }
+}
+
+void handle_uart_parameter_change(){
+    if(!uart_advance) return;
+    if(!uart_port) return ;
+    extern uint8_t LCR,BSR;
+    int baud=BSR & 0x0f;
+    if(baud>12) baud=12;
+    int translated_baudrate;
+    switch (baud){
+        case 0: translated_baudrate= 230400; break;
+        case 1: translated_baudrate= 115200; break;
+        case 2: translated_baudrate= 57600; break;
+        case 3: translated_baudrate= 38400; break;
+        case 4: translated_baudrate= 19200; break;
+        case 5: translated_baudrate= 9600; break;
+        case 6: translated_baudrate= 4800; break;
+        case 7: translated_baudrate= 2400; break;
+        case 8: translated_baudrate= 1200; break;
+        case 9: translated_baudrate= 600; break;
+        case 10: translated_baudrate= 300; break;
+        case 11: translated_baudrate= 150; break;
+        case 12: translated_baudrate= 75; break;
+        default:
+            assert(false);
+    }
+    if(translated_baudrate != current_baudrate){
+        if(uart_log_level>=1) printf("changing baudrate to %d\n",translated_baudrate);
+        check(sp_set_baudrate(uart_port, translated_baudrate));
+        current_baudrate=translated_baudrate;
+    }
+    int wordlen= (LCR &0x01) ?8:7;
+    if(wordlen != current_wordlen){
+        if(uart_log_level>=1) printf("changing wordlen to %d\n", wordlen);
+        check(sp_set_bits(uart_port, wordlen));
+        current_wordlen=wordlen;
+    }
+    int stopbits= (LCR &0x02) ?2:1;
+    if(stopbits != current_stopbits){
+        if(uart_log_level>=1) printf("changing stopbits to %d\n", stopbits);
+        check(sp_set_stopbits(uart_port, stopbits));
+        current_stopbits=stopbits;
+    }
+    enum sp_parity parity = SP_PARITY_NONE;
+    int paritybits= (LCR >>2) &0x7;
+    if(paritybits == 0) parity=SP_PARITY_NONE;
+    else if(paritybits == 1) parity=SP_PARITY_ODD;
+    else if(paritybits == 3) parity=SP_PARITY_EVEN;
+    else if(paritybits == 5) parity=SP_PARITY_MARK;
+    else if(paritybits == 7) parity=SP_PARITY_SPACE;
+    else {
+        if(uart_log_level>=1) printf("unsupported parity setting %d, set to none\n",paritybits);
+        parity=SP_PARITY_NONE;
+    }
+    if(parity != current_parity){
+        if(uart_log_level>=1) printf("changing parity to %d\n", parity);
+        check(sp_set_parity(uart_port, parity));
+        current_parity=parity;
     }
 }
 /*
@@ -232,9 +295,10 @@ void write_3a(uint8_t value){
         write_one_byte(value);
     }else if(bk==1){
         BSR=value;
+        handle_uart_parameter_change();
         BSR&=0xcf;// 4 5 are zero when read back
         if(uart_log_level>=1){
-            printf("write BSR=%02x baudrate=%x\n",value,value &7);
+            printf("write BSR=%02x baudrate=%x\n",value,value &0xf);
         }
     }else if(bk==2){
         CSTOP=value;
@@ -285,6 +349,7 @@ void write_3b(uint8_t value){
     }
     if(bk==0){
         LCR=value;
+        handle_uart_parameter_change();
     }else if(bk==1){
         //irda control register
         IRCR=value;

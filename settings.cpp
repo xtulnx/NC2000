@@ -75,6 +75,7 @@ void process_args(int argc, char *argv[])
 		{"assert", no_argument, 0, 1},
 		{"uart-log-level", required_argument, 0, 1},
 		{"uart-passthrough", required_argument, 0, 1},
+		{"uart-advance", no_argument, 0, 1},
 		{NULL, 0, 0, 0}
 	};
 	string uart_dev_name;
@@ -306,6 +307,10 @@ void process_args(int argc, char *argv[])
 			}
 			else if(strcmp(long_options[option_index].name,"uart-passthrough")==0){
 				uart_dev_name = optarg;
+			}
+			else if(strcmp(long_options[option_index].name,"uart-advance")==0){
+				extern bool uart_advance;
+				uart_advance = true;
 			}
 			else
 			{
