@@ -335,9 +335,12 @@ void cpu_run3(){
 	}
 
 	//magic number to fit timerA and pc1000emux's timer0 and timer1 code
+	//todo: better emulation
     if(int trigger_cnt=trigger_x_times_per_s(576*50)){
 	  for(int i=0;i<trigger_cnt;i++){
-		if(nc1020mode||nc2000mode||nc3000mode||pc1000mode_normal()) {//todo: need better emulation
+		if(/*nc1020mode||nc2000mode||nc3000mode||*/pc1000mode_normal()) {
+			//timerA/B are usually for record and play
+			//looks like nobody use timerA on nc1020/nc2000
 			if(setTimerA()){
 				//note: in orignally pc1000emux, it doesn't set irq pending here
 				cpu->set_irq_pending();
