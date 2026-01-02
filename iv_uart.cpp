@@ -71,26 +71,24 @@ uart host dev handle
 ====================
 */
 
-int check(enum sp_return result)
+static int check(enum sp_return result)
 {
-    /* For this example we'll just exit on any error by calling abort(). */
     char *error_message;
-
     switch (result) {
     case SP_ERR_ARG:
-        printf("Error: Invalid argument.\n");
-        abort();
+        printf("libserialport Error: Invalid argument.\n");
+        exit(-1);
     case SP_ERR_FAIL:
         error_message = sp_last_error_message();
-        printf("Error: Failed: %s\n", error_message);
+        printf("libserialport Error: Failed: %s\n", error_message);
         sp_free_error_message(error_message);
-        abort();
+        exit(-1);
     case SP_ERR_SUPP:
-        printf("Error: Not supported.\n");
-        abort();
+        printf("libserialport Error: Not supported.\n");
+        exit(-1);
     case SP_ERR_MEM:
-        printf("Error: Couldn't allocate memory.\n");
-        abort();
+        printf("libserialport Error: Couldn't allocate memory.\n");
+        exit(-1);
     case SP_OK:
     default:
         return result;
