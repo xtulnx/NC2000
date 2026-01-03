@@ -15,7 +15,7 @@ extern nc2k_states_t nc2k_states;
 static uint8_t * ram_io=nc2k_states.ram_io;
 static uint8_t * ext_reg=nc2k_states.ext_reg;
 
-static uint8_t bk=0;
+static uint8_t &bk=nc2k_states.bk;
 
 set<uint8_t> iv_set;
 uint8_t &RCR0=ext_reg[0x0a];

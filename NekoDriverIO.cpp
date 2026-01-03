@@ -21,60 +21,59 @@ extern "C" {
 extern nc2k_states_t nc2k_states;
 static uint8_t * ext_reg=nc2k_states.ext_reg;
 
-bool timer0run = false;
-bool timer1run_tmie = false;
+bool &timer0run = nc2k_states.timer0run;
+bool &timer1run_tmie = nc2k_states.timer1run_tmie;
 
 // WQXSIM
-bool timer0waveoutstart = false;
-int prevtimer0value = 0;
-unsigned short gThreadFlags;
+bool &timer0waveoutstart = nc2k_states.timer0waveoutstart;
+int &prevtimer0value = nc2k_states.prevtimer0value;
+unsigned short &gThreadFlags = nc2k_states.gThreadFlags;
 //unsigned char* gGeneralCtrlPtr;
 //unsigned short mayGenralnClockCtrlValue;
 
 // Full MOS IO Ports?
 // (I/O) io_zp_bsw
-bool rw0f_b4_DIR00 = 0;
-bool rw0f_b5_DIR01 = 0;
-bool rw0f_b6_DIR023 = 0; // 02 03
-bool rw0f_b7_DIR047 = 0; // 04 05 06 07
-bool rw0f_b3_SH = 0;    // Sample & Hold for A/D
-BYTE rw0f_b02_ZB02 = 0; // b0..b2 (RESCPUB)
+bool &rw0f_b4_DIR00 = nc2k_states.rw0f_b4_DIR00;
+bool &rw0f_b5_DIR01 = nc2k_states.rw0f_b5_DIR01;
+bool &rw0f_b6_DIR023 = nc2k_states.rw0f_b6_DIR023; // 02 03
+bool &rw0f_b7_DIR047 = nc2k_states.rw0f_b7_DIR047; // 04 05 06 07
+bool &rw0f_b3_SH = nc2k_states.rw0f_b3_SH;    // Sample & Hold for A/D
+BYTE &rw0f_b02_ZB02 = nc2k_states.rw0f_b02_ZB02; // b0..b2 (RESCPUB)
 
 // (O/P) io_general_ctrl
-bool w04_b7_EPOL = 0;   // 外部中断 (P40 OR P41 OR P00) 极性
-BYTE w04_b46_PTYPE = 0; // Port1 PTYPE0~PTYPE7
-BYTE w04_b03_TBC = 0;   // LCD地址线, Timebase时钟
+bool &w04_b7_EPOL = nc2k_states.w04_b7_EPOL;   // 外部中断 (P40 OR P41 OR P00) 极性
+BYTE &w04_b46_PTYPE = nc2k_states.w04_b46_PTYPE; // Port1 PTYPE0~PTYPE7
+BYTE &w04_b03_TBC = nc2k_states.w04_b03_TBC;   // LCD地址线, Timebase时钟
 
 // (O/P) io_port1_dir
 // 受限于PTYPE0|5
-BYTE w15_port1_DIR107 = 0;// DIR10~DIR17
+BYTE &w15_port1_DIR107 = nc2k_states.w15_port1_DIR107;// DIR10~DIR17
 
 // (I/O) 读取时候逐位判断DIR, 确定从ID(matrix更新)还是OL直接读取
 // 假设速度, 假设1016的输入比6502的执行速度快很多, 例如延迟在10ns, 则基本可以当作输出延迟+输入延迟在STA执行途中已过去.
 // 假设短路, 遇到2个都是输出, 一高一低, matrix连通了他们2者, 则实际因为是导电橡胶联通的, 实际输出高的pmos+导电橡胶+nmos的Rds构成分压网络.
 // 因此定出优化规则: 在改变端口方向和写入端口时候, 立刻同步刷新输入数据. 等同于我们加了缓冲. 而处理按键时候, 忽略输出对输出的传导.
 // 实际流程既是: 先复制输出状态引脚, 再处理导电橡胶传导.
-BYTE w08_port0_OL = 0;  // output latch
-BYTE r08_port0_ID = 0;  // input data
+BYTE &w08_port0_OL = nc2k_states.w08_port0_OL;  // output latch
+BYTE &r08_port0_ID = nc2k_states.r08_port0_ID;  // input data
 
-BYTE w09_port1_OL = 0;
-BYTE r09_port1_ID = 0;
-
+BYTE &w09_port1_OL = nc2k_states.w09_port1_OL;
+BYTE &r09_port1_ID = nc2k_states.r09_port1_ID;
 extern uint8_t * ram_io;
 // Temp
 unsigned char *zpioregs=ram_io;
 
 timer01_u* rw023_timer01val = (timer01_u*)&zpioregs[io02_timer0_val];
 
-BYTE w0c_b67_TMODESL = 0;    // 01一起的计数方式
-BYTE w0c_b45_TM0S = 0;       // timer0时钟周期, 在TMODE1下接入
-BYTE w0c_b23_TM1S = 0;       // timer1时钟周期, 在TMODE1下接入
-BYTE w0c_b345_TMS = 0;       // 其他模式下4个bit只有3个用上
+BYTE &w0c_b67_TMODESL = nc2k_states.w0c_b67_TMODESL;    // 01一起的计数方式
+BYTE &w0c_b45_TM0S = nc2k_states.w0c_b45_TM0S;       // timer0时钟周期, 在TMODE1下接入
+BYTE &w0c_b23_TM1S = nc2k_states.w0c_b23_TM1S;       // timer1时钟周期, 在TMODE1下接入
+BYTE &w0c_b345_TMS = nc2k_states.w0c_b345_TMS;       // 其他模式下4个bit只有3个用上
 
-int timer0ticks = 0;
-int timer1ticks = 0;
+int &timer0ticks = nc2k_states.timer0ticks;
+int &timer1ticks = nc2k_states.timer1ticks;
 
-BYTE w01_int_enable = 0;
+BYTE &w01_int_enable = nc2k_states.w01_int_enable;
 
 BYTE __iocallconv Read05StartTimer0( BYTE ) // 05
 {
@@ -121,7 +120,7 @@ BYTE __iocallconv Read06StopTimer1( BYTE ) // 06
     return zpioregs[io03_timer1_val];
 }
 
-bool lcdoffshift0flag = false;
+bool &lcdoffshift0flag = nc2k_states.lcdoffshift0flag;
 
 // CKS P
 // 0   OSC/8  SPEED4
@@ -151,8 +150,8 @@ void __iocallconv Write05ClockCtrl( BYTE write, BYTE value )
     (void)write;
 }
 
-unsigned short lcdbuffaddr = 0x09C0;
-unsigned short lcdbuffaddrmask = 0x0FFF;
+unsigned short &lcdbuffaddr = nc2k_states.lcdbuffaddr;
+unsigned short &lcdbuffaddrmask = nc2k_states.lcdbuffaddrmask;
 
 void __iocallconv Write06LCDStartAddr( BYTE write, BYTE value ) // 06
 {
@@ -579,8 +578,8 @@ void __iocallconv Write09Port1( BYTE write, BYTE value )
     (void)write;
     }
 
-unsigned char cpf;  
-unsigned char lcden=0; 
+unsigned char &cpf=nc2k_states.cpf;  
+unsigned char &lcden=nc2k_states.lcden; 
 void __iocallconv Write0BPort3LCDStartAddr( BYTE write, BYTE value )
 {
     // 控制LCD地址有效位数
@@ -706,7 +705,6 @@ void __iocallconv Write04GeneralCtrl(BYTE write, BYTE value)
 }
 
 HotlinkBundle* hotlinkios = 0;
-
 
 // For P45,P45
 // ERROR_ACCESS_DENIED for Global prefix (SeCreateGlobalPrivilege)

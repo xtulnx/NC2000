@@ -65,7 +65,7 @@ void load_state(){
 }
 
 void LoadNC2k(){
-	memset(&nc2k_states,0,sizeof(nc2k_states_t));
+	//memset(&nc2k_states,0,sizeof(nc2k_states_t));
 	dummy_bus= new BusWrapper();
 
 	init_io(); //for old io implemet only
@@ -113,8 +113,8 @@ void LoadNC2k(){
 
 bool is_grey_mode(){
 	if(console_on) return false;
-    extern unsigned short lcdbuffaddr;
-    extern unsigned short lcdbuffaddrmask;
+    extern unsigned short &lcdbuffaddr;
+    extern unsigned short &lcdbuffaddrmask;
 	unsigned short lcd_addr = lcdbuffaddr&lcdbuffaddrmask;
 	//printf("lcdaddr=%x\n",lcd_addr);
 	//fflush(stdout);
@@ -123,8 +123,8 @@ bool is_grey_mode(){
 	return false;
 }
 bool CopyLcdBuffer(uint8_t* buffer){
-    extern unsigned short lcdbuffaddr;
-    extern unsigned short lcdbuffaddrmask;
+    extern unsigned short &lcdbuffaddr;
+    extern unsigned short &lcdbuffaddrmask;
     unsigned short lcd_addr = lcdbuffaddr&lcdbuffaddrmask;
 	if (lcd_addr == 0) return false;
 

@@ -53,8 +53,8 @@ void Render(uint64_t tick) {
   }
   last_inner_render_tick= tick;
 
-  extern unsigned char lcden;
-  extern unsigned char lcdon;
+  extern unsigned char &lcden;
+  extern unsigned char &lcdon;
   bool lcd_on = true;
   if(nc2000mode||nc1020mode){
     extern uint8_t* ram_io;

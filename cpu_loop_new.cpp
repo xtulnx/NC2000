@@ -13,7 +13,6 @@
 #define qDebug(...)
 
 
-extern unsigned short gThreadFlags;
 extern nc2k_states_t nc2k_states;
 static uint64_t& cycles = nc2k_states.cycles;
 static uint64_t& last_cycles = nc2k_states.last_cycles;
@@ -304,8 +303,8 @@ void cpu_run3(){
 
 	if(debug_level >=9){  //not for emulation, just trying to log some peridic debug info
 		if(trigger_x_times_per_s(1)){
-			extern int patch_idx;
-			extern unsigned char patch_table[256];
+			extern int& patch_idx;
+			extern unsigned char *patch_table;
 			printf("patch table= ");
 			for(int i=0x10;i<=0x1f;i++){
 				printf("%02x ",patch_table[i]);	
@@ -462,7 +461,7 @@ void cpu_run3(){
 			}
 
 			if(nc1020mode){ //a hack to make nc1020 physical dumped nor work. todo:fixme
-				if(trigger256_cnt%20==10){
+				if(trigger256_cnt%2==1){
 						ram_io[0x0c]|=0x01;
 				}
 				else{

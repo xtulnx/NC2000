@@ -14,12 +14,12 @@
 extern nc2k_states_t nc2k_states;
 extern Dsp dsp;
 
-static int dspRetData;
-static bool dspTrans=0;
-static bool dspSleep;
+static int &dspRetData=nc2k_states.dspRetData;
+static bool &dspTrans=nc2k_states.dspTrans;
+static bool &dspSleep=nc2k_states.dspSleep;
 
-static int tmaValue;
-static int tmaReload;
+static int &tmaValue=nc2k_states.tmaValue;
+static int &tmaReload=nc2k_states.tmaReload;
 
 const int IO_TIMERA_VAL_L = 0x10;
 const int IO_TIMERA_VAL_H = 0x11;
@@ -27,29 +27,27 @@ const int IO_TIMERAB_CTRL = 0x14;
 
 const int INT_TIME_BASE = 8;
 
-unsigned char inner_interrupt_control=0;
+unsigned char &inner_interrupt_control=nc2k_states.inner_interrupt_control;
 
-unsigned int speed_scaledown=1;
+unsigned int &speed_scaledown=nc2k_states.speed_scaledown;
 
 static uint8_t * rtc_reg=nc2k_states.ext_reg;
 static uint8_t * ext_reg=nc2k_states.ext_reg;
 
 static unsigned char* ioReg=nc2k_states.ram_io;
 
-uint8_t cks=0;
-uint8_t cps=0;
-uint8_t lcdon=0;
+uint8_t &lcdon=nc2k_states.lcdon;
 
 /////d0应该是未定指令
 ////不处理这个有声读物会死机
-bool dsp_0xd0=0;
+bool &dsp_0xd0=nc2k_states.dsp_0xd0;
 
-int dsp_0x7001_0x7002=0;
+int &dsp_0x7001_0x7002=nc2k_states.dsp_0x7001_0x7002;
 
 //bool dsp_0x91_volume_adjust=false;
 
-bool dsp_data_feeded_but_hasnt_fetched=0;
-unsigned char dsp_data_low=0;
+bool &dsp_data_feeded_but_hasnt_fetched=nc2k_states.dsp_data_feeded_but_hasnt_fetched;
+unsigned char &dsp_data_low=nc2k_states.dsp_data_low;
 
 // dsp functions adapted from pc1000emux
 int dsp31read_RetData() {
@@ -368,8 +366,8 @@ int io_v2_read(int address) {
             return ioReg[address];
     }
 }
-int patch_idx=0;
-unsigned char patch_table[256];
+int &patch_idx=nc2k_states.patch_idx;
+unsigned char *patch_table=nc2k_states.patch_table;
 void io_v2_write(int address, int value) {
     if(nc2000mode&&log_all_dsp_io&&address>=0x30 && address<=0x33){
         printf("[io_v2_write] address=%02x value=%02x\n",address,value);
@@ -428,8 +426,8 @@ void io_v2_write(int address, int value) {
     if(nc2000mode||nc1020mode||pc1000mode) {
         if(address==0x05){
             
-            cks=value>>5;
-            cps=value&0x07;
+            uint8_t cks=value>>5;
+            uint8_t cps=value&0x07;
             lcdon=(value>>3)&1;
             if(debug_level>=3) printf("Write05ClockCtrl %02x cks=%d cps=%d lcdon=%d\n",value,cks,cps,lcdon);
             if (cks!=ram_io[0x05]>>5){
@@ -645,8 +643,7 @@ void io_warm_reset(){
     
     //0x0b
     ioReg[0x0b]&=0xfd;
-    extern unsigned char lcden;
-    lcden=0;
+    nc2k_states.lcden=0;
 
     //0x0c
     ioReg[0x0c]&=0xfc;
@@ -684,5 +681,6 @@ void io_cold_reset(){
     clear_iv();
     memset(ram_io,0,sizeof(nc2k_states.ram_io));
     memset(ext_reg, 0, sizeof(nc2k_states.ext_reg));
-    //todo: in theory all variables in NekoDriverIO.cpp need reset
+    
+    memset(&nc2k_states.SAVE_STATE_BEGIN,0,(size_t)(&nc2k_states.SAVE_STATE_END - &nc2k_states.SAVE_STATE_BEGIN ));
 }

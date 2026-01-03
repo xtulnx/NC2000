@@ -456,7 +456,7 @@ void super_switch(){
 void try_patch(){
 	int bank_idx = ram_io[0x00];
 	if(nc1020mode &&!nc1020tw_mode){
-		extern unsigned char patch_table[256];
+		extern unsigned char * patch_table;
 		if(true) {
 			static bool patched=false;
 			if(bank_idx==0x9d  &&  patch_table[0x1e]==0x9d&&  patch_table[0x1f]==0xa0 && !patched){
@@ -520,7 +520,7 @@ void try_patch(){
 	}
 
 	if(nc1020tw_mode && bank_idx==0x90 && ((ram_io[0x0d]&0x3) ==0)){
-		extern unsigned char patch_table[256];
+		extern unsigned char *patch_table;
 		if(true)
 		{
 			static bool patched=false;

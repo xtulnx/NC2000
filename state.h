@@ -1,4 +1,5 @@
 #include "comm.h"
+#include <cstdint>
 
 struct cpu_states_t {
 	uint16_t reg_pc;
@@ -20,8 +21,11 @@ struct nc2k_states_t{
 	uint8_t ram[0x8000*2];
 	uint8_t ext_ram[0x8000];
 	
+	// 3e/3f ext registers
 	uint8_t ext_reg[256];
 
+	// 3a-3d registers
+	uint8_t bk;
 	uint8_t RHR,THR;
 	uint8_t BSR;
 	uint8_t CSTOP;
@@ -41,6 +45,57 @@ struct nc2k_states_t{
 	uint8_t FCR;
 	uint8_t IER;
 
+	//NekoDriverIO internal states
+	unsigned short gThreadFlags;
+	bool timer0run;
+	bool timer1run_tmie;
+	bool timer0waveoutstart;
+	int prevtimer0value;
+	bool rw0f_b4_DIR00;
+	bool rw0f_b5_DIR01;
+	bool rw0f_b6_DIR023;
+	bool rw0f_b7_DIR047;
+	bool rw0f_b3_SH;
+	uint8_t rw0f_b02_ZB02;
+	bool w04_b7_EPOL;
+	uint8_t w04_b46_PTYPE;
+	uint8_t w04_b03_TBC;
+	uint8_t w15_port1_DIR107;
+	uint8_t w08_port0_OL;
+	uint8_t r08_port0_ID;
+	uint8_t w09_port1_OL;
+	uint8_t r09_port1_ID;
+	uint8_t w0c_b67_TMODESL;
+	uint8_t w0c_b45_TM0S;
+	uint8_t w0c_b23_TM1S;
+	uint8_t w0c_b345_TMS;
+	int timer0ticks;
+	int timer1ticks;
+	uint8_t w01_int_enable;
+	
+	bool lcdoffshift0flag;
+	unsigned short lcdbuffaddr;
+	unsigned short lcdbuffaddrmask;
+	unsigned char cpf;  
+	unsigned char lcden; 
+
+	//io_new.cpp internal states
+	int dspRetData;
+	bool dspTrans;
+	bool dspSleep;
+	int tmaValue;
+	int tmaReload;
+	unsigned char inner_interrupt_control;
+	unsigned int speed_scaledown;
+	uint8_t cps;
+	uint8_t lcdon;
+	bool dsp_0xd0;
+	int dsp_0x7001_0x7002;
+	bool dsp_data_feeded_but_hasnt_fetched;
+	unsigned char dsp_data_low;
+	int patch_idx;
+	unsigned char patch_table[256];
+
 	uint8_t SAVE_STATE_END; //TODO: in theory some IO's internal state need to be saved too
 
 	uint8_t fp_step;
@@ -49,6 +104,12 @@ struct nc2k_states_t{
 	uint64_t cycles;
 	uint64_t last_cycles;
 
+	void init(){
+		memset(this,0,sizeof(nc2k_states_t));
+		lcdbuffaddr=0x09C0;
+		lcdbuffaddrmask=0x0FFF;
+		speed_scaledown=1;
+	}
 	//uint8_t interr_flag;
 
 /*
