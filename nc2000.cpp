@@ -111,6 +111,14 @@ void LoadNC2k(){
 	}
 
 	super_switch();
+
+	if(enable_load_state&&reset_after_load_state){
+		void nc2k_warm_reset();
+		nc2k_warm_reset();
+		void prepare_soft_boot();
+		prepare_soft_boot();
+		cpu->reset();
+	}
 }
 
 bool is_grey_mode(){
