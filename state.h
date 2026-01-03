@@ -96,11 +96,18 @@ struct nc2k_states_t{
 	unsigned char dsp_data_low;
 	int patch_idx;
 	unsigned char patch_table[256];
-
+	
+	//nor states
 	uint8_t fp_step;
 	uint8_t fp_type;
 
 	uint8_t RESET_STATE_END;
+
+	//handypsp cpu states begin
+	bool g_irq,g_nmi,g_stp,g_wai,g_wai_saved;
+	int mA,mX,mY,mSP,mPC;
+	int mOpcode,mOperand;
+	int mN,mV,mB,mD,mI,mZ,mC;
 
 	uint8_t SAVE_STATE_END;
 

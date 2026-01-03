@@ -89,10 +89,17 @@ void LoadNC2k(){
 		ram_io[0x0b]=0x01;
 	}
 
+	//reset_cpu_states();
+	initalize_illegal_op_tables();
+	init_cpu_new();
+
+	if(nc2000mode||nc3000mode){
+		//nc3000c-lee has it but seems like no need?
+		//ram_io[0x18]=0x20;
+	}
+
 	if(enable_load_state){
 		load_state();
-		void prepare_soft_boot();
-		prepare_soft_boot();
 		if(nc2000mode){
 			void sync_time_2000();
 			if(enable_auto_time_sync) sync_time_2000();
@@ -103,14 +110,6 @@ void LoadNC2k(){
 		}
 	}
 
-	//reset_cpu_states();
-	initalize_illegal_op_tables();
-	init_cpu_new();
-
-	if(nc2000mode||nc3000mode){
-		//nc3000c-lee has it but seems like no need?
-		//ram_io[0x18]=0x20;
-	}
 	super_switch();
 }
 
