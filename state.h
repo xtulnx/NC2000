@@ -1,3 +1,4 @@
+#pragma once
 #include "comm.h"
 #include <cstdint>
 
@@ -103,11 +104,19 @@ struct nc2k_states_t{
 
 	uint8_t RESET_STATE_END;
 
-	//handypsp cpu states begin
+	//handypsp cpu states
 	bool g_irq,g_nmi,g_stp,g_wai,g_wai_saved;
 	int mA,mX,mY,mSP,mPC;
 	int mOpcode,mOperand;
 	int mN,mV,mB,mD,mI,mZ,mC;
+
+	//c6502 cpu states
+	int A,X,Y,P,SP,PC;
+	bool irqPending,nmiPending,nmiRequest;
+	int clk;
+	unsigned int lineclk;
+	long long total_cycles; //used internally in c6502 cpu only
+	//c6502 cpu states end
 
 	uint8_t SAVE_STATE_END;
 
