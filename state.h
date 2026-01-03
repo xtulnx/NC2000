@@ -118,10 +118,10 @@ struct nc2k_states_t{
 	long long total_cycles; //used internally in c6502 cpu only
 	//c6502 cpu states end
 
-	uint8_t SAVE_STATE_END;
-
 	uint64_t cycles;
 	uint64_t last_cycles;
+
+	uint8_t SAVE_STATE_END;
 
 	//uint8_t interr_flag;
 
