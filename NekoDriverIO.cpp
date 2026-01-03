@@ -308,7 +308,7 @@ void UpdateKeypadRegisters()
     unsigned char port1controlbit = 1; // aka, y control bit
     unsigned char tmpdest0 = 0, tmpdest1 = 0;
     if(use_pull_high_emulation){
-        if(nc1020mode||nc2000mode||nc3000mode){//handle port0 pull high
+        if(nc1020mode||nc2000mode){//handle port0 pull high
                 tmpdest0 = (~ext_reg[0x24])&0xf;
         }
     }
@@ -372,8 +372,10 @@ void UpdateKeypadRegisters()
                         if((port1data & port1controlbit) != 0){
                             tmpdest0 |= xbit;
                         }else if(use_pull_high_emulation){//needed by the pull high case
-                            if(xbit &0x0f && (ext_reg[0x24] & xbit) ==0){//in theory this if is not needed
-                                tmpdest0 &= ~xbit;
+                            if(nc1020mode||nc2000mode){
+                                if(xbit &0x0f && (ext_reg[0x24] & xbit) ==0){//in theory this if is not needed
+                                    tmpdest0 &= ~xbit;
+                                }
                             }
                         }
                     }
