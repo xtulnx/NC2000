@@ -412,7 +412,7 @@ void io_v2_write(int address, int value) {
                     case 4: speed_scaledown=512;break;
                     case 5: speed_scaledown=256;break;
                     case 6: speed_scaledown=64;break;
-                    case 7: printf("oops clk off\n");speed_scaledown=int_inf;break;
+                    case 7: printf("clk off\n");speed_scaledown=int_inf;break;
                     default:assert(false);
                 }
                 //printf("<cks=%d scaledown=%d>\n",cks,speed_scaledown);
@@ -439,7 +439,7 @@ void io_v2_write(int address, int value) {
                     case 4: speed_scaledown=64;break;
                     case 5: speed_scaledown=32;break;
                     case 6: speed_scaledown=16;break;
-                    case 7: printf("oops clk off\n");speed_scaledown=int_inf;break; 
+                    case 7: printf("clk off\n");speed_scaledown=int_inf;break; 
                     default:assert(false);
                 }
                 /*if(nc1020mode && cks==7){ //if accidentally closed during get, at least save what has already been got

@@ -201,6 +201,11 @@ void nc2k_state_warm_reset(){
 
 	uint8_t* ioReg=nc2k_states.ram_io;
 
+	const int simple_warm_reset=true;
+  if(simple_warm_reset){
+	ioReg[0x05] &=0x1f;  //reset cks
+	nc2k_states.speed_scaledown=1;
+  } else {
     //0x00
     ioReg[0x00]=0;
 
@@ -256,6 +261,7 @@ void nc2k_state_warm_reset(){
 
     //0x1e
     ioReg[0x1e]=0;
+  }
 
     super_switch();
 }
