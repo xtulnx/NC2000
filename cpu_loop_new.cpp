@@ -381,7 +381,7 @@ void cpu_run3(){
 				cpu->set_irq_pending();
 		}
 	}
-	if(nc2000mode||nc3000mode){
+	if(nc2000mode||nc3000mode||nc1020mode){
 		//timebase is trigged by address line of lcd, 
 		//the trigger rule is complex, it depends on TBC cps and cpf.
 		//for simplicty just use fixed value
@@ -396,7 +396,7 @@ void cpu_run3(){
 			}
 		}
 	}
-	if(nc1020mode||pc1000mode_normal()){
+	if(pc1000mode_normal()){
 		if(trigger_x_times_per_s(250)){
 			if (timeBaseEnable()) {
 				if(enable_dyn_debug_next_n) printf("time to timebase, timebase is enabled!!!!\n");
