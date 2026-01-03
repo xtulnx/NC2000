@@ -360,17 +360,10 @@ void handle_key_wayback(signed int sym, bool key_down){
           extern uint8_t* ram_io;
           if(key_down){
             ram_io[0x0b]&=~1;
-          }else {
-            ram_io[0x0b]|=1;
-
-            bool is_clk_off(void);
-            if(is_clk_off()){
-              //this cannot be put inside warm_reset(), otherwise hot key wakeup won't work correctly
-              ext_reg[0x24]|=0x0f; //TODO: is this the hardware behavior? or is it a hack?
-            }
-            
             void warm_reset_if_clkoff();
             warm_reset_if_clkoff();
+          }else {
+            ram_io[0x0b]|=1;
           }
           if(debug_level>=2) printf("current value of 0x0b bit0: %d\n", ram_io[0x0b]&0x01);
 
