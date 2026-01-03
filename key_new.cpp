@@ -363,8 +363,11 @@ void handle_key_wayback(signed int sym, bool key_down){
           }else {
             ram_io[0x0b]|=1;
 
-            //this cannot be put inside warm_reset(), otherwise hot key wakeup won't work correctly
-            ext_reg[0x24]|=0x0f; //TODO: is this the hardware behavior? or is it a hack?
+            bool is_clk_off(void);
+            if(is_clk_off()){
+              //this cannot be put inside warm_reset(), otherwise hot key wakeup won't work correctly
+              ext_reg[0x24]|=0x0f; //TODO: is this the hardware behavior? or is it a hack?
+            }
             
             void warm_reset_if_clkoff();
             warm_reset_if_clkoff();
