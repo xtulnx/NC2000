@@ -165,7 +165,7 @@ void sync_time_1020(){
 	rtc_reg[1]=local_time->tm_min;
 	rtc_reg[0]=local_time->tm_sec;
 }
-bool soft_reset=0;
+bool do_warm_reset=0;
 bool is_clk_off(){
 	return ram_io[0x05]>>5==7;
 }
@@ -175,10 +175,10 @@ void set_clk_on(){
 	value|=0x3<<5;
 	Store(0x05,value);
 }
-void try_soft_reset(){
+void warm_reset_if_clkoff(){
 	if(is_clk_off()){//clk off
-		soft_reset=1;
-		printf("soft reset!!\n");
+		do_warm_reset=1;
+		printf("warm reset!!\n");
 	}
 }
 void cold_reset(){
@@ -243,8 +243,8 @@ bool pc1000mode_emux(){
 }
 
 void cpu_run3(){
-	if(soft_reset){
-		soft_reset=0;
+	if(do_warm_reset){
+		do_warm_reset=0;
 		//prepare_soft_reset(); //shouldn't call here
 		nc2k_state_warm_reset();
 		cpu->reset();
@@ -485,7 +485,7 @@ void cpu_run3(){
 			uint8_t iv=peek_iv();
 			if(iv!=IV_NONE){
 				cpu->set_irq_pending();
-				try_soft_reset();
+				warm_reset_if_clkoff();
 			}
 		}
 	}

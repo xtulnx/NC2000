@@ -324,14 +324,14 @@ void SetKeyWayback(int code_y,int code_x, bool down_or_up){
   if(pc1000mode || nc3000mode){
     //todo not really works
     if(code_x==0 && code_y==0 && down_or_up){
-      void try_soft_reset();
-      try_soft_reset();
+      void warm_reset_if_clkoff();
+      warm_reset_if_clkoff();
     }
   }
   if(nc2000mode||nc1020mode){
       if(code_x<2&& down_or_up){
-        void try_soft_reset();
-        try_soft_reset();
+        void warm_reset_if_clkoff();
+        warm_reset_if_clkoff();
       }
   }
 
@@ -363,8 +363,8 @@ void handle_key_wayback(signed int sym, bool key_down){
           }else {
             ram_io[0x0b]|=1;
             ext_reg[0x24]|=0x0f; //TODO: is this the hardware behavior? or is it a hack?
-            void try_soft_reset();
-            try_soft_reset();
+            void warm_reset_if_clkoff();
+            warm_reset_if_clkoff();
           }
           if(debug_level>=2) printf("current value of 0x0b bit0: %d\n", ram_io[0x0b]&0x01);
 

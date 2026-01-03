@@ -113,8 +113,8 @@ void LoadNC2k(){
 	super_switch();
 
 	if(enable_load_state&&reset_after_load_state){
-		void set_soft_reset_flag();
-		set_soft_reset_flag();
+		void set_warm_reset_flag();
+		set_warm_reset_flag();
 		void warm_reset();
 		warm_reset();
 	}
@@ -200,6 +200,7 @@ void save_flash(string file){
 void nc2k_state_warm_reset(){
 
 	uint8_t* ioReg=nc2k_states.ram_io;
+
     //0x00
     ioReg[0x00]=0;
 
@@ -207,10 +208,10 @@ void nc2k_state_warm_reset(){
     nc2k_states.inner_interrupt_control&=0xfc; //TMBIE TMAIE clear
     
     //0x02
-    /////ioReg[0x02]=0;          //if reset this device will run into cold restart
+    ////ioReg[0x02]=0;          //if reset both 0x02 and 0x03, on/off key will trigger cold reset
     
     //0x03
-    ioReg[0x03]=0;
+    ////ioReg[0x03]=0;
 
     //0x04
     nc2k_states.w04_b03_TBC &=0xf0;
