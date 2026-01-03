@@ -103,7 +103,7 @@ void open_serial_port(char *port_name){
     check(sp_get_port_by_name(port_name, &uart_port));
 
     printf("Opening port.\n");
-    sp_open(uart_port, SP_MODE_READ_WRITE);
+    check(sp_open(uart_port, SP_MODE_READ_WRITE));
 
     //my_baudrate=9600;
     printf("Setting port to %d 8N1, no flow control.\n", current_baudrate);
@@ -115,7 +115,7 @@ void open_serial_port(char *port_name){
 }
 bool is_write_ready() {
     if(!uart_port) return false;
-    int waiting = sp_output_waiting(uart_port);
+    int waiting = check(sp_output_waiting(uart_port));
     if (waiting < 0) {
         assert(false);
     }
@@ -124,7 +124,7 @@ bool is_write_ready() {
 
 bool is_read_ready() {
     if(!uart_port) return false;
-    int bytes_waiting = sp_input_waiting(uart_port);
+    int bytes_waiting = check(sp_input_waiting(uart_port));
     if (bytes_waiting < 0) {
         assert(false);
     }
@@ -138,7 +138,7 @@ void write_one_byte(uint8_t byte) {
     }
     unsigned int timeout_ms = 1;
     if(uart_log_level>=2) printf("write one byte %02x , write pedning=%d\n",byte, sp_output_waiting(uart_port));
-    int result = sp_blocking_write(uart_port, &byte, 1, timeout_ms);
+    int result = check(sp_blocking_write(uart_port, &byte, 1, timeout_ms));
     assert(result==1);
 }
 
@@ -150,7 +150,7 @@ uint8_t read_one_byte() {
     }
     unsigned int timeout_ms=1;
     unsigned char buf[2];
-    int result = sp_blocking_read(uart_port, buf, 1, timeout_ms);
+    int result = check(sp_blocking_read(uart_port, buf, 1, timeout_ms));
     assert(result==1);
     if(uart_log_level>=2) printf("read one byte %02x, read pending=%d\n",buf[0], sp_input_waiting(uart_port));
     return buf[0];
@@ -163,7 +163,7 @@ void clear_read_buffer(const char *hint){
         cnt++;
         unsigned char buf[2];
         unsigned int timeout_ms=1;
-        int result = sp_blocking_read(uart_port, buf, 1, timeout_ms);
+        int result = check(sp_blocking_read(uart_port, buf, 1, timeout_ms));
         assert(result==1);
     }
     if(cnt>0){
