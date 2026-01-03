@@ -18,6 +18,7 @@
 #include "sound.h"
 #include "compare/c6502.h"
 #include "console.h"
+#include "iv_uart.h"
 extern WqxRom nc2k_rom;
 
 nc2k_states_t nc2k_states;
@@ -83,6 +84,11 @@ void LoadNC2k(){
 	}
 
 	init_mem();
+
+	if(nc1020mode){
+		ram_io[0x0b]=0x01;
+	}
+
 	if(enable_load_state){
 		load_state();
 		void prepare_soft_boot();
@@ -97,10 +103,6 @@ void LoadNC2k(){
 		}
 	}
 
-	if(nc1020mode){
-		ram_io[0x0b]=0x01;
-	}
-
 	//reset_cpu_states();
 	initalize_illegal_op_tables();
 	init_cpu_new();
@@ -109,6 +111,7 @@ void LoadNC2k(){
 		//nc3000c-lee has it but seems like no need?
 		//ram_io[0x18]=0x20;
 	}
+	super_switch();
 }
 
 bool is_grey_mode(){
@@ -186,4 +189,75 @@ void save_flash(string file){
 	write_nand_file(file);
 	SaveNor(file);
 	printf("flash saved to file!!\n");
+}
+
+void nc2k_warm_reset(){
+
+	uint8_t* ioReg=nc2k_states.ram_io;
+    //0x00
+    ioReg[0x00]=0;
+
+    //0x01
+    nc2k_states.inner_interrupt_control&=0xfc; //TMBIE TMAIE clear
+    
+    //0x02
+    /////ioReg[0x02]=0;          //if reset this device will run into cold restart
+    
+    //0x03
+    ioReg[0x03]=0;
+
+    //0x04
+    nc2k_states.w04_b03_TBC &=0xf0;
+    
+    //0x05
+    ioReg[0x05] &=0x1f;
+    ioReg[0x05] &=0xf7;
+    nc2k_states.lcdon=0;
+    nc2k_states.speed_scaledown=1;
+
+    //0x0a
+    ioReg[0x0a] &=0xe0;
+    
+    //0x0b
+    ioReg[0x0b]&=0xfd;
+    nc2k_states.lcden=0;
+
+    //0x0c
+    ioReg[0x0c]&=0xfc;
+    nc2k_states.w0c_b67_TMODESL =0;
+    nc2k_states.w0c_b45_TM0S =0;
+    nc2k_states.w0c_b23_TM1S = 0;
+    nc2k_states.w0c_b345_TMS = 0;
+
+    //0x0d
+    ioReg[0x0d]&=0xf8;
+
+    //0x14
+    ioReg[0x14]=0;
+
+    //0x19
+    ioReg[0x19]=0xef;
+
+    //0x1a
+    ioReg[0x1a]=0;
+
+    //0x1b
+    ioReg[0x1b]=0;
+
+    //0x1c
+    ioReg[0x1c]&=0xbf;
+
+    //0x1e
+    ioReg[0x1e]=0;
+
+    super_switch();
+}
+
+void nc2k_cold_reset(){
+    nc2k_warm_reset();
+
+    //memset(ram_io,0,sizeof(nc2k_states.ram_io));
+    //memset(ext_reg, 0, sizeof(nc2k_states.ext_reg));
+    nc2k_states.reset();
+    super_switch();
 }

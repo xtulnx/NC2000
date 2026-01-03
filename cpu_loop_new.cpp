@@ -182,7 +182,7 @@ void try_soft_reset(){
 	}
 }
 void cold_reset(){
-	io_cold_reset();
+	nc2k_cold_reset();
 	//memset(ram_io,0,0x40);
 	cpu->reset();
 }
@@ -242,7 +242,7 @@ void cpu_run3(){
 	if(soft_reset){
 		soft_reset=0;
 		//prepare_soft_reset(); //shouldn't call here
-		io_warm_reset();
+		nc2k_warm_reset();
 		cpu->reset();
 	}
 	char *peeked_msg=peek_message();

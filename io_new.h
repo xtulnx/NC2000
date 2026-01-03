@@ -10,5 +10,5 @@ void setIrqTimeBase();
 bool nmiEnable();
 bool timeBaseEnable();
 
-void io_warm_reset();
-void io_cold_reset();
+void nc2k_warm_reset();
+void nc2k_cold_reset();

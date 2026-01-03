@@ -24,6 +24,7 @@ struct nc2k_states_t{
 	// 3e/3f ext registers
 	uint8_t ext_reg[256];
 
+	uint8_t RESET_STATE_BEGIN;
 	// 3a-3d registers
 	uint8_t bk;
 	uint8_t RHR,THR;
@@ -96,20 +97,16 @@ struct nc2k_states_t{
 	int patch_idx;
 	unsigned char patch_table[256];
 
-	uint8_t SAVE_STATE_END; //TODO: in theory some IO's internal state need to be saved too
-
 	uint8_t fp_step;
 	uint8_t fp_type;
+
+	uint8_t RESET_STATE_END;
+
+	uint8_t SAVE_STATE_END;
 
 	uint64_t cycles;
 	uint64_t last_cycles;
 
-	void init(){
-		memset(this,0,sizeof(nc2k_states_t));
-		lcdbuffaddr=0x09C0;
-		lcdbuffaddrmask=0x0FFF;
-		speed_scaledown=1;
-	}
 	//uint8_t interr_flag;
 
 /*
@@ -139,4 +136,17 @@ below are all legacy fields, only used in old cpu_loop or io
 	uint64_t timebase_cycles;
 	uint64_t nmi_cycles;
 	uint8_t keypad_matrix[8];
+
+	nc2k_states_t(){
+		memset(this,0,sizeof(nc2k_states_t));
+		reset();
+	}
+	void reset(){
+		memset(ram_io,0,sizeof(ram_io));
+		memset(ext_reg+8, 0, sizeof(ext_reg)-8);// clear non-rtc regs
+		memset(&RESET_STATE_BEGIN,0,(size_t)(&RESET_STATE_END - &RESET_STATE_BEGIN));
+		lcdbuffaddr=0x09C0;
+		lcdbuffaddrmask=0x0FFF;
+		speed_scaledown=1;
+	}
 };

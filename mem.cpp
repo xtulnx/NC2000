@@ -18,7 +18,7 @@ extern nc2k_states_t nc2k_states;
 
 void init_mem(){	
 	memmap[0] = ram00;
-	super_switch();
+	super_switch(); //will segfault if commented out, since some legacy code is access the memmap
 }
 
 /*
