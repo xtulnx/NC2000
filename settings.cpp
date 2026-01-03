@@ -54,7 +54,7 @@ void process_args(int argc, char *argv[])
 		{"load-state", no_argument, 0, 1},
 		{"no-lcd-latency-effect", no_argument, 0, 1},
 		{"state", required_argument, 0, 1},
-		{"auto-save-state", no_argument, 0, 1},
+		//{"auto-save-state", no_argument, 0, 1},
 		{"auto-save-all", no_argument, 0, 1},
 		{"auto-save-flash", no_argument, 0, 1},
 		{"cks", no_argument, 0, 1},
@@ -228,9 +228,9 @@ void process_args(int argc, char *argv[])
 				nc2k_rom.statesPath = optarg;
 				nc2k_rom.statesPath += ".state";
 			}
-			else if (strcmp(long_options[option_index].name,"auto-save-state")==0){
+			/*else if (strcmp(long_options[option_index].name,"auto-save-state")==0){
 				save_state_on_exit = true;
-			}
+			}*/
 			else if (strcmp(long_options[option_index].name,"auto-save-all")==0){
 				save_state_on_exit = true;
 				save_flash_on_exit = true;

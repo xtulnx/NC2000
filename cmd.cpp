@@ -196,7 +196,7 @@ void handle_cmd(string str){
 	if(cmds[0]=="cr") cmds[0]="cold_reset";
 	if(cmds[0]=="sf") cmds[0]="save_flash";
 	if(cmds[0]=="sa") cmds[0]="save_all";
-	if(cmds[0]=="ss") cmds[0]="save_state";
+	//if(cmds[0]=="ss") cmds[0]="save_state";
 	if(cmds[0]=="ds") cmds[0]="delete_state";
 	if(cmds[0]=="f") cmds[0]="file_manager";
 	if(cmds[0]=="cf") cmds[0]="create_folder";
@@ -226,7 +226,10 @@ void handle_cmd(string str){
 		exit(-1);
 	}
 
-	if(cmds[0]=="save_flash"||cmds[0]=="save_all"||cmds[0]=="save_state"){
+	if(cmds[0]=="save_flash"||cmds[0]=="save_all"/*||cmds[0]=="save_state"*/){
+		//pitfall: don't use save_state alone, expecially on nc1020
+		//         since sometimes wqx might modify nor even if you don't change any file. then saved state won't match with nor
+		//         use save_all instead
 		string file="";
 		if(cmds.size()>1){
 			file=cmds[1];	
@@ -234,7 +237,7 @@ void handle_cmd(string str){
 		if(cmds[0]=="save_flash"||cmds[0]=="save_all"){
 			save_flash(file);
 		}
-		if(cmds[0]=="save_state"||cmds[0]=="save_all"){
+		if(/*cmds[0]=="save_state"||*/cmds[0]=="save_all"){
 			save_state(file);
 		}
 		return;
