@@ -113,11 +113,10 @@ void LoadNC2k(){
 	super_switch();
 
 	if(enable_load_state&&reset_after_load_state){
-		void nc2k_warm_reset();
-		nc2k_warm_reset();
-		void prepare_soft_boot();
-		prepare_soft_boot();
-		cpu->reset();
+		void set_soft_reset_flag();
+		set_soft_reset_flag();
+		void warm_reset();
+		warm_reset();
 	}
 }
 
@@ -198,7 +197,7 @@ void save_flash(string file){
 	printf("flash saved to file!!\n");
 }
 
-void nc2k_warm_reset(){
+void nc2k_state_warm_reset(){
 
 	uint8_t* ioReg=nc2k_states.ram_io;
     //0x00
@@ -260,8 +259,8 @@ void nc2k_warm_reset(){
     super_switch();
 }
 
-void nc2k_cold_reset(){
-    nc2k_warm_reset();
+void nc2k_state_cold_reset(){
+    nc2k_state_warm_reset();
 
     //memset(ram_io,0,sizeof(nc2k_states.ram_io));
     //memset(ext_reg, 0, sizeof(nc2k_states.ext_reg));
