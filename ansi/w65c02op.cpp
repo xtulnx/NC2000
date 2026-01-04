@@ -7,6 +7,8 @@ extern "C" {
 
 #include <stdio.h>
 #include <cassert>
+#include "cpu.h"
+#include "comm.h"
 
 const bool enable_illegal_op_fix=true;
 const bool enable_irq_nmi_cycle_fix=true;
@@ -79,14 +81,9 @@ DWORD CpuExecuteOP(void)
     TRACE_CPU2("Update() PC=$%04x, Opcode=%02x", mPC, mOpcode);
     mPC++;
 
-    extern unsigned char illegal_op_byte[256];
-    extern unsigned char illegal_op_cycle[256];
     if(enable_illegal_op_fix && illegal_op_byte[mOpcode]) {
         assert(illegal_op_cycle[mOpcode]!=0);
 
-        extern int debug_level;
-        extern int enable_dyn_debug_next_n;
-        extern int enable_dyn_debug;
         uint8_t & Peek16Debug(uint16_t addr);
         if(debug_level>=1 || enable_dyn_debug || enable_dyn_debug_next_n>0) {
             printf("illegal opcode %02x at pc=$%04x, bs=%02x roabbs=%02x vol=%02x, skipped %d extra bytes\n",mOpcode,mPC-1, Peek16Debug(0), Peek16Debug(0xa), Peek16Debug(0xd), illegal_op_byte[mOpcode]-1);

@@ -36,16 +36,17 @@ int &mI=nc2k_states.mI;     // I flag for processor status register
 int &mZ=nc2k_states.mZ;     // Z flag for processor status register
 int &mC=nc2k_states.mC;     // C flag for processor status register
 //int mIRQActive;
-
+/*
 #ifdef _LYNXDBG
 int mPcBreakpoints[MAX_CPU_BREAKPOINTS];
 int mDbgFlag;
 #endif
+*/
 //UBYTE *mRamPointer;
 
 // Associated lookup tables
 
-int mBCDTable[2][256];
+//int mBCDTable[2][256];
 
 
 //int PS();
@@ -129,9 +130,6 @@ void xILLEGAL(void)
     //char addr[1024];
     //sprintf(addr,"C65C02::Update() - Illegal opcode (%02x) at PC=$%04x.",mOpcode,mPC);
     //gError->Warning(addr);
-    extern int debug_level;
-    extern int enable_dyn_debug_next_n;
-    extern bool enable_dyn_debug;
     uint8_t & Peek16Debug(uint16_t addr);
     if(debug_level>=1 || enable_dyn_debug || enable_dyn_debug_next_n>0) {
         printf("illegal opcode %02x at pc=$%04x, bs=%02x roabbs=%02x vol=%02x, but not know how to handle\n",mOpcode,mPC-1, Peek16Debug(0), Peek16Debug(0xa), Peek16Debug(0xd));

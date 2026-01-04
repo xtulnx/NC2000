@@ -57,3 +57,6 @@ public:
 extern CPUInterface* cpu;
 
 void initalize_illegal_op_tables();
+
+extern unsigned char illegal_op_byte[256];
+extern unsigned char illegal_op_cycle[256];
