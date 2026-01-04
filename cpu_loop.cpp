@@ -26,6 +26,7 @@ static unsigned short &gThreadFlags=nc2k_states.gThreadFlags;
 static bool &timer0run= nc2k_states.timer0run;
 static bool &timer1run_tmie= nc2k_states.timer1run_tmie;
 static int gDeadlockCounter = 0;
+static unsigned char *zpioregs=nc2k_states.ram_io;
 
 static uint64_t& cycles = nc2k_states.cycles;
 //static bool& should_irq = nc1020_states.should_irq;

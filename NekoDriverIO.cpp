@@ -59,9 +59,9 @@ BYTE &r08_port0_ID = nc2k_states.r08_port0_ID;  // input data
 
 BYTE &w09_port1_OL = nc2k_states.w09_port1_OL;
 BYTE &r09_port1_ID = nc2k_states.r09_port1_ID;
-extern uint8_t * ram_io;
+static uint8_t * ram_io=nc2k_states.ram_io;
 // Temp
-unsigned char *zpioregs=ram_io;
+static unsigned char *zpioregs=ram_io;
 
 timer01_u* rw023_timer01val = (timer01_u*)&zpioregs[io02_timer0_val];
 
@@ -292,7 +292,6 @@ void __iocallconv Write23Unknow( BYTE write, BYTE value )
 // Keypad registers
 //////////////////////////////////////////////////////////////////////////
 unsigned /*char*/ keypadmatrix[8][8] = {0,};
-int enable_key_debug_once=0;
 void UpdateKeypadRegisters()
 {
     const bool use_pull_high_emulation = true;

@@ -303,7 +303,7 @@ void cpu_run3(){
 			}
 		}
 	}
-	tick++;
+	//tick++;
 
 	if(debug_level >=9){  //not for emulation, just trying to log some peridic debug info
 		if(trigger_x_times_per_s(1)){

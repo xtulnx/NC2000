@@ -7,6 +7,8 @@
 #include "comm.h"
 #include "dsp/dsp.h"
 #include "iv_uart.h"
+#include "nor.h"
+#include "settings.h"
 using namespace std;
 extern WqxRom nc2k_rom;
 void print_help(){
@@ -312,14 +314,12 @@ void process_args(int argc, char *argv[])
 				fast_forward_limit = stoi(optarg);
 			}
 			else if (strcmp(long_options[option_index].name,"uart-log-level")==0){
-				extern int uart_log_level;
 				uart_log_level = stoi(optarg);
 			}
 			else if(strcmp(long_options[option_index].name,"uart-passthrough")==0){
 				uart_dev_name = optarg;
 			}
 			else if(strcmp(long_options[option_index].name,"uart-advance")==0){
-				extern bool uart_advance;
 				uart_advance = true;
 			}
 			else
@@ -374,7 +374,6 @@ void process_args(int argc, char *argv[])
 		}
 		nc2k_rom.romPath = rom_path + ".rom";
 		nc2k_rom.norFlashPath = rom_path + ".nor";
-		extern uint8_t nor_info_block[100];
 		nor_info_block[8]=0xfc;
 		nor_info_block[9]=0x03;
 

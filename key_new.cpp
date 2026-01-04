@@ -6,6 +6,7 @@
 #include "compare/pc1000bus.h"
 #include "console.h"
 #include "state.h"
+#include "NekoDriverIO.h"
 using namespace std;
 extern BusPC1000 *bus_pc1000;
 extern nc2k_states_t nc2k_states;
@@ -29,8 +30,6 @@ TKeyItem::TKeyItem( int ID, int keycode, int code_y, int code_x, const char* gra
     this->code_y = code_y;
     this->code_x = code_x;
 }
-
-extern unsigned /*char*/ keypadmatrix[8][8];
 
 //the comments e.g. P00, P30 has no meaning for nc1020/2000/3000, they are copied from wayback and not changed.
 vector<TKeyItem*> items2000_1020 = {
@@ -357,7 +356,7 @@ void handle_key_wayback(signed int sym, bool key_down){
         auto value=map_key_wayback(sym);
         if(nc1020mode && sym==SDLK_F12 ){
           //nc1020's on/off is not on the 8x8 keyboard scanning matrix, it is an independent pin
-          extern uint8_t* ram_io;
+          uint8_t* ram_io=nc2k_states.ram_io;
           if(key_down){
             ram_io[0x0b]&=~1;
             void warm_reset_if_clkoff();
@@ -400,7 +399,6 @@ void handle_key_wayback(signed int sym, bool key_down){
 
           case SDLK_TAB:       //handles fast forward toggle
             if(key_down==1){
-                extern bool fast_forward;
                 fast_forward^= 0x1;
                 printf("fast_forward %s\n", fast_forward ? "on" : "off");
                 extern SDL_Window* window;

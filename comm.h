@@ -128,6 +128,8 @@ extern bool enable_debug_timer;
 
 extern bool enable_debug_cks;
 
+extern int enable_key_debug_once;
+
 extern bool enable_assert;
 /*
 ===================

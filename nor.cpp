@@ -3,6 +3,7 @@
 #include "state.h"
 #include "mem.h"
 #include <cassert>
+#include "nor.h"
 
 extern nc2k_states_t nc2k_states;
 extern WqxRom nc2k_rom;

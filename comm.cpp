@@ -62,6 +62,8 @@ bool enable_debug_dsp=false;
 bool enable_debug_timer=false;
 bool enable_debug_cks = false;
 
+int enable_key_debug_once=0;
+
 int debug_level = 0;
 
 bool enable_assert = false;

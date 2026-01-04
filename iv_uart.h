@@ -3,6 +3,9 @@
 extern uint8_t &RCR0;
 extern uint8_t &RCR1;
 
+extern int uart_log_level;
+extern bool uart_advance;
+
 const int RCR0_ALARM= 0x02;
 const int RCR0_2HZ=   0x01;
 

@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include "comm.h"
+#include "compare/c6502.h"
 #include "nc2000.h"
 #include "console.h"
 #include "lcdstripe/lcdpainter.h"
@@ -54,11 +55,11 @@ void Render(uint64_t tick) {
   }
   last_inner_render_tick= tick;
 
-  extern unsigned char &lcden;
-  extern unsigned char &lcdon;
+  unsigned char &lcden = nc2k_states.lcden;
+  unsigned char &lcdon = nc2k_states.lcdon;
   bool lcd_on = true;
   if(nc2000mode||nc1020mode){
-    extern uint8_t* ram_io;
+    uint8_t* ram_io=nc2k_states.ram_io;
     if(nc2000mode) lcd_on = (lcden && lcdon);
     if(nc1020mode) lcd_on = lcdon;
     if(ram_io[0x05]>>5==7){ //clk off

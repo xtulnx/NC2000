@@ -11,10 +11,10 @@
 #include "compare/pc1000bus.h"
 
 extern BusPC1000 *bus_pc1000;
+extern nc2k_states_t nc2k_states;
+
 uint8_t* memmap[8];
 
-
-extern nc2k_states_t nc2k_states;
 
 void init_mem(){	
 	memmap[0] = ram00;
@@ -28,7 +28,6 @@ inline uint8_t & Peek8(uint8_t addr) {
 uint8_t & Peek16(uint16_t addr) {
 	auto ptr= &memmap[addr >> 13][addr & 0x1FFF];
 	if(nc1020tw_mode && debug_level>=2){
-		extern uint8_t nor_buff[1024*1024];
 		/*if(ptr>=&nor_buff[0] && ptr<&nor_buff[0]+32){
 			printf("access problem addr %04x, value=%02x, offset=%04x\n",addr,*ptr,int(ptr-&nor_buff[0]));
 			//printf("peek16 from nor %04x\n",addr);
@@ -454,9 +453,9 @@ void super_switch(){
 
 //experiment hacking code, need rewrite
 void try_patch(){
+	unsigned char *patch_table=nc2k_states.patch_table;
 	int bank_idx = ram_io[0x00];
 	if(nc1020mode &&!nc1020tw_mode){
-		extern unsigned char * patch_table;
 		if(true) {
 			static bool patched=false;
 			if(bank_idx==0x9d  &&  patch_table[0x1e]==0x9d&&  patch_table[0x1f]==0xa0 && !patched){
@@ -520,7 +519,6 @@ void try_patch(){
 	}
 
 	if(nc1020tw_mode && bank_idx==0x90 && ((ram_io[0x0d]&0x3) ==0)){
-		extern unsigned char *patch_table;
 		if(true)
 		{
 			static bool patched=false;

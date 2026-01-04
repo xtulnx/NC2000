@@ -8,6 +8,9 @@ extern "C" {
 
 CPUInterface *cpu;
 
+unsigned char illegal_op_byte[256];
+unsigned char illegal_op_cycle[256];
+
 void CPUInterface::reset(){
 	if(cpu_impl_emux) return cpu_impl_emux->reset();
 
@@ -109,8 +112,6 @@ int CPUInterface::P() {
 	return PS();
 }
 
-unsigned char illegal_op_byte[256];
-unsigned char illegal_op_cycle[256];
 void initalize_illegal_op_tables(){
 	unsigned char * byte=illegal_op_byte;
 	unsigned char * cycle=illegal_op_cycle;

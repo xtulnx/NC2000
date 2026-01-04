@@ -97,8 +97,6 @@ int BusPC1000::in(int address) {
     }
 }
 
-static unsigned short &lcdbuffaddr=nc2k_states.lcdbuffaddr;
-static unsigned short &lcdbuffaddrmask=nc2k_states.lcdbuffaddrmask;
 void Write23(uint8_t addr, uint8_t value);
 void Write3F(uint8_t addr, uint8_t value);
 void BusPC1000::out(int address, int value) {

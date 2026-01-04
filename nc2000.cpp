@@ -120,10 +120,11 @@ void LoadNC2k(){
 	}
 }
 
+static unsigned short &lcdbuffaddr = nc2k_states.lcdbuffaddr;
+static unsigned short &lcdbuffaddrmask = nc2k_states.lcdbuffaddrmask;
 bool is_grey_mode(){
 	if(console_on) return false;
-    extern unsigned short &lcdbuffaddr;
-    extern unsigned short &lcdbuffaddrmask;
+
 	unsigned short lcd_addr = lcdbuffaddr&lcdbuffaddrmask;
 	//printf("lcdaddr=%x\n",lcd_addr);
 	//fflush(stdout);
@@ -132,8 +133,6 @@ bool is_grey_mode(){
 	return false;
 }
 bool CopyLcdBuffer(uint8_t* buffer){
-    extern unsigned short &lcdbuffaddr;
-    extern unsigned short &lcdbuffaddrmask;
     unsigned short lcd_addr = lcdbuffaddr&lcdbuffaddrmask;
 	if (lcd_addr == 0) return false;
 

@@ -74,7 +74,7 @@ extern HotlinkBundle* hotlinkios;
 
 // Temp
 //////extern unsigned char* zpioregs[0x40];
-extern unsigned char* zpioregs;
+//extern unsigned char* zpioregs;
 
 #define _ADD_TM0I_BIT() zpioregs[io01_int_status] |= 0x10
 #define _ADD_TM1I_BIT() zpioregs[io01_int_status] |= 0x20
@@ -84,6 +84,8 @@ extern BYTE &w01_int_enable;
 
 extern int &timer0ticks;
 extern int &timer1ticks;
+
+extern unsigned /*char*/ keypadmatrix[8][8];
 
 BYTE __iocallconv NullRead (BYTE read);
 void __iocallconv NullWrite (BYTE write, BYTE value);

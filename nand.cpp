@@ -17,7 +17,7 @@ static deque<uint8_t> nand_data;
 
 static int nand_read_cnt=0;
 //char nand_ori[65536*2][512];
-char nand[65536*2+64][528];
+static char nand[65536*2+64][528];
 //char nand_spare[65536+64][16];
 
 string nand_magic;

@@ -10,6 +10,7 @@
 #include <cassert>
 #include "CC800IOName.h"
 #include "iv_uart.h"
+#include "io_new.h"
 
 extern nc2k_states_t nc2k_states;
 extern Dsp dsp;
@@ -37,6 +38,9 @@ static uint8_t * ext_reg=nc2k_states.ext_reg;
 static unsigned char* ioReg=nc2k_states.ram_io;
 
 uint8_t &lcdon=nc2k_states.lcdon;
+
+static int &patch_idx=nc2k_states.patch_idx;
+static unsigned char *patch_table=nc2k_states.patch_table;
 
 /////d0应该是未定指令
 ////不处理这个有声读物会死机
@@ -289,7 +293,6 @@ int io_v2_read(int address) {
         if(address==0x08){
             if(cpu->PC>=0x44c2 &&cpu->PC<=0x44c4) {
                 //printf("<<pc=%04x>>\n",cpu->PC);
-                extern int enable_key_debug_once;
                 //enable_key_debug_once=1;
                 //return 0x01;
             }
@@ -366,8 +369,7 @@ int io_v2_read(int address) {
             return ioReg[address];
     }
 }
-int &patch_idx=nc2k_states.patch_idx;
-unsigned char *patch_table=nc2k_states.patch_table;
+
 void io_v2_write(int address, int value) {
     if(nc2000mode&&log_all_dsp_io&&address>=0x30 && address<=0x33){
         printf("[io_v2_write] address=%02x value=%02x\n",address,value);
