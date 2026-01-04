@@ -5,6 +5,8 @@
 #include <cassert>
 #include <cstdio>
 #include <cstring>
+#include "comm.h"
+#include "cpu.h"
 
 static int znTbl[] = {
     002, 000, 000, 000, 000, 000, 000, 000, 000, 000,
@@ -134,9 +136,6 @@ int C6502::readAddress(int address) {
 void C6502::XXX_xx(int code) {
     //uint8_t & Peek16Debug(uint16_t addr);
     printf("illegal instruction %x at %x bs=%02x roabbs=%02x vol=%02x\n",code,PC-1,bus->read(0),bus->read(0xa),bus->read(0xd));
-
-    extern unsigned char illegal_op_byte[256];
-    extern unsigned char illegal_op_cycle[256];
 
     if(illegal_op_byte[code]) {
         assert(illegal_op_cycle[code]!=0);
