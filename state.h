@@ -2,14 +2,14 @@
 #include "comm.h"
 #include <cstdint>
 
-struct cpu_states_t {
+/*struct cpu_states_t {
 	uint16_t reg_pc;
 	uint8_t reg_a;
 	uint8_t reg_ps;
 	uint8_t reg_x;
 	uint8_t reg_y;
 	uint8_t reg_sp;
-};
+};*/
 
 struct nc2k_states_t{
 	//uint32_t version;
@@ -26,8 +26,10 @@ struct nc2k_states_t{
 	uint8_t ext_reg[256];
 
 	uint8_t RESET_STATE_BEGIN;
+
 	// 3a-3d registers
 	uint8_t bk;
+
 	uint8_t RHR,THR;
 	uint8_t BSR;
 	uint8_t CSTOP;
@@ -46,6 +48,7 @@ struct nc2k_states_t{
 	uint8_t IVR; //only for UCE bit
 	uint8_t FCR;
 	uint8_t IER;
+	// 3a-3d registers end
 
 	//NekoDriverIO internal states
 	unsigned short gThreadFlags;
@@ -80,6 +83,7 @@ struct nc2k_states_t{
 	unsigned short lcdbuffaddrmask;
 	unsigned char cpf;  
 	unsigned char lcden; 
+	//NekoDriverIO internal states end
 
 	//io_new.cpp internal states
 	int dspRetData;
@@ -97,10 +101,12 @@ struct nc2k_states_t{
 	unsigned char dsp_data_low;
 	int patch_idx;
 	unsigned char patch_table[256];
+	//io_new.cpp internal states end
 	
 	//nor states
 	uint8_t fp_step;
 	uint8_t fp_type;
+	//nor states end
 
 	uint8_t RESET_STATE_END;
 
@@ -109,6 +115,7 @@ struct nc2k_states_t{
 	int mA,mX,mY,mSP,mPC;
 	int mOpcode,mOperand;
 	int mN,mV,mB,mD,mI,mZ,mC;
+	//handypsp cpu states end
 
 	//c6502 cpu states
 	int A,X,Y,P,SP,PC;
@@ -122,8 +129,6 @@ struct nc2k_states_t{
 	uint64_t last_cycles;
 
 	uint8_t SAVE_STATE_END;
-
-	//uint8_t interr_flag;
 
 /*
 ===================
