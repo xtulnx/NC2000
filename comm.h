@@ -159,6 +159,8 @@ extern int fast_forward_limit;
 extern int debug_level;
 
 extern double rtc_speed;
+
+extern double speed_multiplier;
 /*
 ===================
 display related

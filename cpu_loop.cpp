@@ -19,13 +19,13 @@ extern "C" {
 #define qDebug(...)
 
 #define TF_IRQFLAG 0x10
-extern unsigned short &gThreadFlags;
-extern unsigned char * zpioregs;
-extern bool &timer0run;
-extern bool &timer1run_tmie;
-int gDeadlockCounter = 0;
 
 extern nc2k_states_t nc2k_states;
+
+static unsigned short &gThreadFlags=nc2k_states.gThreadFlags;
+static bool &timer0run= nc2k_states.timer0run;
+static bool &timer1run_tmie= nc2k_states.timer1run_tmie;
+static int gDeadlockCounter = 0;
 
 static uint64_t& cycles = nc2k_states.cycles;
 //static bool& should_irq = nc1020_states.should_irq;

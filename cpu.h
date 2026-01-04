@@ -7,8 +7,6 @@ extern "C" {
 #include "ansi/w65c02.h"
 }
 
-extern double speed_multiplier;
-
 void cpu_run();
 void cpu_run2();
 void cpu_run3();

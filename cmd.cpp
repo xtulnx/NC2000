@@ -19,7 +19,7 @@ extern "C" {
 #include "nor.h"
 extern nc2k_states_t nc2k_states;
 extern CPUInterface *cpu;
-extern string nand_magic;
+
 
 deque<string> udp_msgs;
 std::mutex g_mutex;
@@ -87,8 +87,8 @@ char *peek_message(){
 }
 
 
-deque<char> queue;
-int32_t dummy_io_cnt=-1;
+static deque<char> queue;
+static int32_t dummy_io_cnt=-1;
 static int put_total_size=0;
 bool dummy_io_for_read(uint16_t addr, uint8_t &value){
 	if(addr!=0x3fff) return false;
@@ -115,9 +115,9 @@ bool dummy_io_for_read(uint16_t addr, uint8_t &value){
 	return true;
 }
 
-deque<char> queue_for_write;
-string file_name_for_write;
-int32_t dummy_io_write_cnt=-1;
+static deque<char> queue_for_write;
+static string file_name_for_write;
+static int32_t dummy_io_write_cnt=-1;
 bool dummy_io_for_write(uint16_t addr, uint8_t value){
 	if(addr!=0x3fff) return false;
 

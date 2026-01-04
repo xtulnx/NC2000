@@ -271,7 +271,7 @@ void cpu_run3(){
 		}
 	}
 	if(nc2000mode){
-		extern bool is_nc2600_rom();
+		bool is_nc2600_rom(void);
 		if(is_nc2600_rom()){
 			if(!time_adjusted && Peek16(0x3fa)==0x7a &&rtc_reg[0]==1){
 				time_adjusted=1;
@@ -307,8 +307,8 @@ void cpu_run3(){
 
 	if(debug_level >=9){  //not for emulation, just trying to log some peridic debug info
 		if(trigger_x_times_per_s(1)){
-			extern int& patch_idx;
-			extern unsigned char *patch_table;
+			int& patch_idx=nc2k_states.patch_idx;
+			unsigned char *patch_table=nc2k_states.patch_table;
 			printf("patch table= ");
 			for(int i=0x10;i<=0x1f;i++){
 				printf("%02x ",patch_table[i]);	

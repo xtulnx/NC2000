@@ -1,5 +1,7 @@
 #include "comm.h"
 
+extern string nand_magic;
+
 uint8_t read_nand();
 void nand_write(uint8_t);
 

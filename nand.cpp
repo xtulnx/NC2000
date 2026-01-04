@@ -4,6 +4,7 @@
 #include "state.h"
 #include <cassert>
 #include <cstdio>
+#include "nand.h"
 extern WqxRom nc2k_rom;
 extern nc2k_states_t nc2k_states;
 static uint8_t* ram_buff = nc2k_states.ram;

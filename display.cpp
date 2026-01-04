@@ -3,6 +3,7 @@
 #include "nc2000.h"
 #include "console.h"
 #include "lcdstripe/lcdpainter.h"
+#include "display.h"
 
 SDL_Renderer* renderer;
 
