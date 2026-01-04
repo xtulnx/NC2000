@@ -9,6 +9,7 @@
 #include "compare/pc1000bus.h"
 #include "io_new.h"
 #include "iv_uart.h"
+#include "sound.h"
 
 #define qDebug(...)
 
@@ -500,4 +501,6 @@ void cpu_run3(){
 			cpu->set_nmi_pending();
 		}
 	}
+
+	dsp_move(trigger_x_times_per_s(1000)*long(DSP_AUDIO_HZ)/1000);
 }

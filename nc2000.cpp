@@ -183,10 +183,8 @@ void RunTimeSlice(uint32_t time_slice, bool speed_up) {
 		}else{
 			assert(false);
 		}
+		post_cpu_run_sound_handling();
 	}
-
-	post_cpu_run_sound_handling();
-
 }
 
 void save_flash(string file){
