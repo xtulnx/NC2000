@@ -136,7 +136,9 @@ void write_one_byte(uint8_t byte) {
         if(uart_log_level>=1) printf("uart write but not ready\n");
         return ;
     }
-    unsigned int timeout_ms = 1;
+    //on some windows, timeout 1ms or sp_nonblocking_write doesn't work, even if is_write_ready() is true.
+    //here use 1000ms for compatibility
+    unsigned int timeout_ms = 1000;
     if(uart_log_level>=2) printf("write one byte %02x , write pedning=%d\n",byte, sp_output_waiting(uart_port));
     int result = check(sp_blocking_write(uart_port, &byte, 1, timeout_ms));
     assert(result==1);
@@ -148,7 +150,7 @@ uint8_t read_one_byte() {
         if(uart_log_level>=1) printf("uart read but not ready\n");
         return 0xff;
     }
-    unsigned int timeout_ms=1;
+    unsigned int timeout_ms=1000;
     unsigned char buf[2];
     int result = check(sp_blocking_read(uart_port, buf, 1, timeout_ms));
     assert(result==1);
@@ -162,7 +164,7 @@ void clear_read_buffer(const char *hint){
     while(is_read_ready()){
         cnt++;
         unsigned char buf[2];
-        unsigned int timeout_ms=1;
+        unsigned int timeout_ms=1000;
         int result = check(sp_blocking_read(uart_port, buf, 1, timeout_ms));
         assert(result==1);
     }
