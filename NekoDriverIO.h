@@ -45,7 +45,7 @@ union timer01_u {
     };
 };
 
-extern timer01_u* rw023_timer01val;
+//extern timer01_u* rw023_timer01val;
 
 // 假设spdc的timer如下: 没有接入到io的参数值, 依然存在于外设中, 也即如果io bit被链接到其他设备, 已经设置好的还保持?
 extern BYTE &w0c_b67_TMODESL;    // 01一起的计数方式

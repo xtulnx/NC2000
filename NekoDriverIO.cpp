@@ -63,7 +63,7 @@ static uint8_t * ram_io=nc2k_states.ram_io;
 // Temp
 static unsigned char *zpioregs=ram_io;
 
-timer01_u* rw023_timer01val = (timer01_u*)&zpioregs[io02_timer0_val];
+//timer01_u* rw023_timer01val = (timer01_u*)&zpioregs[io02_timer0_val];
 
 BYTE &w0c_b67_TMODESL = nc2k_states.w0c_b67_TMODESL;    // 01一起的计数方式
 BYTE &w0c_b45_TM0S = nc2k_states.w0c_b45_TM0S;       // timer0时钟周期, 在TMODE1下接入

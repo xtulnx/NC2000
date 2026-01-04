@@ -10,7 +10,6 @@ extern WqxRom nc2k_rom;
 
 uint8_t nor_buff[1024*1024];
 uint8_t* nor_banks[0x20];
-extern uint8_t* memmap[8];
 
 static uint8_t& fp_step = nc2k_states.fp_step;
 static uint8_t& fp_type = nc2k_states.fp_type;

@@ -155,7 +155,7 @@ bool ctrl_down =false;
 int battery_level=11;
 bool patch_nc1020tw_nor=false;
 
-
+bool patch_table_experiment=false;
 
 WqxRom nc2k_rom;
 

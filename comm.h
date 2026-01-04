@@ -246,6 +246,8 @@ extern bool shift_down;
 extern bool ctrl_down;
 extern int battery_level;
 extern bool patch_nc1020tw_nor;
+
+extern bool patch_table_experiment;
 /*
 ===================
 common functions

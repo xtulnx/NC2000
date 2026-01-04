@@ -20,18 +20,18 @@ struct BeeperSignal{
 static BeeperSignal last_beeper{0};
 static deque<signed short> sound_stream_beeper;
 /*buffer to SDL_QueueAudio */
-static vector<signed short> beeper_buffer; 
+//static vector<signed short> beeper_buffer; 
 
 /*filter out DC signal*/
-double filter1(double in){
+double filter_beeper(double in){
 	static double cuttmp=-8000;
-	static double cutoff=2.0*3.141592654*40/DSP_AUDIO_HZ;
+	static double cutoff=2.0*3.141592654*40/BEEPER_AUDIO_HZ;
 	double val=in-cuttmp;
 	cuttmp+=cutoff*val;
 	return val;
 }
 
-double filter2(double in){
+double filter_dsp(double in){
 	static double cuttmp=-8000;
 	static double cutoff=2.0*3.141592654*40/DSP_AUDIO_HZ;
 	double val=in-cuttmp;
@@ -185,7 +185,7 @@ static void audio_mix_cb(void* userdata, Uint8* stream, int len_bytes) {
 			}else{
 				beeper_sample=last_beeper_sample;
 			}
-			beeper_sample=filter1(beeper_sample);
+			beeper_sample=filter_beeper(beeper_sample);
 		}
 
         // 2) DSP resample 8000 -> 44100 using linear interpolation with phase in [0,1)

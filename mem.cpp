@@ -301,9 +301,9 @@ void SwitchBank_2345(){
 
 	}
 
-	if(false){
-		void try_patch();
-		try_patch();
+	if(patch_table_experiment){
+		void handle_patch_table();
+		handle_patch_table();
 	}
 }
 
@@ -452,7 +452,7 @@ void super_switch(){
 }
 
 //experiment hacking code, need rewrite
-void try_patch(){
+void handle_patch_table(){
 	unsigned char *patch_table=nc2k_states.patch_table;
 	int bank_idx = ram_io[0x00];
 	if(nc1020mode &&!nc1020tw_mode){
