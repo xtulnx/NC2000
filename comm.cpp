@@ -90,7 +90,7 @@ bool fast_forward=false;
 
 double speed_multiplier=1.0;
 double rtc_speed=1.0;
-int fast_forward_limit=0;
+double fast_forward_limit=0;
 /*
 ===================
 cycles related

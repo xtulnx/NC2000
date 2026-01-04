@@ -311,7 +311,7 @@ void process_args(int argc, char *argv[])
 				patch_nc1020tw_nor = true;
 			}
 			else if (strcmp(long_options[option_index].name,"fast-forward-limit")==0){
-				fast_forward_limit = stoi(optarg);
+				fast_forward_limit = stod(optarg);
 			}
 			else if (strcmp(long_options[option_index].name,"uart-log-level")==0){
 				uart_log_level = stoi(optarg);

@@ -379,9 +379,9 @@ void handle_cmd(string str){
 			fast_forward_limit=0;
 		}
 		else{
-			fast_forward_limit= stoi(cmds[1]);
+			fast_forward_limit= stod(cmds[1]);
 		}
-		printf("set fast forward limit to %d\n",fast_forward_limit);
+		printf("set fast forward limit to %f\n",fast_forward_limit);
 		return;
 	}
 	if(cmds[0]=="get"){
