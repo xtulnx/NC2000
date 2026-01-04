@@ -364,15 +364,29 @@ void process_args(int argc, char *argv[])
         nc2k_rom.norFlashPath = rom_path + ".nor";
     }
 	if(nc1020mode){
+		string default_rom_path;//without suffix
+		if(nc1020tw_mode) default_rom_path = "roms/nc1020tw";
+		else default_rom_path = "roms/nc1020";
+		string default_with_suffix= default_rom_path + ".rom";
+
 		if(rom_path.empty()){
-			if(nc1020tw_mode) rom_path = "roms/nc1020tw";
-			else rom_path = "roms/nc1020";
+			rom_path = default_rom_path; //without suffix
 		}
 		nc2k_rom.romPath = rom_path + ".rom";
 		nc2k_rom.norFlashPath = rom_path + ".nor";
 		extern uint8_t nor_info_block[100];
 		nor_info_block[8]=0xfc;
 		nor_info_block[9]=0x03;
+
+		if(rom_path != default_with_suffix){
+			if (!fileExists(nc2k_rom.romPath.c_str())) {
+				if(fileExists(default_with_suffix)){
+					//if given rom not exist, try default rom instead (since rom can not be changed, the file can be re-used)
+					printf("WARN: file %s does not exist, but default %s exists, use default instead\n", nc2k_rom.romPath.c_str(), default_with_suffix.c_str());
+					nc2k_rom.romPath = default_with_suffix;
+				}
+			}
+		}
 
 	}
 	if(pc1000mode){

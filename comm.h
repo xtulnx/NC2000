@@ -290,3 +290,8 @@ inline string get_title(){
     if(fast_forward) ret+=", fast_forward";
     return ret;
 }
+
+inline bool fileExists(const std::string& name) {
+    std::ifstream f(name.c_str());
+    return f.good();
+}
