@@ -1,10 +1,10 @@
 #include "comm.h"
 #include <cassert>
 #include <cstdint>
+#include <cstdio>
 #include <set>
 #include "iv_uart.h"
 #include "state.h"
-#include <libserialport.h>
 #include <sys/types.h>
 using namespace std;
 
@@ -69,7 +69,8 @@ void write_rcr1(uint8_t value){
 uart host dev handle
 ====================
 */
-
+#if defined (ENABLE_SERIAL_PORT)
+#include <libserialport.h>
 static int check(enum sp_return result)
 {
     char *error_message;
@@ -98,6 +99,7 @@ int current_baudrate = 115200;
 int current_wordlen = 8;
 enum sp_parity current_parity = SP_PARITY_NONE;
 int current_stopbits = 1;
+
 void open_serial_port(char *port_name){
     printf("Looking for port %s.\n", port_name);
     check(sp_get_port_by_name(port_name, &uart_port));
@@ -230,6 +232,17 @@ void handle_uart_parameter_change(){
         current_parity=parity;
     }
 }
+#else
+void open_serial_port(char *port_name){
+    printf("WARN: open_serial_port() is called but it is disabled at compile time\n");
+}
+bool is_write_ready() {return false;}
+bool is_read_ready() {return false;}
+void write_one_byte(uint8_t byte) {return;}
+uint8_t read_one_byte() {return 0xff;}
+void clear_read_buffer(const char *hint){return;}
+void handle_uart_parameter_change(){}
+#endif
 /*
 ====================
 uart wqx io handle
