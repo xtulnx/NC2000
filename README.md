@@ -19,6 +19,7 @@ The device has following hardware:
 * 160*80 LCD with SPLD803A as LCD driver (`display.cpp` and `display.h`)
 * SPDS104A DSP with speaker (`sound.cpp` and `sound.h` and `dsp` folder)
 * QWERT keyboard (`key.cpp` and `key.h`)
+* IrDA and UART port (`iv_uart.cpp` and `iv_uart.h`)
 
 PCB layout:
 
@@ -65,11 +66,13 @@ The rest of Readme is going to be in Chinese, there are a few more english mater
 支持以下feature：
 * 运行从真机dump的rom
 * 兼容真机软件，和各种自制内核
-* 下载, 上传文件, 保存状态
+* 下载, 上传文件, 保存
 * 发音，蜂鸣器
 * 4灰度
 * 液晶格栅效果, 液晶残影, 液晶屏侧面的小图标
 * 热键唤醒, 闹铃唤醒
+* [红外/串口通信](https://github.com/wangyu-/NC2000/wiki/%E7%BA%A2%E5%A4%96-%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1)
+* [即时存档](https://github.com/wangyu-/NC2000/wiki/%E5%8D%B3%E6%97%B6%E5%AD%98%E6%A1%A3)
 * 超频
 
 经测试支持的rom:
