@@ -468,7 +468,7 @@ void write_3d(uint8_t value){
     else if(bk==1){
         if(value & 0x10){
             if(uart_log_level>=1) printf("RFRST\n");
-            clear_read_buffer("RFRST");
+            //clear_read_buffer("RFRST");
             //TODO RFRST
         }
         if(value & 0x20){
