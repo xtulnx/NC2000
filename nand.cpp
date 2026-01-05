@@ -31,12 +31,12 @@ void read_nand0_file(){
         exit(-1);
     }
     fseek(f, 0, SEEK_END);
-    long fsize = ftell(f);
+    long long fsize = ftell(f);
     fseek(f, 0, SEEK_SET);  /* same as rewind(f); */
     assert(fsize<= 64*528);
     fread(p0, fsize, 1, f);
     fclose(f);
-    printf("<nand0_file_size=%lu>\n",fsize);
+    printf("<nand0_file_size=%llu>\n",fsize);
     for(int i=0;i<10;i++){
         nand_magic.push_back(p0[0x200+0x10+i]);
     }
@@ -52,12 +52,12 @@ void read_nand_file(){
         exit(-1);
     }
     fseek(f, 0, SEEK_END);
-    long fsize = ftell(f);
+    long long fsize = ftell(f);
     fseek(f, 0, SEEK_SET);  /* same as rewind(f); */
     assert(fsize + 64*528 <= sizeof(nand));
     fread(p0, fsize, 1, f);
     fclose(f);
-    printf("<nand_file_size=%lu>\n",fsize);
+    printf("<nand_file_size=%llu>\n",fsize);
 
 #if 0
     if(nc2000mode){

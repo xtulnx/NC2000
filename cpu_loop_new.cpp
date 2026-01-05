@@ -502,5 +502,5 @@ void cpu_run3(){
 		}
 	}
 
-	dsp_move(trigger_x_times_per_s(1000)*long(DSP_AUDIO_HZ)/1000);
+	dsp_move(trigger_x_times_per_s(1000)*(long long)(DSP_AUDIO_HZ)/1000);
 }
