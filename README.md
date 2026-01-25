@@ -19,7 +19,7 @@ The device has following hardware:
 * 160*80 LCD with SPLD803A as LCD driver (`display.cpp` and `display.h`)
 * SPDS104A DSP with speaker (`sound.cpp` and `sound.h` and `dsp` folder)
 * QWERT keyboard (`key.cpp` and `key.h`)
-* IrDA and UART port (`iv_uart.cpp` and `iv_uart.h`)
+* IrDA and Serial port (UART protocol) (`iv_uart.cpp` and `iv_uart.h`)
 
 PCB layout:
 
@@ -32,7 +32,6 @@ The rest of Readme is going to be in Chinese, there are a few more english mater
 # Screenshots
 <img width="812" alt="image" src="https://github.com/user-attachments/assets/541a872a-c93b-438b-9c44-86c8df19c784" />
 
-
 <img width="405" alt="image" src="https://github.com/user-attachments/assets/8946b77e-9426-4a52-8a29-f0f7e988c189" />
 
 <img width="405" alt="image" src="https://github.com/user-attachments/assets/13b3e1d3-822f-42a0-845d-19e1e366426f" />
@@ -40,6 +39,8 @@ The rest of Readme is going to be in Chinese, there are a few more english mater
 <img width="405" alt="image" src="https://github.com/user-attachments/assets/a0c4e8f3-09b6-4a2f-b8f2-1998a0172351" />
 
 <img width="405" alt="image" src="https://github.com/user-attachments/assets/4ca56d3b-24ce-427c-9646-4f319dbfbe06" />
+
+<img width="816" alt="image" src="https://github.com/user-attachments/assets/0d281a72-f8f2-424e-b0ac-105ed01478a6" />
 
 <br>
 
