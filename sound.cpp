@@ -73,12 +73,14 @@ void manipulate_beeper(int a){
     //printf("%lld, %d  %lld %lld\n",current_cycle -last_beeper.cycle, nc1020_states.cycles, samples_start,samples_end);
     last_beeper.cycle=current_cycle;
 
+    if (g_audio_device) SDL_LockAudioDevice(g_audio_device);
     for(int i=0;i<(samples_end-samples_start);i++){
         if(sound_stream_beeper.size() > 4096) {//avoid beeper queue too large. 4096 samples =~ 90ms
             break;
         }
         sound_stream_beeper.push_back(8000*last_beeper.value);
     }
+    if (g_audio_device) SDL_UnlockAudioDevice(g_audio_device);
 
     last_beeper.value=a;
 }
