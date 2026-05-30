@@ -82,6 +82,8 @@ The rest of Readme is going to be in Chinese, there are a few more english mater
 * 哈电族nc2000 `官方3.6B`
 * nc1020 `官方3.6` `4.3内核by SAILOR-HB` `4.9内核 by ZHY` `5.3内核 by 逍遥人`
 * 哈电族nc1020 `官方5.2`
+
+更多介绍见wiki[概述](https://github.com/wangyu-/NC2000/wiki/%E6%A6%82%E8%BF%B0)
   
 # 按键
 
