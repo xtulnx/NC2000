@@ -66,7 +66,8 @@ void load_state(){
 }
 
 void LoadNC2k(){
-	//memset(&nc2k_states,0,sizeof(nc2k_states_t));
+	memset(&nc2k_states,0,sizeof(nc2k_states_t)); //fix re-run issue on emscripten version
+
 	dummy_bus= new BusWrapper();
 
 	init_io(); //for old io implemet only
