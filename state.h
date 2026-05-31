@@ -128,8 +128,10 @@ struct nc2k_states_t{
 	u64_t cycles;
 	u64_t last_cycles;
 
-	uint8_t SAVE_STATE_END;
+	uint8_t SAVE_STATE_END; // =========END of SAVE STATE=========
 
+	bool time_adjusted;
+	bool do_warm_reset;
 /*
 ===================
 below are all legacy fields, only used in old cpu_loop or io
@@ -159,6 +161,9 @@ below are all legacy fields, only used in old cpu_loop or io
 	uint8_t keypad_matrix[8];
 
 	nc2k_states_t(){
+		init();
+	}
+	void init(){
 		memset(this,0,sizeof(nc2k_states_t));
 		reset();
 	}

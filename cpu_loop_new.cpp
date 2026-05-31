@@ -23,6 +23,9 @@ static uint8_t * ext_reg=nc2k_states.ext_reg;
 class BusPC1000 *bus_pc1000=0;
 extern IBus6502 *dummy_bus;
 
+static bool& time_adjusted=nc2k_states.time_adjusted;
+static bool& do_warm_reset=nc2k_states.do_warm_reset;
+
 void init_cpu_new(){
 	if(io_version == IO_V1 || io_version == IO_V2){
 		if(cpu_version== CPU_HANDYPSP) {
@@ -131,7 +134,6 @@ void bumpRTC(){
     }
 }
 
-bool time_adjusted=0;
 void sync_time_2000(){
 		printf("sync_time() called\n");
 		time_t current_time = time(NULL);
@@ -166,7 +168,7 @@ void sync_time_1020(){
 	rtc_reg[1]=local_time->tm_min;
 	rtc_reg[0]=local_time->tm_sec;
 }
-bool do_warm_reset=0;
+
 bool is_clk_off(){
 	return ram_io[0x05]>>5==7;
 }
