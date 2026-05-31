@@ -289,8 +289,8 @@ void cpu_run3(){
 	}
 	if(nc1020mode){
 		if(!nc1020tw_mode){
-			static bool time_adjusted_phase2=0;
-			static u64_t time_adjusted_cycle=0;
+			bool & time_adjusted_phase2=nc2k_states.nc1020_time_adjusted_phase2;
+			u64_t & time_adjusted_cycle=nc2k_states.nc1020_time_adjusted_cycle;
 			if(!time_adjusted && Peek16(0x472)==0x79 /*&&rtc_reg[0]==1*/){
 				time_adjusted=1;
 				time_adjusted_cycle=cycles;

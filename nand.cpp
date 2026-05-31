@@ -19,7 +19,7 @@ static int nand_read_cnt=0;
 static char nand[65536*2+64][528];
 //char nand_spare[65536+64][16];
 
-string nand_magic;
+char nand_magic[11];
 
 void read_nand0_file(){
     memset(nand,0xff, 64*528);
@@ -36,10 +36,11 @@ void read_nand0_file(){
     fread(p0, fsize, 1, f);
     fclose(f);
     printf("<nand0_file_size=%llu>\n",fsize);
-    for(int i=0;i<10;i++){
-        nand_magic.push_back(p0[0x200+0x10+i]);
+    for(int i=0;i<sizeof(nand_magic)-1;i++){
+        nand_magic[i]=p0[0x200+0x10+i];
     }
-    printf("nand magic: %s\n",nand_magic.c_str());
+    nand_magic[sizeof(nand_magic)-1]=0;
+    printf("nand magic: %s\n",nand_magic);
 }
 
 void read_nand_file(){

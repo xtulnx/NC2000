@@ -132,6 +132,9 @@ struct nc2k_states_t{
 
 	bool time_adjusted;
 	bool do_warm_reset;
+
+	bool nc1020_time_adjusted_phase2; //nc1020 only
+	u64_t nc1020_time_adjusted_cycle;
 /*
 ===================
 below are all legacy fields, only used in old cpu_loop or io
