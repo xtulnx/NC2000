@@ -39,7 +39,7 @@ debug related
 */
 
 string inject_code;
-uint64_t tick=0;  //tick is mostly for debug
+u64_t tick=0;  //tick is mostly for debug
 
 bool enable_dyn_debug=false;
 int enable_dyn_debug_next_n=0;
@@ -74,7 +74,7 @@ emulation parameter
 ===================
 */
 uint32_t SLICE_INTERVAL= 1;  //unit ms
-int power_save_interval=1200;
+uint32_t power_save_interval=1200;
 uint32_t cpu_batch=64;
 
 bool enable_keepon = true;
