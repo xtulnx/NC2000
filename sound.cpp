@@ -262,7 +262,12 @@ void init_audio() {
     g_dsp_s0 = 0.0f;
     g_dsp_s1 = 0.0f;
 
-	g_audio_device = SDL_OpenAudioDevice(nullptr, 0, &desired_spec, nullptr, 0);
+    if(g_audio_device){
+        //only possible for emscripten version, because variables are kept across runs
+        printf("re-used audio device from last run\n");
+    } else {
+        g_audio_device = SDL_OpenAudioDevice(nullptr, 0, &desired_spec, nullptr, 0);
+    }
     if (!g_audio_device) {
         std::printf("SDL_OpenAudioDevice failed: %s\n", SDL_GetError());
         return;
