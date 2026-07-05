@@ -341,35 +341,37 @@ void cpu_run3(){
 		cycles+=CycleDelta;
 	}
 
-	//magic number to fit timerA and pc1000emux's timer0 and timer1 code
-	//todo: better emulation
-    if(int trigger_cnt=trigger_x_times_per_s(576*50)){
-	  for(int i=0;i<trigger_cnt;i++){
-		if(/*nc1020mode||nc2000mode||nc3000mode||*/pc1000mode_normal()) {
-			//timerA/B are usually for record and play
-			//looks like nobody use timerA on nc1020/nc2000
-			if(setTimerA()){
-				//note: in orignally pc1000emux, it doesn't set irq pending here
-				cpu->set_irq_pending();
+	if(pc1000mode){
+		//magic number to fit pc1000emux's timer0,timer1 and timerA code
+		//todo: better emulation
+		if(int trigger_cnt=trigger_x_times_per_s(576*50)){
+			for(int i=0;i<trigger_cnt;i++){
+				if(/*nc1020mode||nc2000mode||nc3000mode||*/pc1000mode_normal()) {
+					//timerA/B are usually for record and play
+					//looks like nobody use timerA on nc1020/nc2000
+					if(setTimerA()){
+						//note: in orignally pc1000emux, it doesn't set irq pending here
+						cpu->set_irq_pending();
+					}
+				}
+				if(pc1000mode_emux()) {
+					bus_pc1000->setTimer();
+					if (bus_pc1000->setTimer0()) {
+						//timer0用于录放音，蜂鸣器音乐
+						bus_pc1000->setIrqTimer0();
+						//printf("irq1!\n");
+						cpu->irq_now();
+					}
+					if (bus_pc1000->setTimer1()) {
+						//timer1用于秒表的百分之一秒，每秒200次
+						bus_pc1000->setIrqTimer1();
+						cpu->irq_now();
+						//printf("irq2!\n");
+					}
+				}
 			}
 		}
-		if(pc1000mode_emux()) {
-			bus_pc1000->setTimer();
-			if (bus_pc1000->setTimer0()) {
-				//timer0用于录放音，蜂鸣器音乐
-				bus_pc1000->setIrqTimer0();
-				//printf("irq1!\n");
-				cpu->irq_now();
-			}
-			if (bus_pc1000->setTimer1()) {
-				//timer1用于秒表的百分之一秒，每秒200次
-				bus_pc1000->setIrqTimer1();
-				cpu->irq_now();
-				//printf("irq2!\n");
-			}
-		}
-	  }
-    }
+	}
 
 	if(nc1020mode||nc2000mode||nc3000mode||(pc1000mode_normal())) {
 		bool KeepTimer01( unsigned int cpuTick);
