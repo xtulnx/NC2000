@@ -185,6 +185,9 @@ void warm_reset_if_clkoff(){
 	}
 }
 void cold_reset(){
+	void clear_dummy_io();
+	clear_dummy_io();
+
 	nc2k_state_cold_reset();
 	//memset(ram_io,0,0x40);
 	cpu->reset();

@@ -231,7 +231,6 @@ void handle_cmd(string str){
 		return;
 	}
 	if(cmds[0]=="cold_reset"){
-		clear_dummy_io();
 		void cold_reset();
 		cold_reset();
 		return;
