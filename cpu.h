@@ -25,10 +25,12 @@ public:
 
     CPUInterface():A(mA), X(mX), Y(mY), SP(mSP), PC(mPC) {
         printf("using handypsp cpu\n");
+        version = CPU_HANDYPSP;
         CpuInitialize();
     };
     CPUInterface(C6502 *cpu) :A(cpu->A), X(cpu->X), Y(cpu->Y), SP(cpu->SP), PC(cpu->PC) {
         printf("using emux cpu\n");
+        version = CPU_EMUX;
         cpu_impl_emux = cpu;
 	    cpu->reset();
     };
@@ -43,6 +45,7 @@ public:
 
 
     private:
+    CpuVersion version = CPU_INVALID; //use a flag instead of inheritance, to avoid virtual function overhead
 
     //only for emux cpu
     C6502 *cpu_impl_emux = NULL;

@@ -12,7 +12,7 @@ unsigned char illegal_op_byte[256];
 unsigned char illegal_op_cycle[256];
 
 void CPUInterface::reset(){
-	if(cpu_impl_emux) return cpu_impl_emux->reset();
+	if(version==CPU_EMUX) return cpu_impl_emux->reset();
 
 	CpuInitialize();
 	
@@ -48,7 +48,7 @@ int CPUInterface::emux_exec_helper(int max_cycles) {
 }
 
 int CPUInterface::execute(int max_cycles){
-	if(cpu_impl_emux) {
+	if(version==CPU_EMUX) {
 		return emux_exec_helper(max_cycles*12)/12;
 	}
 
@@ -80,13 +80,13 @@ int CPUInterface::execute(int max_cycles){
 }
 
 void CPUInterface::set_nmi_pending() {
-	if(cpu_impl_emux) return cpu_impl_emux->NMI();
+	if(version==CPU_EMUX) return cpu_impl_emux->NMI();
 
 	g_nmi = true;
 }
 
 void CPUInterface::irq_now() {
-	if(cpu_impl_emux) return cpu_impl_emux->IRQ();
+	if(version==CPU_EMUX) return cpu_impl_emux->IRQ();
 
 	if(!mI) {
 		cycle+=CpuExecuteIRQ();
@@ -99,7 +99,7 @@ void CPUInterface::irq_now() {
 }
 void CPUInterface::set_irq_pending() {
 	if(enable_dyn_debug_next_n) printf("set_irq_pending!!!\n");
-	if(cpu_impl_emux) {
+	if(version==CPU_EMUX) {
 		cpu_impl_emux->irqPending = true;
 		return;
 	}
@@ -107,7 +107,7 @@ void CPUInterface::set_irq_pending() {
 }
 
 int CPUInterface::P() {
-	if(cpu_impl_emux) return cpu_impl_emux->P;
+	if(version==CPU_EMUX) return cpu_impl_emux->P;
 
 	return PS();
 }

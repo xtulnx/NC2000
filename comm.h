@@ -53,6 +53,7 @@ enum NorFormat{
 };
 
 enum CpuVersion {
+    CPU_INVALID = 0,
     CPU_HANDYPSP = 1,
     CPU_EMUX = 2,
 };
