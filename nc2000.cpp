@@ -75,6 +75,9 @@ void LoadNC2k(){
 	void CreateHotlinkMapping();
 	CreateHotlinkMapping();
 
+	void clear_dummy_io();
+	clear_dummy_io();
+
 	init_nor();
 	if(pc1000mode||nc1020mode) {
 		init_rom();

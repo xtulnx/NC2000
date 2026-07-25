@@ -158,6 +158,18 @@ bool dummy_io_for_write(uint16_t addr, uint8_t value){
 	return true;
 }
 
+void clear_dummy_io(){
+	//put, dummy_io_for_read()
+	queue.clear();
+	dummy_io_cnt=-1;
+	put_total_size=0;
+
+	//get, dummy_io_for_write()
+	dummy_io_write_cnt=-1;
+	queue_for_write.clear();
+	file_name_for_write.clear();
+}
+
 void copy_to_addr(uint16_t addr, uint8_t * buf,uint16_t size){
 	for(uint32_t i=0;i<size;i++){
 		Peek16(addr+i)=buf[i];
@@ -216,6 +228,7 @@ void handle_cmd(string str){
 		return;
 	}
 	if(cmds[0]=="cold_reset"){
+		clear_dummy_io();
 		void cold_reset();
 		cold_reset();
 		return;
