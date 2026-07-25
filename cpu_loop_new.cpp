@@ -10,6 +10,7 @@
 #include "io_new.h"
 #include "iv_uart.h"
 #include "sound.h"
+#include "nand.h"
 
 #define qDebug(...)
 
@@ -185,8 +186,8 @@ void warm_reset_if_clkoff(){
 	}
 }
 void cold_reset(){
-	void clear_dummy_io();
-	clear_dummy_io();
+	clear_cmds();
+	clear_nand_status();
 
 	nc2k_state_cold_reset();
 	//memset(ram_io,0,0x40);

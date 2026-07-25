@@ -158,7 +158,7 @@ bool dummy_io_for_write(uint16_t addr, uint8_t value){
 	return true;
 }
 
-void clear_dummy_io(){
+void clear_cmds(){
 	//put, dummy_io_for_read()
 	queue.clear();
 	dummy_io_cnt=-1;
@@ -168,6 +168,11 @@ void clear_dummy_io(){
 	dummy_io_write_cnt=-1;
 	queue_for_write.clear();
 	file_name_for_write.clear();
+
+	//pending messages
+	g_mutex.lock();
+	udp_msgs.clear();
+	g_mutex.unlock();
 }
 
 void copy_to_addr(uint16_t addr, uint8_t * buf,uint16_t size){

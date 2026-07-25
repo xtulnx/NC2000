@@ -19,6 +19,7 @@
 #include "compare/c6502.h"
 #include "console.h"
 #include "iv_uart.h"
+#include "cmd.h"
 extern WqxRom nc2k_rom;
 
 nc2k_states_t nc2k_states;
@@ -67,6 +68,8 @@ void load_state(){
 
 void LoadNC2k(){
 	nc2k_states.init(); //fix re-run issue on emscripten version
+	clear_cmds();
+	clear_nand_status();
 
 	dummy_bus= new BusWrapper();
 
@@ -74,9 +77,6 @@ void LoadNC2k(){
 	
 	void CreateHotlinkMapping();
 	CreateHotlinkMapping();
-
-	void clear_dummy_io();
-	clear_dummy_io();
 
 	init_nor();
 	if(pc1000mode||nc1020mode) {
