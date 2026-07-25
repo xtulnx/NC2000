@@ -256,6 +256,8 @@ void cpu_run3(){
 	if(peeked_msg){
 		bool need_wait=false;
 		string cmd=split_s(string(peeked_msg), " ")[0];
+		string translate_cmd_alias(string name);
+		cmd=translate_cmd_alias(cmd);
 		//printf("cmd is %s\n",cmd.c_str());
 		if(cmd=="file_manager"||cmd=="put"||cmd=="get"||cmd=="create_dir"||cmd=="create_dir_hex"){
 			need_wait=true;

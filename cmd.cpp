@@ -187,7 +187,22 @@ std::string HexToBytes(const std::string& hex) {
 
   return bytes;
 }
-
+string translate_cmd_alias(string name){
+	if(name=="wr") name="warm_reset";
+	if(name=="cr") name="cold_reset";
+	if(name=="sf") name="save_flash";
+	if(name=="sa") name="save_all";
+	//if(name=="ss") name="save_state";
+	if(name=="ds"||name=="del_state") name="delete_state";
+	if(name=="f") name="file_manager";
+	if(name=="cf"||name=="create_dir") name="create_folder";
+	if(name=="cfh"||name=="create_dir_hex") name="create_folder_hex";
+	if(name=="st") name="sync_time";
+	if(name=="sp") name="speed";
+	if(name=="ed"||name=="ec"||name=="modify") name="edit";
+	if(name=="ffl") name="fast_forward_limit";
+	return name;
+}
 void handle_cmd(string str){
 	printf("handling cmd ");
 	auto cmds=split_s(str," ");
@@ -203,19 +218,7 @@ void handle_cmd(string str){
 		print_help();
 		return;
 	}
-	if(cmds[0]=="wr") cmds[0]="warm_reset";
-	if(cmds[0]=="cr") cmds[0]="cold_reset";
-	if(cmds[0]=="sf") cmds[0]="save_flash";
-	if(cmds[0]=="sa") cmds[0]="save_all";
-	//if(cmds[0]=="ss") cmds[0]="save_state";
-	if(cmds[0]=="ds") cmds[0]="delete_state";
-	if(cmds[0]=="f") cmds[0]="file_manager";
-	if(cmds[0]=="cf") cmds[0]="create_folder";
-	if(cmds[0]=="cfh") cmds[0]="create_folder_hex";
-	if(cmds[0]=="st") cmds[0]="sync_time";
-	if(cmds[0]=="sp") cmds[0]="speed";
-	if(cmds[0]=="ed"||cmds[0]=="ec") cmds[0]="edit";
-	if(cmds[0]=="ffl") cmds[0]="fast_forward_limit";
+	cmds[0]=translate_cmd_alias(cmds[0]);
 	if(cmds[0]=="hack1"){
 		void hack1_save_nc1020_12m_rom();
 		hack1_save_nc1020_12m_rom();
@@ -253,7 +256,7 @@ void handle_cmd(string str){
 		}
 		return;
 	}
-	if(cmds[0]=="delete_state"||cmds[0]=="del_state"){
+	if(cmds[0]=="delete_state"){
 		string file="";
 		if(cmds.size()>1){
 			file=cmds[1];	
@@ -275,16 +278,16 @@ void handle_cmd(string str){
 		return;
 	}
 
-	if(cmds[0]=="edit"||cmds[0]=="modify"){
+	if(cmds[0]=="edit"){
 		uint32_t start=stoi(cmds[1],0,16);
 		for(uint32_t i=2;i<cmds.size();i++){
 			Peek16(start++)=stoi(cmds[i],0,16);;
 		}
-		printf("ec done\n");
+		printf("edit done\n");
 		return;
 	}
 
-	if(cmds[0]=="file_manager"||cmds[0]=="f"){
+	if(cmds[0]=="file_manager"){
 		if(!nc2000mode&&!nc3000mode) return;
 		cpu->PC=0x3000;
 		/*if(nc1020mode){
@@ -308,7 +311,7 @@ void handle_cmd(string str){
 		return;
 	}
 
-	if(cmds[0]=="create_dir" || cmds[0]=="create_dir_hex" || cmds[0]=="create_folder" || cmds[0]=="create_folder_hex"){
+	if(cmds[0]=="create_folder" || cmds[0]=="create_folder_hex"){
 			//printf("<pc=%x>\n",cpu->PC);
 			cpu->PC=0x3000;
 			string dir_name=cmds[1];
