@@ -246,8 +246,13 @@ static void audio_mix_cb(void* userdata, Uint8* stream, int len_bytes) {
 }
 
 // Initialize one device with a callback, no SDL_mixer required.
-void init_audio() {
+bool init_audio() {
     dsp.callback = dsp_call_back;
+
+    last_beeper = {};
+    sound_stream_beeper.clear();
+    sound_stream_dsp_wqx.clear();
+    sound_stream_dsp_host.clear();
 
     SDL_AudioSpec desired_spec = {};
     desired_spec.freq = (int)BEEPER_AUDIO_HZ;   // Pick beeper rate to avoid resampling it
@@ -270,10 +275,11 @@ void init_audio() {
     }
     if (!g_audio_device) {
         std::printf("SDL_OpenAudioDevice failed: %s\n", SDL_GetError());
-        return;
+        return false;
     }
 
     SDL_PauseAudioDevice(g_audio_device, 0);
+    return true;
 }
 
 // Call on shutdown
@@ -283,4 +289,3 @@ void shutdown_audio() {
         g_audio_device = 0;
     }
 }
-

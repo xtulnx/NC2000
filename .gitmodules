@@ -1,0 +1,3 @@
+[submodule "android/third_party/SDL"]
+	path = android/third_party/SDL
+	url = https://github.com/libsdl-org/SDL.git

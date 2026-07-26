@@ -1,6 +1,7 @@
 #pragma once
 
 #include "comm.h"
+#include "key_matrix.h"
 
 /*
 ===================
@@ -9,7 +10,6 @@ emulator api
 */
 //void Initialize();
 //void Reset();
-void SetKey(uint8_t, bool);
 void RunTimeSlice(uint32_t);
 bool CopyLcdBuffer(uint8_t*);
 void LoadNC2k();

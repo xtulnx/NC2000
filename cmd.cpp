@@ -4,6 +4,7 @@
 #include "nor.h"
 #include <cstdint>
 #include <cstdio>
+#include <utility>
 #include <time.h>
 
 #include <mutex>
@@ -90,6 +91,9 @@ char *peek_message(){
 static deque<char> queue;
 static int32_t dummy_io_cnt=-1;
 static int put_total_size=0;
+static size_t put_last_transferred=0;
+static size_t put_expected_size=0;
+static void handle_cmd_impl(string str, vector<char>* put_file, string* put_target);
 bool dummy_io_for_read(uint16_t addr, uint8_t &value){
 	if(addr!=0x3fff) return false;
 	if(dummy_io_cnt== -1) return false;
@@ -97,6 +101,7 @@ bool dummy_io_for_read(uint16_t addr, uint8_t &value){
 		value=0;
         dummy_io_cnt=-1;
 		printf("[put] done, total size=%d\n",put_total_size);
+		put_last_transferred=static_cast<size_t>(put_total_size);
 		put_total_size=0;
 		//printf("<dummy read %02x>\n",value);
 		return true;
@@ -113,6 +118,30 @@ bool dummy_io_for_read(uint16_t addr, uint8_t &value){
 	}
 	//printf("<dummy read %02x>\n",value);
 	return true;
+}
+
+bool put_transfer_active(){ return dummy_io_cnt != -1; }
+void cancel_put_transfer(){
+	// Let the injected program observe the normal zero-length terminator on its
+	// next port read.  Closing the virtual port immediately would make that
+	// program read unrelated mapped memory at 0x3fff and potentially spin.
+	queue.clear();
+}
+size_t put_transfer_transferred(){ return dummy_io_cnt == -1 ? put_last_transferred : static_cast<size_t>(put_total_size); }
+size_t put_transfer_total(){ return put_expected_size; }
+
+bool begin_put_from_file(const string& source_path, const vector<uint8_t>& device_name,
+                         string* error){
+	if (dummy_io_cnt != -1) { if (error) *error="已有文件传输任务"; return false; }
+	if (device_name.empty() || device_name.size()>16) { if (error) *error="设备文件名必须为 1 到 16 个 GBK 字节"; return false; }
+	for(uint8_t c: device_name) if(c==0) { if(error) *error="设备文件名不能包含 NUL"; return false; }
+	vector<char> file;
+	if(read_file_noexit(source_path, file)!=0) { if(error) *error="无法打开导入源文件"; return false; }
+	string target(reinterpret_cast<const char*>(device_name.data()), device_name.size());
+	// Reuse the model-specific put implementation through typed parameters so
+	// raw GBK names never pass through command-line parsing or a reserved token.
+	handle_cmd_impl("put", &file, &target);
+	return dummy_io_cnt != -1;
 }
 
 static deque<char> queue_for_write;
@@ -176,7 +205,7 @@ std::string HexToBytes(const std::string& hex) {
   return bytes;
 }
 
-void handle_cmd(string str){
+static void handle_cmd_impl(string str, vector<char>* put_file, string* put_target){
 	printf("handling cmd ");
 	auto cmds=split_s(str," ");
 	for(int i=0;i<cmds.size();i++){
@@ -442,16 +471,22 @@ void handle_cmd(string str){
 	}
 	if(cmds[0]=="put"){
 			vector<char> file;
-			if(read_file_noexit(cmds[1], file)!=0){
-				return ;
+			string target;
+			if(put_file != nullptr && put_target != nullptr) {
+				file.swap(*put_file);
+				target.swap(*put_target);
+			} else {
+				if(cmds.size()<2 || read_file_noexit(cmds[1], file)!=0){ return; }
+				target=split_s(cmds[1],"/").back();
+				if(cmds.size()>2) target=cmds[2];
 			}
-			string target=split_s(cmds[1],"/").back();
-			if(cmds.size()>2) target=cmds[2];
 			queue.clear();
 			for(int i=0;i<file.size();i++){
 				queue.push_back(file[i]);
 			}
 			dummy_io_cnt=0;
+			put_expected_size=file.size();
+			put_last_transferred=0;
 			if(nc1020mode){
 				copy_to_addr(0x121c, (uint8_t*)(target+"                    ").c_str(), 16);
 				Peek16(0x1219)=0x61;
@@ -550,4 +585,6 @@ void handle_cmd(string str){
 	fflush(stdout);
 }
 
-
+void handle_cmd(string str){
+	handle_cmd_impl(std::move(str), nullptr, nullptr);
+}

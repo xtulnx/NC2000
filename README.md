@@ -64,6 +64,21 @@ The rest of Readme is going to be in Chinese, there are a few more english mater
 
 文曲星nc2000/nc2600/nc1020模拟器。跨平台，可以运行在windows/linux/mac。
 
+# Android 版
+
+项目同时提供 Android 原生应用，工程位于 `android/`。界面使用 Kotlin 和
+Jetpack Compose，模拟器核心通过 JNI 调用 C++ 实现，并保留 SDL2 的音频与原生
+能力。
+
+Android 版支持为不同机型建立多个启动配置，通过系统文件选择器导入 ROM、NOR、
+NAND 和即时存档；运行时可在迷你键盘与全键盘之间切换，并提供存档、重置、
+快进和后台运行等控制。固件不随应用发布，需要由用户自行从合法来源准备。
+
+<p>
+  <img width="300" alt="Android 启动配置列表" src="android/design/screenshots/android-launcher.jpg" />
+  <img width="300" alt="Android 模拟器全键盘运行界面" src="android/design/screenshots/android-full-keyboard.jpg" />
+</p>
+
 支持以下feature：
 * 运行从真机dump的rom
 * 兼容真机软件，和各种自制内核
@@ -225,4 +240,3 @@ Pc1000emux，nc3000emux旧版，nc3000emux新版(没有源码) 作者：Lee。
 # Wiki
 
 更多信息见wiki: https://github.com/wangyu-/NC2000/wiki/
-

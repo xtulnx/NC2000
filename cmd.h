@@ -10,6 +10,17 @@ void push_message(string msg);
 string get_message();
 char* peek_message();
 
+// Typed host-to-device transfer entry point.  This must be called by the
+// emulator thread: it prepares the same put injection used by the desktop
+// command without parsing a command line (device names may contain spaces or
+// non-UTF-8 bytes).
+bool begin_put_from_file(const string& source_path, const vector<uint8_t>& device_name,
+                         string* error);
+bool put_transfer_active();
+void cancel_put_transfer();
+size_t put_transfer_transferred();
+size_t put_transfer_total();
+
 
 
 // compile below with 6502 macroassembler and simulator,

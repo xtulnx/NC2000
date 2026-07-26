@@ -1,7 +1,7 @@
 #pragma once
 #include "comm.h"
 
-void init_audio();
+bool init_audio();
 void shutdown_audio();
 
 void reset_dsp();

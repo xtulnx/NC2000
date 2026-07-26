@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
+project(NC2000 LANGUAGES C CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_CXX_FLAGS "-O2 -g3 -fsanitize=address -I/opt/homebrew/include")
@@ -33,7 +34,7 @@ endif()
 #target_link_libraries(a.out PRIVATE "-Wl,-stack_size -Wl,3f00000")
 #target_link_directories(a.out PUBLIC "/opt/homebrew/lib")
 
-add_executable(a.out main.cpp nc2000.cpp disassembler.cpp cpu_loop.cpp comm.cpp mem.cpp io.cpp rom.cpp nor.cpp nand.cpp ram.cpp dsp/dsp.cpp sound.cpp cmd.cpp udp_server.cpp ansi/w65c02cpu.cpp ansi/w65c02op.cpp NekoDriverIO.cpp key_new.cpp compare/c6502.cpp compare/pc1000bus.cpp cpu_loop_new.cpp settings.cpp key.cpp display.cpp io_new.cpp lcdstripe/json.cpp lcdstripe/lcdpainter.cpp cpu.cpp console.cpp disassembler_new.cpp iv_uart.cpp)
+add_executable(a.out main.cpp emulator_config.cpp emulator_session.cpp nc2000.cpp disassembler.cpp cpu_loop.cpp comm.cpp mem.cpp io.cpp rom.cpp nor.cpp nand.cpp ram.cpp dsp/dsp.cpp sound.cpp cmd.cpp udp_server.cpp ansi/w65c02cpu.cpp ansi/w65c02op.cpp NekoDriverIO.cpp key_matrix.cpp key_new.cpp compare/c6502.cpp compare/pc1000bus.cpp cpu_loop_new.cpp settings.cpp key.cpp display.cpp io_new.cpp lcdstripe/json.cpp lcdstripe/lcdpainter.cpp cpu.cpp console.cpp disassembler_new.cpp iv_uart.cpp)
 target_link_libraries(a.out ${SDL2_LIBRARIES})
 
 if(ENABLE_UDP_SERVER)
@@ -46,4 +47,3 @@ if(ENABLE_SERIAL_PORT)
     target_compile_options(a.out PRIVATE ${LIBSERIALPORT_CFLAGS})
     target_link_libraries(a.out ${LIBSERIALPORT_LIBRARIES})
 endif()
-

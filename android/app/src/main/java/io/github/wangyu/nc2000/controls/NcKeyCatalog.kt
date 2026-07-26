@@ -1,0 +1,68 @@
+package io.github.wangyu.nc2000.controls
+
+data class NcKeyOption(
+    val id: Int,
+    val label: String,
+)
+
+object NcKeyCatalog {
+    val all = listOf(
+        NcKeyOption(0x08, "时间"),
+        NcKeyOption(0x09, "资料"),
+        NcKeyOption(0x0a, "行程"),
+        NcKeyOption(0x0b, "英汉"),
+        NcKeyOption(0x0c, "名片"),
+        NcKeyOption(0x0d, "计算"),
+        NcKeyOption(0x0e, "网络"),
+        NcKeyOption(0x0f, "开关"),
+        NcKeyOption(0x10, "F1"),
+        NcKeyOption(0x11, "F2"),
+        NcKeyOption(0x12, "F3"),
+        NcKeyOption(0x13, "F4"),
+        NcKeyOption(0x14, "报时"),
+        NcKeyOption(0x15, "发音"),
+        NcKeyOption(0x18, "O"),
+        NcKeyOption(0x19, "L"),
+        NcKeyOption(0x1a, "上"),
+        NcKeyOption(0x1b, "下"),
+        NcKeyOption(0x1c, "P"),
+        NcKeyOption(0x1d, "输入"),
+        NcKeyOption(0x1e, "PgDn"),
+        NcKeyOption(0x1f, "右"),
+        NcKeyOption(0x20, "Q"),
+        NcKeyOption(0x21, "W"),
+        NcKeyOption(0x22, "E"),
+        NcKeyOption(0x23, "R"),
+        NcKeyOption(0x24, "T / 7"),
+        NcKeyOption(0x25, "Y / 8"),
+        NcKeyOption(0x26, "U / 9"),
+        NcKeyOption(0x27, "I"),
+        NcKeyOption(0x28, "A"),
+        NcKeyOption(0x29, "S"),
+        NcKeyOption(0x2a, "D"),
+        NcKeyOption(0x2b, "F"),
+        NcKeyOption(0x2c, "G / 4"),
+        NcKeyOption(0x2d, "H / 5"),
+        NcKeyOption(0x2e, "J / 6"),
+        NcKeyOption(0x2f, "K"),
+        NcKeyOption(0x30, "Z"),
+        NcKeyOption(0x31, "X"),
+        NcKeyOption(0x32, "C"),
+        NcKeyOption(0x33, "V"),
+        NcKeyOption(0x34, "B / 1"),
+        NcKeyOption(0x35, "N / 2"),
+        NcKeyOption(0x36, "M / 3"),
+        NcKeyOption(0x37, "PgUp"),
+        NcKeyOption(0x38, "求助"),
+        NcKeyOption(0x39, "中英数"),
+        NcKeyOption(0x3a, "输入法"),
+        NcKeyOption(0x3b, "跳出"),
+        NcKeyOption(0x3c, "0"),
+        NcKeyOption(0x3d, "."),
+        NcKeyOption(0x3e, "空格"),
+        NcKeyOption(0x3f, "左"),
+    )
+
+    fun label(id: Int): String = all.firstOrNull { it.id == id }?.label
+        ?: "0x${id.toString(16).padStart(2, '0')}"
+}

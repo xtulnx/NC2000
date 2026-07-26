@@ -10,3 +10,4 @@ void read_nand_file();
 
 void write_nand0_file(string file="");
 void write_nand_file(string file="");
+void clear_nand_status();

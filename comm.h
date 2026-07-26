@@ -46,6 +46,8 @@ struct WqxRom {
     std::string statesPath;
 };
 
+extern WqxRom nc2k_rom;
+
 enum NorFormat{
     INVALID=0,
     PHYSICAL_ORDER=1,

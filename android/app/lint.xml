@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <!-- SDL's official Android glue is pinned as an external submodule. -->
+    <issue id="all">
+        <ignore regexp=".*third_party/SDL/.*" />
+    </issue>
+</lint>
