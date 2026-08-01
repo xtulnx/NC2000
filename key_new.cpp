@@ -298,18 +298,18 @@ void init_keyitems(){
     if(pc1000mode){
       current_items=items1000;
     }
-      for (int i=0; i<current_items.size(); i++) {
-            if (current_items[i] == NULL) {
-                //keypadmatrix[y][x] = 2;
-            } else {
-                assert(current_items[i]->code_y>=0);
-                assert(current_items[i]->code_x>=0);
-                for(auto e: current_items[i]->sdl_keys){
-                    //sdl_to_item[e]=item[y][x]->code;
-                    sdl_to_item[e]=pair<int,int>(current_items[i]->code_y, current_items[i]->code_x);
-                }
+    for (int i=0; i<current_items.size(); i++) {
+        if (current_items[i] == NULL) {
+            //keypadmatrix[y][x] = 2;
+        } else {
+            assert(current_items[i]->code_y>=0);
+            assert(current_items[i]->code_x>=0);
+            for(auto e: current_items[i]->sdl_keys){
+                //sdl_to_item[e]=item[y][x]->code;
+                sdl_to_item[e]=pair<int,int>(current_items[i]->code_y, current_items[i]->code_x);
             }
-      }
+        }
+    }
 }
 
 pair<int,int> map_key_wayback(int32_t sym){

@@ -186,15 +186,12 @@ void warm_reset_if_clkoff(){
 	}
 }
 void cold_reset(){
-	clear_cmds();
-	clear_nand_status();
-
-	nc2k_state_cold_reset();
+	nc2k_cold_reset();
 	//memset(ram_io,0,0x40);
 	cpu->reset();
 }
 void warm_reset(){
-	nc2k_state_warm_reset();
+	nc2k_warm_reset();
 	cpu->reset();
 }
 void debug_pc(){
@@ -253,7 +250,7 @@ void cpu_run3(){
 	if(do_warm_reset){
 		do_warm_reset=0;
 		//prepare_soft_reset(); //shouldn't call here
-		nc2k_state_warm_reset();
+		nc2k_warm_reset();
 		cpu->reset();
 	}
 	char *peeked_msg=peek_message();

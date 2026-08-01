@@ -17,7 +17,7 @@ void init_lcd_stripe(){
    lcdview->loadStripeTexture(("resource/lcdstripe_"+lcdstripe_suffix+".bmp").c_str(), renderer);
 }
 
-unsigned char *lcd_effect_buffer = nullptr;
+unsigned char *lcd_effect_buffer = nullptr; //cannot be preallocated, because size is from options
 
 inline void handle_pixel(int u,int v,const unsigned char * color_arr[], int idx){
     //todo: inefficient, change to for each lcd tile use SDL_RenderCopy

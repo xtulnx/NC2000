@@ -198,7 +198,7 @@ void save_flash(string file){
 	printf("flash saved to file!!\n");
 }
 
-void nc2k_state_warm_reset(){
+void nc2k_warm_reset(){
 
 	uint8_t* ioReg=nc2k_states.ram_io;
 
@@ -267,8 +267,11 @@ void nc2k_state_warm_reset(){
     super_switch();
 }
 
-void nc2k_state_cold_reset(){
-    nc2k_state_warm_reset();
+void nc2k_cold_reset(){
+    clear_cmds();
+    clear_nand_status();
+
+    nc2k_warm_reset();
     clear_iv();//if this is put into warm_reset, alarm wakeup will not work correcly
 
     //memset(ram_io,0,sizeof(nc2k_states.ram_io));
