@@ -274,40 +274,39 @@ vector<TKeyItem*> items1000 = {
 
 
 static map<int,pair<int,int> > sdl_to_item;
+void copy_items_deref(vector<TKeyItem*> &src, vector<TKeyItem> &dst){
+  for(auto x: src) if(x) dst.push_back(*x);
+}
 void init_keyitems(){
     sdl_to_item.clear();
-    decltype(items) current_items;
+    vector<TKeyItem> current_items;
     if(!pro_key){
-      current_items=items;
+      copy_items_deref(items, current_items);
     }else{
-      current_items=pro_mode_items;
+      copy_items_deref(pro_mode_items, current_items);
     }
     if(nc1020mode||nc2000mode){
-      for(auto x: items2000_1020) current_items.push_back(x);
+      copy_items_deref(items2000_1020, current_items);
       if(nc2000mode) {
-        current_items.push_back(new TKeyItem(18, 0x02,0,0,  NULL, NULL, "ON/OFF", {SDLK_F12}));
-        current_items.push_back(new TKeyItem(0, 0x01, 1,0, NULL, NULL, "infra_red", {SDLK_LALT})); 
+        current_items.push_back(TKeyItem(18, 0x02,0,0,  NULL, NULL, "ON/OFF", {SDLK_F12}));
+        current_items.push_back(TKeyItem(0, 0x01, 1,0, NULL, NULL, "infra_red", {SDLK_LALT})); 
       }
       if(nc1020mode){
-        current_items.push_back(new TKeyItem(0, -1, 2,0, NULL, NULL, "infra_red", {SDLK_LALT})); 
+        current_items.push_back(TKeyItem(0, -1, 2,0, NULL, NULL, "infra_red", {SDLK_LALT})); 
       }
     }
     if(nc3000mode) {
-      for(auto x: items3000) current_items.push_back(x);
+      copy_items_deref(items3000, current_items);
     }
     if(pc1000mode){
-      current_items=items1000;
+      copy_items_deref(items1000, current_items);
     }
     for (int i=0; i<current_items.size(); i++) {
-        if (current_items[i] == NULL) {
-            //keypadmatrix[y][x] = 2;
-        } else {
-            assert(current_items[i]->code_y>=0);
-            assert(current_items[i]->code_x>=0);
-            for(auto e: current_items[i]->sdl_keys){
-                //sdl_to_item[e]=item[y][x]->code;
-                sdl_to_item[e]=pair<int,int>(current_items[i]->code_y, current_items[i]->code_x);
-            }
+        assert(current_items[i].code_y>=0);
+        assert(current_items[i].code_x>=0);
+        for(auto e: current_items[i].sdl_keys){
+            //sdl_to_item[e]=item[y][x]->code;
+            sdl_to_item[e]=pair<int,int>(current_items[i].code_y, current_items[i].code_x);
         }
     }
 }
