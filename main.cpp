@@ -21,7 +21,9 @@ SDL_Window* window;
 SDL_Renderer* renderer;
 MyLCDView*  lcdview;
 
-//init resource, this function is not supposed to be called repeatedly, otherwise there will be resource leak
+//Initialize Resource, this function is not supposed to be called repeatedly, otherwise there will be resource leak.
+// If you are trying to create an emscripten/android/ios version, init_resource() should be called only once,
+// emu_entry() is the only function you need to re-call after switching rom or model. 
 void init_resource() {
   #if defined(__MINGW32__)
   SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
@@ -210,9 +212,10 @@ void main_loop() {
   }
 }
 
-//entry point of the emulator, this function can be called repeatedly if you need.
-//e.g., you can change model and rom path, then call this function again to switch to new model and rom
-//check reload/load_nc2000/load_nc1020 command in cmd.cpp as an example
+//Entry Point of the emulator, this function can be called repeatedly if you need.
+// repeating calling this function can be useful if you are creating an emscripten/android/ios version.
+//E.g., you can change model and rom path, then call this function again to switch to new model and rom without restarting the whole program,
+// check reload/load_nc2000/load_nc1020 command in cmd.cpp as an example
 void emu_entry(){ 
     LoadNC2k();
     main_loop();
@@ -228,7 +231,7 @@ int main(int argc, char* args[]) {
     emu_entry();
   } while (reload_pending);
 
-  shutdown_audio(); //explictly shutdown audio to avoid bug on some platform. Other resources OS can recollect them correctly.
+  shutdown_audio(); //explictly shutdown audio to avoid bug on some platform. Other resources doesn't need this, since OS can always recollect them correctly.
 
   return 0;
 }
