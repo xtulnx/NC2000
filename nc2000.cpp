@@ -69,6 +69,7 @@ void LoadNC2k(){
 	nc2k_states.init(); //fix re-run issue on emscripten version
 	clear_cmds();
 	clear_nand_status();
+	clear_iv();
 
 	init_keyitems();
 
@@ -278,9 +279,9 @@ void nc2k_warm_reset(){
 void nc2k_cold_reset(){
     clear_cmds();
     clear_nand_status();
+    clear_iv();//if this is put into warm_reset, alarm wakeup will not work correcly
 
     nc2k_warm_reset();
-    clear_iv();//if this is put into warm_reset, alarm wakeup will not work correcly
 
     //memset(ram_io,0,sizeof(nc2k_states.ram_io));
     //memset(ext_reg, 0, sizeof(nc2k_states.ext_reg));
