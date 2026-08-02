@@ -18,6 +18,7 @@ extern "C" {
 #include "nc2000.h"
 #include "nor.h"
 #include "settings.h"
+#include <SDL2/SDL.h>
 extern nc2k_states_t nc2k_states;
 extern CPUInterface *cpu;
 
@@ -275,6 +276,9 @@ void handle_cmd(string str){
 		handle_rom();
 
 		reload_pending=true;
+
+		extern SDL_Window* window;
+		SDL_SetWindowTitle(window, get_title().c_str());
 		return;
 	}
 

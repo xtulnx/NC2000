@@ -83,10 +83,6 @@ void main_loop() {
 
 
   while (loop) {
-    if(reload_pending){
-      if(debug_level>=1) printf("reload pending, exit main loop\n");
-      break;
-    }
     if(sync_on_resume && enable_auto_time_sync)
     {
       last_time_rtc = current_time_rtc;
@@ -112,6 +108,11 @@ void main_loop() {
     }
     if(! power_save){
       RunTimeSlice(SLICE_INTERVAL);
+    }
+  
+    if(reload_pending){
+      if(debug_level>=1) printf("reload pending, exit main loop\n");
+      break;
     }
 
     SDL_Event event;
