@@ -13,13 +13,16 @@
 #include "settings.h"
 #include "display.h"
 #include "console.h"
+#include "lcdstripe/lcdpainter.h"
 
 using namespace std;
 
 SDL_Window* window;
+SDL_Renderer* renderer;
+MyLCDView*  lcdview;
 
 //init resource, this function is not supposed to be called repeatedly, otherwise there will be resource leak
-bool init_resource() {
+void init_resource() {
   #if defined(__MINGW32__)
   SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
 #endif
@@ -28,13 +31,12 @@ bool init_resource() {
 
   if(listen_port>0) init_udp_server(listen_port);
 
-  extern SDL_Renderer* renderer;
   lcd_effect_buffer = new unsigned char[SCREEN_HEIGHT*total_size* SCREEN_WIDTH*total_size * 4];
   memset(lcd_effect_buffer, 0, SCREEN_HEIGHT*total_size* SCREEN_WIDTH*total_size * 4);
 
   if (SDL_Init(SDL_INIT_EVERYTHING) == -1) {
     std::cout << " Failed to initialize SDL : " << SDL_GetError() << std::endl;
-    return false;
+    exit(-1);
   }
   init_audio();
 
@@ -42,17 +44,17 @@ bool init_resource() {
     SDL_CreateWindow(get_str_of_mode().c_str(), 0, 40, lcd_scale * (SCREEN_WIDTH +LEFT_GAP +RIGHT_GAP-1) *total_size +(LEFT_GAP_EXTRA+RIGHT_GAP_EXTRA)*lcd_scale, lcd_scale * SCREEN_HEIGHT *total_size, 0);
   if (!window) {
     std::cout << "Failed to create window : " << SDL_GetError() << std::endl;
-    return false;
+    exit(-1);
   }
   renderer = SDL_CreateRenderer(window, -1, 0);
   if (!renderer) {
     std::cout << "Failed to create renderer : " << SDL_GetError() << std::endl;
-    return false;
+    exit(-1);
   }
 
-  init_lcd_stripe();//need to call after renderer is created
+  lcdview = new MyLCDView(("resource/lcdstripe_slice_"+lcdstripe_suffix+".json").c_str());
+  lcdview->loadStripeTexture(("resource/lcdstripe_"+lcdstripe_suffix+".bmp").c_str(), renderer);
   
-  return true;
 }
 
 long long get_current_time_milliseconds() {
@@ -217,13 +219,12 @@ void emu_entry(){
 
 int main(int argc, char* args[]) {
   process_args(argc, args);
-  if(!init_resource()) return -1;
+  init_resource();
 
   do {
     reload_pending=false;
     emu_entry();
   } while (reload_pending);
-
 
   shutdown_audio(); //explictly shutdown audio to avoid bug on some platform. Other resources OS can recollect them correctly.
 

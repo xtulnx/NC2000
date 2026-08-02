@@ -3,19 +3,10 @@
 #include "compare/c6502.h"
 #include "nc2000.h"
 #include "console.h"
-#include "lcdstripe/lcdpainter.h"
 #include "display.h"
-
-SDL_Renderer* renderer;
+#include "lcdstripe/lcdpainter.h"
 
 uint8_t lcd_buf[SCREEN_WIDTH * SCREEN_HEIGHT / 8*2];
-
-MyLCDView*  lcdview;
-
-void init_lcd_stripe(){
-   lcdview = new MyLCDView(("resource/lcdstripe_slice_"+lcdstripe_suffix+".json").c_str());
-   lcdview->loadStripeTexture(("resource/lcdstripe_"+lcdstripe_suffix+".bmp").c_str(), renderer);
-}
 
 unsigned char *lcd_effect_buffer = nullptr; //cannot be preallocated, because size is from options
 
@@ -50,6 +41,9 @@ int render_cnt=0;
 u64_t last_inner_render_tick=0;
 u64_t last_outer_render_tick=0;
 void Render(u64_t tick) {
+  extern SDL_Renderer* renderer;
+  extern MyLCDView*  lcdview;
+
   if(tick/LCD_INNER_REFRESH_INTERVAL == last_inner_render_tick/LCD_INNER_REFRESH_INTERVAL){
     return; //not time to render
   }
@@ -74,7 +68,6 @@ void Render(u64_t tick) {
   else if (!CopyLcdBuffer(lcd_buf)) {
     std::cout << "Failed to copy buffer renderer." << std::endl;
   }
-
   
   SDL_Texture *texture;
   static SDL_Rect source = { 0, 0, SCREEN_WIDTH*total_size, SCREEN_HEIGHT*total_size };

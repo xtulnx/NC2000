@@ -263,6 +263,7 @@ void init_audio() {
     g_dsp_s1 = 0.0f;
 
     if(g_audio_device){
+        //if previous audio device is not correctly shutdhown.
         //only possible for emscripten version, because variables are kept across runs
         printf("re-used audio device from last run\n");
     } else {
