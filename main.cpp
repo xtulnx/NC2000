@@ -210,7 +210,8 @@ void main_loop() {
 }
 
 //entry point of the emulator, this function can be called repeatedly if you need.
-//for example, you can change model and rom path, then call this function again to switch to new model and rom
+//e.g., you can change model and rom path, then call this function again to switch to new model and rom
+//check reload/load_nc2000/load_nc1020 command in cmd.cpp as an example
 void emu_entry(){ 
     LoadNC2k();
     main_loop();

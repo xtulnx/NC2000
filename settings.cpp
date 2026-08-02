@@ -412,8 +412,6 @@ void process_args(int argc, char *argv[])
 		exit(-1);
 	}
 
-	handle_rom();
-
 	if(lcdstripe_suffix.empty()){
 		if(pixel_size+gap_size==5){
 			lcdstripe_suffix = "w938";
@@ -425,6 +423,6 @@ void process_args(int argc, char *argv[])
 	if(!uart_dev_name.empty()){
 		open_serial_port((char*)uart_dev_name.c_str());
 	}
-
 	init_parameters();
+	handle_rom();
 }

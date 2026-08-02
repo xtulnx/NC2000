@@ -258,24 +258,22 @@ void handle_cmd(string str){
 		rom_path.clear();
 		if(cmds.size()>1){
 			rom_path=cmds[1];
-		}else{
-			if(cmds[0]=="load_nc2000") rom_path="roms/nc2000";
-			else if(cmds[0]=="load_nc1020") rom_path="roms/nc1020";
-			else if(cmds[0]=="load_nc1020tw") rom_path="roms/nc1020tw";
-			else if(cmds[0]=="load_nc3000") rom_path="roms/nc3000";
-			else if(cmds[0]=="load_pc1000") rom_path="roms/pc1000";
 		}
+
 		extern WqxRom nc2k_rom;
 		nc2k_rom.clear();
 		nc2000mode=nc3000mode=nc1020mode=nc1020tw_mode=pc1000mode=false;
 		enable_load_state=false;
+
 		if(cmds[0]=="load_nc2000") nc2000mode=true;
 		if(cmds[0]=="load_nc3000") nc3000mode=true;
 		if(cmds[0]=="load_nc1020"||cmds[0]=="load_nc1020tw") nc1020mode=true;
 		if(cmds[0]=="load_nc1020tw") nc1020tw_mode=true;
 		if(cmds[0]=="load_pc1000") pc1000mode=true;
-		handle_rom();
+
 		init_parameters();
+		handle_rom();
+
 		reload_pending=true;
 		return;
 	}
