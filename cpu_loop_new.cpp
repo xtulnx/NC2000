@@ -1,5 +1,6 @@
 #include "compare/c6502.h"
 #include "comm.h"
+#include "compare/ibus6502.h"
 #include "cpu.h"
 #include "mem.h"
 #include "cmd.h"
@@ -21,19 +22,27 @@ static u64_t& last_cycles = nc2k_states.last_cycles;
 static uint8_t * rtc_reg=nc2k_states.ext_reg;
 static uint8_t * ext_reg=nc2k_states.ext_reg;
 //static uint8_t& interr_flag = nc2k_states.interr_flag;
-class BusPC1000 *bus_pc1000=0;
 
 static bool& time_adjusted=nc2k_states.time_adjusted;
 static bool& do_warm_reset=nc2k_states.do_warm_reset;
 
+BusWrapper *dummy_bus;
+BusPC1000 *bus_pc1000;
+C6502 *c6502;
+
 void init_cpu_new(){
+	if(cpu){delete cpu; cpu=nullptr;}
+	if(c6502){delete c6502; c6502=nullptr;}
+	if(dummy_bus){delete dummy_bus; dummy_bus=nullptr;}
+	if(bus_pc1000){delete bus_pc1000; bus_pc1000=nullptr;}
+
 	if(io_version == IO_V1 || io_version == IO_V2){
 		if(cpu_version== CPU_HANDYPSP) {
 			cpu=new CPUInterface();
 		} else if(cpu_version==CPU_EMUX) {
-			IBus6502 *dummy_bus = new BusWrapper();
-			auto cpu_impl = new C6502(dummy_bus);
-			cpu = new CPUInterface(cpu_impl);
+			dummy_bus=new BusWrapper();
+			c6502 = new C6502(dummy_bus);
+			cpu = new CPUInterface(c6502);
 		} else {
 			assert(false);
 		}
@@ -42,9 +51,9 @@ void init_cpu_new(){
 		assert(pc1000mode);
 		assert(cpu_loop_version==CPU_RUN3);
 		bus_pc1000=new BusPC1000();
-		auto cpu_impl=new C6502(bus_pc1000);
-		cpu = new CPUInterface(cpu_impl);
-		bus_pc1000->cpu=cpu_impl;
+		c6502=new C6502(bus_pc1000);
+		cpu = new CPUInterface(c6502);
+		bus_pc1000->cpu=c6502;
 	}else{
 		printf("unknown io version %d\n", io_version);
 		assert(false);
