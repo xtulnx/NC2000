@@ -44,6 +44,13 @@ struct WqxRom {
     std::string nandFlashPath;
     std::string nand0Path;
     std::string statesPath;
+    void clear(){
+        romPath.clear();
+        norFlashPath.clear();
+        nandFlashPath.clear();
+        nand0Path.clear();
+        statesPath.clear();
+    }
 };
 
 enum NorFormat{
@@ -245,6 +252,7 @@ extern uint32_t num_rom_pages;
 extern uint32_t ROM_SIZE;
 extern uint32_t NOR_SIZE;
 
+extern string rom_path;
 /*
 ===================
 misc

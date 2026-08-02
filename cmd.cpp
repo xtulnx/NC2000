@@ -17,6 +17,7 @@ extern "C" {
 #include "compare/pc1000bus.h"
 #include "nc2000.h"
 #include "nor.h"
+#include "settings.h"
 extern nc2k_states_t nc2k_states;
 extern CPUInterface *cpu;
 
@@ -205,6 +206,11 @@ string translate_cmd_alias(string name){
 	if(name=="sp") name="speed";
 	if(name=="ed"||name=="ec"||name=="modify") name="edit";
 	if(name=="ffl") name="fast_forward_limit";
+	if(name=="l0") name="load_pc1000";
+	if(name=="l1") name="load_nc1020";
+	if(name=="l1t"||name=="l1tw") name="load_nc1020tw";
+	if(name=="l2") name="load_nc2000";
+	if(name=="l3") name="load_nc3000";
 	return name;
 }
 void handle_cmd(string str){
@@ -244,6 +250,32 @@ void handle_cmd(string str){
 	}
 
 	if(cmds[0]=="reload"){
+		reload_pending=true;
+		return;
+	}
+
+	if(cmds[0]=="load_nc2000"||cmds[0]=="load_nc3000"||cmds[0]=="load_nc1020"||cmds[0]=="load_nc1020tw"||cmds[0]=="load_pc1000"){
+		rom_path.clear();
+		if(cmds.size()>1){
+			rom_path=cmds[1];
+		}else{
+			if(cmds[0]=="load_nc2000") rom_path="roms/nc2000";
+			else if(cmds[0]=="load_nc1020") rom_path="roms/nc1020";
+			else if(cmds[0]=="load_nc1020tw") rom_path="roms/nc1020tw";
+			else if(cmds[0]=="load_nc3000") rom_path="roms/nc3000";
+			else if(cmds[0]=="load_pc1000") rom_path="roms/pc1000";
+		}
+		extern WqxRom nc2k_rom;
+		nc2k_rom.clear();
+		nc2000mode=nc3000mode=nc1020mode=nc1020tw_mode=pc1000mode=false;
+		enable_load_state=false;
+		if(cmds[0]=="load_nc2000") nc2000mode=true;
+		if(cmds[0]=="load_nc3000") nc3000mode=true;
+		if(cmds[0]=="load_nc1020"||cmds[0]=="load_nc1020tw") nc1020mode=true;
+		if(cmds[0]=="load_nc1020tw") nc1020tw_mode=true;
+		if(cmds[0]=="load_pc1000") pc1000mode=true;
+		handle_rom();
+		init_parameters();
 		reload_pending=true;
 		return;
 	}

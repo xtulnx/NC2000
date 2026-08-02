@@ -123,6 +123,7 @@ uint32_t num_rom_pages;
 uint32_t ROM_SIZE;
 uint32_t NOR_SIZE;
 
+string rom_path;
 /*
 ===================
 display related
