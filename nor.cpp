@@ -38,6 +38,14 @@ enum NOR_CMD{
     PAGE_PROGRAM=8,
     INFO_PAGE_PROGRAM=9
 };
+
+void InitNorInfoBlock(){
+    memcpy(nor_info_block, nor_info_block0, sizeof(nor_info_block0));
+    if(nc1020mode){
+        nor_info_block[8]=0xfc;
+        nor_info_block[9]=0x03;
+    }
+}
 void LoadNor(){
 	assert(sizeof(nor_buff) >= NOR_SIZE);
 	uint8_t* temp_buff = (uint8_t*)malloc(NOR_SIZE);
@@ -96,6 +104,7 @@ void SaveNor(string file)
 
 void init_nor(){
     memset(&nor_buff,0xff,NOR_SIZE);
+    InitNorInfoBlock();
     LoadNor();
     for (uint32_t i=0; i<num_nor_pages; i++) {
 		nor_banks[i] = nor_buff + (0x8000 * i);

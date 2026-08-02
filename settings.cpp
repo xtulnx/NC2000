@@ -18,9 +18,6 @@ void print_help(){
 }
 int listen_port=9000;
 void handle_rom(){
-	extern uint8_t nor_info_block0[0x100];
-	memcpy(nor_info_block, nor_info_block0, sizeof(nor_info_block0));
-	
 	if(nc2000mode){
 		if(rom_path.empty()){
 			rom_path = "roms/nc2000";
@@ -40,8 +37,6 @@ void handle_rom(){
 		}
 		nc2k_rom.romPath = rom_path + ".rom";
 		nc2k_rom.norFlashPath = rom_path + ".nor";
-		nor_info_block[8]=0xfc;
-		nor_info_block[9]=0x03;
 
 		if(rom_path != default_with_suffix){
 			if (!fileExists(nc2k_rom.romPath.c_str())) {
