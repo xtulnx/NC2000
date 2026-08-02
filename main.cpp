@@ -19,7 +19,16 @@ using namespace std;
 
 SDL_Window* window;
 
-bool InitAudioVideo() {
+//init resource, this function is not supposed to be called repeatedly, otherwise there will be resource leak
+bool init_resource() {
+  #if defined(__MINGW32__)
+  SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
+#endif
+  int res1=SDL_SetThreadPriority(SDL_THREAD_PRIORITY_TIME_CRITICAL);
+  if(debug_level>=1) printf("SDL_SetThreadPriority returned %d\n", res1);
+
+  if(listen_port>0) init_udp_server(listen_port);
+
   extern SDL_Renderer* renderer;
   lcd_effect_buffer = new unsigned char[SCREEN_HEIGHT*total_size* SCREEN_WIDTH*total_size * 4];
   memset(lcd_effect_buffer, 0, SCREEN_HEIGHT*total_size* SCREEN_WIDTH*total_size * 4);
@@ -195,30 +204,20 @@ void main_loop() {
   }
 }
 
+//entry point of the emulator, this function can be called repeatedly if you need
+void emu_entry(){ 
+    LoadNC2k();
+    main_loop();
+    SaveNC2kIfNeed();
+}
+
 int main(int argc, char* args[]) {
   process_args(argc, args);
-  init_parameters();
-#if defined(__MINGW32__)
-  SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
-#endif
-  int res1=SDL_SetThreadPriority(SDL_THREAD_PRIORITY_TIME_CRITICAL);
-  if(debug_level>=1) printf("SDL_SetThreadPriority returned %d\n", res1);
+  if(!init_resource()) return -1;
 
-  if(listen_port>0) init_udp_server(listen_port);
-  init_keyitems();
-  LoadNC2k();
-  if (!InitAudioVideo())
-    return -1;
+  emu_entry();
 
-  main_loop();
-  if(save_flash_on_exit){
-    save_flash("");
-  }
-  if(save_state_on_exit){
-    save_state("");
-  }
-
-  shutdown_audio();
+  shutdown_audio(); //explictly shutdown audio to avoid bug on some platform. Other resources can OS recollect them correctly.
 
   return 0;
 }

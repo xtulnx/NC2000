@@ -13,7 +13,8 @@ void SetKey(uint8_t, bool);
 void RunTimeSlice(uint32_t);
 bool CopyLcdBuffer(uint8_t*);
 void LoadNC2k();
-//void SaveNC1020();
+void SaveNC2kIfNeed();
+
 void save_flash(string file);
 
 void save_state(string file_name);

@@ -22,7 +22,6 @@ static uint8_t * rtc_reg=nc2k_states.ext_reg;
 static uint8_t * ext_reg=nc2k_states.ext_reg;
 //static uint8_t& interr_flag = nc2k_states.interr_flag;
 class BusPC1000 *bus_pc1000=0;
-extern IBus6502 *dummy_bus;
 
 static bool& time_adjusted=nc2k_states.time_adjusted;
 static bool& do_warm_reset=nc2k_states.do_warm_reset;
@@ -32,6 +31,7 @@ void init_cpu_new(){
 		if(cpu_version== CPU_HANDYPSP) {
 			cpu=new CPUInterface();
 		} else if(cpu_version==CPU_EMUX) {
+			IBus6502 *dummy_bus = new BusWrapper();
 			auto cpu_impl = new C6502(dummy_bus);
 			cpu = new CPUInterface(cpu_impl);
 		} else {
@@ -45,7 +45,6 @@ void init_cpu_new(){
 		auto cpu_impl=new C6502(bus_pc1000);
 		cpu = new CPUInterface(cpu_impl);
 		bus_pc1000->cpu=cpu_impl;
-		dummy_bus=0;
 	}else{
 		printf("unknown io version %d\n", io_version);
 		assert(false);

@@ -421,4 +421,5 @@ void process_args(int argc, char *argv[])
 		open_serial_port((char*)uart_dev_name.c_str());
 	}
 
+	init_parameters();
 }

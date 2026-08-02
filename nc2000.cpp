@@ -20,10 +20,10 @@
 #include "console.h"
 #include "iv_uart.h"
 #include "cmd.h"
+#include "key_new.h"
 extern WqxRom nc2k_rom;
 
 nc2k_states_t nc2k_states;
-BusWrapper *dummy_bus = nullptr;
 
 //static uint32_t& version = nc1020_states.version;
 
@@ -71,7 +71,7 @@ void LoadNC2k(){
 	clear_cmds();
 	clear_nand_status();
 
-	dummy_bus= new BusWrapper();
+	init_keyitems();
 
 	init_io(); //for old io implemet only
 	
@@ -122,6 +122,15 @@ void LoadNC2k(){
 		void warm_reset();
 		warm_reset();
 	}
+}
+
+void SaveNC2kIfNeed(){
+    if(save_flash_on_exit){
+      save_flash("");
+    }
+    if(save_state_on_exit){
+      save_state("");
+    }
 }
 
 static unsigned short &lcdbuffaddr = nc2k_states.lcdbuffaddr;
