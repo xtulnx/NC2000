@@ -20,7 +20,6 @@ extern "C" {
 extern nc2k_states_t nc2k_states;
 extern CPUInterface *cpu;
 
-
 deque<string> udp_msgs;
 std::mutex g_mutex;
 
@@ -242,6 +241,11 @@ void handle_cmd(string str){
 	}
 	if(cmds[0]=="exit"){
 		exit(-1);
+	}
+
+	if(cmds[0]=="reload"){
+		reload_pending=true;
+		return;
 	}
 
 	if(cmds[0]=="save_flash"||cmds[0]=="save_all"/*||cmds[0]=="save_state"*/){

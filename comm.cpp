@@ -157,6 +157,8 @@ bool patch_nc1020tw_nor=false;
 
 bool patch_table_experiment=false;
 
+bool reload_pending=false;
+
 WqxRom nc2k_rom;
 
 void init_parameters(){

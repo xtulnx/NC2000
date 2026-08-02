@@ -1,6 +1,5 @@
 #include "nc2000.h"
 #include "comm.h"
-#include "disassembler.h"
 #include "ram.h"
 #include "state.h"
 #include "cpu.h"

@@ -1,6 +1,5 @@
 #include <SDL2/SDL.h>
 #include "comm.h"
-#include "dsp/dsp.h"
 #include "nc2000.h"
 #include <SDL_events.h>
 #include <SDL_keycode.h>
@@ -82,6 +81,10 @@ void main_loop() {
 
 
   while (loop) {
+    if(reload_pending){
+      if(debug_level>=1) printf("full reset pending, exit main loop\n");
+      break;
+    }
     if(sync_on_resume && enable_auto_time_sync)
     {
       last_time_rtc = current_time_rtc;
@@ -215,7 +218,11 @@ int main(int argc, char* args[]) {
   process_args(argc, args);
   if(!init_resource()) return -1;
 
-  emu_entry();
+  do {
+    reload_pending=false;
+    emu_entry();
+  } while (reload_pending);
+
 
   shutdown_audio(); //explictly shutdown audio to avoid bug on some platform. Other resources can OS recollect them correctly.
 
