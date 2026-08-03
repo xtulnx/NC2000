@@ -705,17 +705,13 @@ void __iocallconv Write04GeneralCtrl(BYTE write, BYTE value)
     (void)write;
 }
 
-HotlinkBundle* hotlinkios = 0;
+HotlinkBundle* hotlinkios = nullptr;
 
 // For P45,P45
 // ERROR_ACCESS_DENIED for Global prefix (SeCreateGlobalPrivilege)
 void CreateHotlinkMapping()
 {
+    if(hotlinkios) {free(hotlinkios);hotlinkios = nullptr;}
     hotlinkios = (HotlinkBundle*)malloc(sizeof(HotlinkBundle));
     memset(hotlinkios, 0, sizeof(HotlinkBundle));
-}
-
-void RemoveHotlinkMapping()
-{
-    free(hotlinkios);
 }
