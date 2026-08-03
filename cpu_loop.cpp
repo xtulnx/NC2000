@@ -211,7 +211,7 @@ bool KeepTimer01( unsigned int cpuTick )
 }
 
 
-void cpu_run(){ //legacy cpu loop1
+void cpu_run(){ //legacy cpu loop1, not suggested to use unless for comparison and debug
 		string msg=get_message();
 		if(!msg.empty()){
 			handle_cmd(msg);
@@ -350,7 +350,7 @@ void cpu_run(){ //legacy cpu loop1
 
 }
 
-void cpu_run2(){ //legacy cpu loop2
+void cpu_run2(){ //legacy cpu loop2, not suggested to use unless for comparison and debug
 	string msg=get_message();
 	if(!msg.empty()){
 		handle_cmd(msg);
@@ -446,10 +446,9 @@ void cpu_run2(){ //legacy cpu loop2
 		}
 		//g_irq = true;
 	}
-	static uint32_t hack1020_cnt=0;
 	if ((nc1020mode) && cycles >= timebase_cycles) {
 		timebase_cycles += CYCLES_TIMEBASE;
-		hack1020_cnt++;
+		uint32_t hack1020_cnt= cycles/CYCLES_TIMEBASE;
 		// cheat boot program to pass
 		if(hack1020_cnt%20==10){
 				ram_io[0x0c]|=0x01;
