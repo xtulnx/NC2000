@@ -207,11 +207,21 @@ string translate_cmd_alias(string name){
 	if(name=="sp") name="speed";
 	if(name=="ed"||name=="ec"||name=="modify") name="edit";
 	if(name=="ffl") name="fast_forward_limit";
+
+	if(name=="rl") name="reload";
+	if(name=="rls") name="reload_state";
+
 	if(name=="l0") name="load_pc1000";
 	if(name=="l1") name="load_nc1020";
 	if(name=="l1t"||name=="l1tw") name="load_nc1020tw";
 	if(name=="l2") name="load_nc2000";
 	if(name=="l3") name="load_nc3000";
+
+	if(name=="ls0") name="load_state_pc1000";
+	if(name=="ls1") name="load_state_nc1020";
+	if(name=="ls1t"||name=="ls1tw") name="load_state_nc1020tw";
+	if(name=="ls2") name="load_state_nc2000";
+	if(name=="ls3") name="load_state_nc3000";
 	return name;
 }
 void handle_cmd(string str){
@@ -250,12 +260,35 @@ void handle_cmd(string str){
 		exit(-1);
 	}
 
-	if(cmds[0]=="reload"){
+	if(cmds[0]=="reload"||cmds[0]=="reload_state"){
+		if(save_state_on_exit||save_flash_on_exit){
+			SaveNC2kIfNeed();
+		}
+		enable_load_state=(cmds[0]=="reload_state");
 		reload_pending=true;
 		return;
 	}
 
-	if(cmds[0]=="load_nc2000"||cmds[0]=="load_nc3000"||cmds[0]=="load_nc1020"||cmds[0]=="load_nc1020tw"||cmds[0]=="load_pc1000"){
+	bool is_load_state_cmd = cmds[0].find("load_state") != string::npos;
+	if(is_load_state_cmd){
+		cmds[0]=cmds[0].substr(strlen("load_state_")); //remove "load_state_"
+		cmds[0]="load_"+cmds[0];
+	}
+
+	if(cmds[0]=="load_nc2000"||cmds[0]=="load_nc3000"||cmds[0]=="load_nc1020"||cmds[0]=="load_nc1020tw"||cmds[0]=="load_pc1000") {
+		if(cmds.size()>1){
+			if(!fileExists(cmds[1]+".nor")) { //basic typo check, if nor file not exist, don't even try to load
+				printf("file %s.nor not exist, cannot load\n",cmds[1].c_str());
+				return;
+			}
+			if(is_load_state_cmd && !fileExists(cmds[1]+".state")) {
+				printf("file %s.state not exist, cannot use load_state\n",cmds[1].c_str());
+				return;
+			}
+		}
+		if(save_state_on_exit||save_flash_on_exit){
+			SaveNC2kIfNeed();
+		}
 		rom_path.clear();
 		if(cmds.size()>1){
 			rom_path=cmds[1];
@@ -264,7 +297,8 @@ void handle_cmd(string str){
 		extern WqxRom nc2k_rom;
 		nc2k_rom.clear();
 		nc2000mode=nc3000mode=nc1020mode=nc1020tw_mode=pc1000mode=false;
-		enable_load_state=false;
+		
+		enable_load_state=is_load_state_cmd;
 
 		if(cmds[0]=="load_nc2000") nc2000mode=true;
 		if(cmds[0]=="load_nc3000") nc3000mode=true;

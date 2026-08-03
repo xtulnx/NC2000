@@ -219,7 +219,6 @@ void main_loop() {
 void emu_entry(){ 
     LoadNC2k();
     main_loop();
-    SaveNC2kIfNeed();
 }
 
 int main(int argc, char* args[]) {
@@ -230,6 +229,8 @@ int main(int argc, char* args[]) {
     reload_pending=false;
     emu_entry();
   } while (reload_pending);
+
+  SaveNC2kIfNeed(); // handle --auto-save-flash or --auto-save-all
 
   shutdown_audio(); //explictly shutdown audio to avoid bug on some platform. Other resources doesn't need this, since OS can always recollect them correctly.
 
