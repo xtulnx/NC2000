@@ -224,7 +224,7 @@ void debug_pc(){
 
 		//printf("tick=%lld ",tick /*, reg_pc*/);
 		//printf("%02x %02x %02x %02x; ",Peek16Debug(cpu->PC), Peek16Debug(cpu->PC+1),Peek16Debug(cpu->PC+2),Peek16Debug(cpu->PC+3));
-		printf("%s",disassemble2(cpu->PC).c_str());
+		printf("%s",disassemble_next2(cpu->PC).c_str());
 		printf("\n");
 		if(enable_dyn_debug_next_n>0) {
 			enable_dyn_debug_next_n--;

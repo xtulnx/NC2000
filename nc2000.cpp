@@ -24,11 +24,6 @@ extern WqxRom nc2k_rom;
 
 nc2k_states_t nc2k_states;
 
-//static uint32_t& version = nc1020_states.version;
-
-static uint8_t* keypad_matrix = nc2k_states.keypad_matrix;
-
-
 void save_state(string file_name){
 	if(file_name.empty()) file_name=nc2k_rom.statesPath;
 	else file_name+=".state";

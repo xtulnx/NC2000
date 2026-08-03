@@ -5,6 +5,9 @@
 #include "nand.h"
 #include "sound.h"
 #include "NekoDriverIO.h"
+/* 
+legacy io, not suggested to use unless for comparison and debug
+*/
 
 extern nc2k_states_t nc2k_states;
 
@@ -19,7 +22,7 @@ static bool& jg_wav_playing = nc2k_states.jg_wav_playing;
 io_read_func_t io_read[0x40];
 io_write_func_t io_write[0x40];
 
-void init_io(){
+void init_io(){ //legacy io, not suggested to use unless for comparison and debug
     for (uint32_t i=0; i<IO_LIMIT; i++) {
 		io_read[i] = ReadXX;
 		io_write[i] = WriteXX;

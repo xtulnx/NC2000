@@ -480,6 +480,6 @@ const char* byte_to_binary(unsigned char c, char* b)
     return b;
 }
 
-string disassemble2(uint16_t pc){
+string disassemble_next2(uint16_t pc){
     return LogDisassembly(pc);
 }

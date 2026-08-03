@@ -302,8 +302,8 @@ void SwitchBank_2345(){
 	}
 
 	if(patch_table_experiment){
-		void handle_patch_table();
-		handle_patch_table();
+		void handle_patch_table_experiment();
+		handle_patch_table_experiment();
 	}
 }
 
@@ -451,8 +451,9 @@ void super_switch(){
 	SwitchZP40();
 }
 
-//experiment hacking code, need rewrite
-void handle_patch_table(){
+//experiment hacking code, not really needed, only for hardware authentic.
+//  disabled by deault. need rewrite
+void handle_patch_table_experiment(){
 	unsigned char *patch_table=nc2k_states.patch_table;
 	int bank_idx = ram_io[0x00];
 	if(nc1020mode &&!nc1020tw_mode){

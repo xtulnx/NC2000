@@ -76,8 +76,8 @@ void LoadNor(){
     }
 
     if(patch_nc1020tw_nor){
-        void try_fix_dump();
-        try_fix_dump();
+        void try_fix_nc1020tw_baddump();
+        try_fix_nc1020tw_baddump();
     }
 
 	free(temp_buff);
@@ -333,7 +333,8 @@ bool write_nor(uint16_t addr, uint8_t value){
     return true;
 }
 
-void try_fix_dump(){
+//only used to run the bad dumped nc1020tw rom, not needed for normal rom. disabled by default
+void try_fix_nc1020tw_baddump(){
     //this rom is a bad dump, some bytes are erased to 00. 
     //here doing dynamic patch to fix it
     if(nc1020tw_mode){

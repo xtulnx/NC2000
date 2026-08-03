@@ -128,6 +128,10 @@ struct nc2k_states_t{
 	u64_t cycles;
 	u64_t last_cycles;
 
+	int gDeadlockCounter; //only used in leacy cpu loop
+
+	//append new variable to the end if possible, so that the save state can maintain backward compatibility
+
 	uint8_t SAVE_STATE_END; // =========END of SAVE STATE=========
 
 	bool time_adjusted;
