@@ -281,10 +281,6 @@ void handle_cmd(string str){
 				printf("file %s.nor not exist, cannot load\n",cmds[1].c_str());
 				return;
 			}
-			if(is_load_state_cmd && !fileExists(cmds[1]+".state")) {
-				printf("file %s.state not exist, cannot use load_state\n",cmds[1].c_str());
-				return;
-			}
 		}
 		if(save_state_on_exit||save_flash_on_exit){
 			SaveNC2kIfNeed();
