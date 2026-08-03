@@ -369,18 +369,62 @@ int io_v2_read(int address) {
             return ioReg[address];
     }
 }
-
-void io_v2_write(int address, int value) {
-    if(nc2000mode&&log_all_dsp_io&&address>=0x30 && address<=0x33){
-        printf("[io_v2_write] address=%02x value=%02x\n",address,value);
-    }
-    if(address==0x1a){
-        if(debug_level>=1 ){
-            printf("[io_v2_write] 0x1a value=%02x\n",value);
-            printf("[io_v2_write] oops!!!!!! 0x1a value&80  is true\n");
+void write_0x05_cks_helper(int address,int value){
+    assert(address==0x05);
+    if(nc2000mode||nc1020mode||pc1000mode){
+        uint8_t cks=value>>5;
+        uint8_t cps=value&0x07;
+        lcdon=(value>>3)&1;
+        if(debug_level>=3) printf("Write05ClockCtrl %02x cks=%d cps=%d lcdon=%d\n",value,cks,cps,lcdon);
+        if (cks!=ram_io[0x05]>>5){
+            switch(cks){
+                case 0: speed_scaledown=8;break;
+                case 1: speed_scaledown=4;break;
+                case 2: speed_scaledown=2;break;
+                case 3: speed_scaledown=1;break;
+                case 4: speed_scaledown=64;break;
+                case 5: speed_scaledown=32;break;
+                case 6: speed_scaledown=16;break;
+                case 7: printf("clk off\n");speed_scaledown=int_inf;break; 
+                default:assert(false);
+            }
+            /*if(nc1020mode && cks==7){ //if accidentally closed during get, at least save what has already been got
+                extern deque<char> queue_for_write;
+                bool dummy_io_for_write(uint16_t addr, uint8_t value);
+                if(queue_for_write.size()){
+                    dummy_io_for_write(0x3fff,  0);
+                }
+            }*/
+            if(enable_debug_cks) printf("<cks=%d scaledown=%d>\n",cks,speed_scaledown);
         }
-        if(enable_assert) assert((value &0x80)==0);
     }
+    if(nc3000mode){
+        uint8_t cks=value>>5;
+        if(debug_level>=2) {
+            printf("cks set to %d\n",cks);
+        }
+        if (cks!=ram_io[0x05]>>5){
+            //the defintion is not same as spdc1024
+            switch(cks){
+                case 0: speed_scaledown=32;break;
+                case 1: speed_scaledown=4;break;
+                case 2: speed_scaledown=2;break;
+                case 3: speed_scaledown=1;break;
+                case 4: speed_scaledown=512;break;
+                case 5: speed_scaledown=256;break;
+                case 6: speed_scaledown=64;break;
+                case 7: printf("clk off\n");speed_scaledown=int_inf;break;
+                default:assert(false);
+            }
+            //printf("<cks=%d scaledown=%d>\n",cks,speed_scaledown);
+        }
+    }
+}
+
+//only for experiment, no effect unless enabled 'patch_table_experiment'
+void write_0x3e_0x3f_patchtable_helper(int address,int value){ 
+    assert(address==0x3e||address==0x3f);
+    assert(nc1020mode||nc2000mode||nc3000mode);
     if(address==0x3e){
         if(value>=0x10 &&value<=0x1f){
             if(enable_assert) assert(value==0x10);
@@ -398,67 +442,28 @@ void io_v2_write(int address, int value) {
             patch_idx++;
         }
     }
-    if(nc3000mode){
-        if(address==0x05){
-            uint8_t cks=value>>5;
-            if(debug_level>=2) {
-                printf("cks set to %d\n",cks);
-            }
-            if (cks!=ram_io[0x05]>>5){
-                //the defintion is not same as spdc1024
-                switch(cks){
-                    case 0: speed_scaledown=32;break;
-                    case 1: speed_scaledown=4;break;
-                    case 2: speed_scaledown=2;break;
-                    case 3: speed_scaledown=1;break;
-                    case 4: speed_scaledown=512;break;
-                    case 5: speed_scaledown=256;break;
-                    case 6: speed_scaledown=64;break;
-                    case 7: printf("clk off\n");speed_scaledown=int_inf;break;
-                    default:assert(false);
-                }
-                //printf("<cks=%d scaledown=%d>\n",cks,speed_scaledown);
-            }
-             //purposely not return
-        }
-        if(address==0x39) {
-            return nand_write(value);
-        } 
+}
+void io_v2_write(int address, int value) {
+    if(nc2000mode&&log_all_dsp_io&&address>=0x30 && address<=0x33){
+        printf("[io_v2_write] address=%02x value=%02x\n",address,value);
     }
-    if(nc2000mode||nc1020mode||pc1000mode) {
-        if(address==0x05){
-            
-            uint8_t cks=value>>5;
-            uint8_t cps=value&0x07;
-            lcdon=(value>>3)&1;
-            if(debug_level>=3) printf("Write05ClockCtrl %02x cks=%d cps=%d lcdon=%d\n",value,cks,cps,lcdon);
-            if (cks!=ram_io[0x05]>>5){
-                switch(cks){
-                    case 0: speed_scaledown=8;break;
-                    case 1: speed_scaledown=4;break;
-                    case 2: speed_scaledown=2;break;
-                    case 3: speed_scaledown=1;break;
-                    case 4: speed_scaledown=64;break;
-                    case 5: speed_scaledown=32;break;
-                    case 6: speed_scaledown=16;break;
-                    case 7: printf("clk off\n");speed_scaledown=int_inf;break; 
-                    default:assert(false);
-                }
-                /*if(nc1020mode && cks==7){ //if accidentally closed during get, at least save what has already been got
-                    extern deque<char> queue_for_write;
-                    bool dummy_io_for_write(uint16_t addr, uint8_t value);
-                    if(queue_for_write.size()){
-                        dummy_io_for_write(0x3fff,  0);
-                    }
-                }*/
-                if(enable_debug_cks) printf("<cks=%d scaledown=%d>\n",cks,speed_scaledown);
-            }
-            //purposely not return
+    if(address==0x1a){
+        if(debug_level>=1 ){
+            printf("[io_v2_write] 0x1a value=%02x\n",value);
+            printf("[io_v2_write] oops!!!!!! 0x1a value&80  is true\n");
         }
+        if(enable_assert) assert((value &0x80)==0);
+    }
+
+    if(nc2000mode){
         if(address==0x29) {
             return nand_write(value);
         }
-
+    }
+    if(nc3000mode){
+        if(address==0x39) {
+            return nand_write(value);
+        } 
     }
 
     if(nc2000mode||nc3000mode){
@@ -511,6 +516,7 @@ void io_v2_write(int address, int value) {
             return;
         }
         if(address==0x05){
+            write_0x05_cks_helper(address,value);
             return Write05ClockCtrl(address, value);
         }
         if(address==0x06){
@@ -559,6 +565,10 @@ void io_v2_write(int address, int value) {
         }*/
     }
     if(nc1020mode||nc2000mode||nc3000mode){
+        if(address==0x3e||address==0x3f){
+            write_0x3e_0x3f_patchtable_helper(address,value);
+        }
+
         if(address==0x3a) return write_3a(value);
         if(address==0x3b) return write_3b(value);
         if(address==0x3c) return write_3c(value);
