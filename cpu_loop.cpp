@@ -5,7 +5,7 @@ extern "C" {
 #include "ansi/w65c02.h"
 }
 #include "comm.h"
-#include "disassembler.h"
+#include "misc/disassembler.h"
 #include "mem.h"
 #include "state.h"
 #include <mutex>

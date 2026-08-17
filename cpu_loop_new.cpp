@@ -6,7 +6,7 @@
 #include "cmd.h"
 #include "ram.h"
 #include "state.h"
-#include "disassembler.h"
+#include "misc/disassembler.h"
 #include "compare/pc1000bus.h"
 #include "io_new.h"
 #include "iv_uart.h"

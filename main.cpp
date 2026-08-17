@@ -7,7 +7,7 @@
 #include <iostream>
 #include <map>
 #include "sound.h"
-#include "udp_server.h"
+#include "misc/udp_server.h"
 #include "key.h"
 #include "key_new.h"
 #include "settings.h"
