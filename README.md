@@ -167,18 +167,18 @@ nc2000.exe --pixel-size 3 --gap-size 1 --lcd-scale 1
 
 `create_dir XXXX`： 在文曲星当前目录内创建一个名为XXXX的目录。 
 
-`put aaa.bin bbb.bin` ：把本地的aaa.bin下载到文曲星的当前目录，命名为bbb.bin
+`put aaa.bas bbb.bas` ：把本地的`aaa.bas`下载到文曲星的当前目录，命名为`bbb.bas`
 
 `put 1.txt` 把本地的1.txt下载到文曲星的当前目录，命名为1.txt (也就是上一个命令省略了一个参数的形式)
 
-`get aaa.bin bbb.bin` ：把文曲星的当前目录的aaa.bin上传到电脑，命名为bbb.bin
+`get aaa.bas bbb.bas` ：把文曲星的当前目录的`aaa.bas`上传到电脑，命名为bbb.bas
 
 
 #### Note
 
 1. 如何切换当前目录呢？ 你在文曲星上打开资源管理器，进入哪个目录，哪个目录就是你的当前目录。 也就是说你文件上传到哪里，取决于模拟器内文曲星当前所在的文件夹。
 2. 以上命令需要文曲星在进入系统以后才可以运行
-3. 模拟器不自带bin解密功能。下载bin文件需要在电脑上提前把bin文件解密好。
+3. `put`命令是把文件原封不动下载到文曲星。文曲星常见的bin是加密的，需要先解密才能传到文曲星上用。 见 [bin加密解密](https://github.com/wangyu-/NC2000/wiki/bin%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86)
 
 ### flash保存
 
