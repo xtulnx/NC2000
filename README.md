@@ -169,9 +169,9 @@ nc2000.exe --pixel-size 3 --gap-size 1 --lcd-scale 1
 
 `put aaa.bas bbb.bas` ：把本地的`aaa.bas`下载到文曲星的当前目录，命名为`bbb.bas`
 
-`put 1.txt` 把本地的1.txt下载到文曲星的当前目录，命名为1.txt (也就是上一个命令省略了一个参数的形式)
+`put 1.txt` 把本地的`1.txt`下载到文曲星的当前目录，命名为`1.txt` (也就是上一个命令省略了一个参数的形式)
 
-`get aaa.bas bbb.bas` ：把文曲星的当前目录的`aaa.bas`上传到电脑，命名为bbb.bas
+`get aaa.bas bbb.bas` ：把文曲星的当前目录的`aaa.bas`上传到电脑，命名为`bbb.bas`
 
 
 #### Note
