@@ -385,6 +385,10 @@ void handle_cmd(string str){
 	}
 
 	if(cmds[0]=="create_folder" || cmds[0]=="create_folder_hex"){
+			if(cmds.size()<2){
+				printf("not enough argument\n");
+				return;
+			}
 			//printf("<pc=%x>\n",cpu->PC);
 			cpu->PC=0x3000;
 			string dir_name=cmds[1];
@@ -474,6 +478,10 @@ void handle_cmd(string str){
 		return;
 	}
 	if(cmds[0]=="get"){
+			if(cmds.size()<2){
+				printf("not enough argument\n");
+				return;
+			}
 			//if(!nc2000mode) return;
 			string src=cmds[1];
 			string target=cmds[1];
@@ -531,7 +539,7 @@ void handle_cmd(string str){
 	}
 	if(cmds[0]=="putx"){
 			if(cmds.size()<2){
-				printf("put: not enough argument\n");
+				printf("not enough argument\n");
 				return;
 			}
 			string outname="bindec.tmp";
@@ -549,7 +557,7 @@ void handle_cmd(string str){
 	}
 	if(cmds[0]=="put"){
 			if(cmds.size()<2){
-				printf("put: not enough argument\n");
+				printf("not enough argument\n");
 				return;
 			}
 			vector<char> file;
