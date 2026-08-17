@@ -137,7 +137,7 @@ void process_args(int argc, char *argv[])
 	};
 	string uart_dev_name;
 	int option_index = 0;
-    if (argc >= 2&& strcmp(argv[1],"bindec")==0){
+    if (argc >= 2&& (strcmp(argv[1],"bindec")==0||strcmp(argv[1],"--bindec")==0)){
 		//built-in binary decode tool for convinence
 		if(argc<4) {
 			printf("not enough parameters. usage:\n");
