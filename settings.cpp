@@ -363,7 +363,7 @@ void process_args(int argc, char *argv[])
 				enable_quit_after_debug_next_n = true;
 			}
 			else if (strcmp(long_options[option_index].name,"assert")==0){
-				enable_assert = true;
+				enable_assert_for_wqx_software = true;
 			}
 			else if (strcmp(long_options[option_index].name,"rgb-scale")==0){
 				sscanf(optarg,"%lf,%lf,%lf",&r_scale,&g_scale,&b_scale);

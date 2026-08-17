@@ -66,7 +66,7 @@ int enable_key_debug_once=0;
 
 int debug_level = 0;
 
-bool enable_assert = false;
+bool enable_assert_for_wqx_software = false;
 
 /*
 ===================

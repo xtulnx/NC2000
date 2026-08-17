@@ -237,10 +237,10 @@ void debug_pc(){
 		}
 		//getchar();
 	}
-	if(debug_level>=1 || enable_assert){
+	if(debug_level>=1 || enable_assert_for_wqx_software){
 		if(Peek16Debug(cpu->PC)==0x00 && Peek16Debug(cpu->PC+1)==0x00 && Peek16Debug(cpu->PC+2)==0x00){
 			if(debug_level>=1)printf("oops brk 0000!!!!!!!!!!!!!!!!!!!!!!\n");
-			if(enable_assert) assert(false);
+			if(enable_assert_for_wqx_software) assert(false);
 		}
 	}
 

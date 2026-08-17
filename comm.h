@@ -146,7 +146,7 @@ extern bool enable_debug_cks;
 
 extern int enable_key_debug_once;
 
-extern bool enable_assert;
+extern bool enable_assert_for_wqx_software;
 /*
 ===================
 cpu related

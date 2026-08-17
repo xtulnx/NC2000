@@ -427,7 +427,7 @@ void write_0x3e_0x3f_patchtable_helper(int address,int value){
     assert(nc1020mode||nc2000mode||nc3000mode);
     if(address==0x3e){
         if(value>=0x10 &&value<=0x1f){
-            if(enable_assert) assert(value==0x10);
+            if(enable_assert_for_wqx_software) assert(value==0x10);
             patch_idx=value;
             if(debug_level>=1) printf("[io_v2_write] 0x3e value=%02x\n",value);
             //enable_dyn_debug_next_n=100;
@@ -452,7 +452,7 @@ void io_v2_write(int address, int value) {
             printf("[io_v2_write] 0x1a value=%02x\n",value);
             printf("[io_v2_write] oops!!!!!! 0x1a value&80  is true\n");
         }
-        if(enable_assert) assert((value &0x80)==0);
+        if(enable_assert_for_wqx_software) assert((value &0x80)==0);
     }
 
     if(nc2000mode){

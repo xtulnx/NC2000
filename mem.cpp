@@ -244,7 +244,7 @@ void SwitchBank_2345(){
 			memmap[2] = bank + 0x4000;
 			memmap[3] = bank + 0x6000;
 		}else {
-			if(enable_assert) assert((ram_io[0x0d]&0x3) ==0 || (ram_io[0x0d]&0x3) ==1);
+			if(enable_assert_for_wqx_software) assert((ram_io[0x0d]&0x3) ==0 || (ram_io[0x0d]&0x3) ==1);
 			if (ram_io[0x0d]&0x1){
 				memmap[2] = nor_banks[0] + 0x4000;
 				memmap[3] = nor_banks[0] + 0x6000;
