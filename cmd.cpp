@@ -19,6 +19,7 @@ extern "C" {
 #include "nor.h"
 #include "settings.h"
 #include <SDL2/SDL.h>
+#include "misc/bin_dec.h"
 extern nc2k_states_t nc2k_states;
 extern CPUInterface *cpu;
 
@@ -528,7 +529,29 @@ void handle_cmd(string str){
 			//enable_dyn_debug=true;
 			return;
 	}
+	if(cmds[0]=="putx"){
+			if(cmds.size()<2){
+				printf("put: not enough argument\n");
+				return;
+			}
+			string outname="bindec.tmp";
+			if(bin_dec(cmds[1],outname)){
+				printf("binary decode failed.\n");
+				return ;
+			}
+			cmds[0]="put";
+			if(cmds.size()<3){
+				cmds.push_back(split_s(cmds[1],"/").back());
+			}
+			cmds[1]=outname;
+
+			//no return here, continue to next if. since putx is a wrapper around put
+	}
 	if(cmds[0]=="put"){
+			if(cmds.size()<2){
+				printf("put: not enough argument\n");
+				return;
+			}
 			vector<char> file;
 			if(read_file_noexit(cmds[1], file)!=0){
 				return ;

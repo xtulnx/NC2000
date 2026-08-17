@@ -9,6 +9,7 @@
 #include "iv_uart.h"
 #include "nor.h"
 #include "settings.h"
+#include "misc/bin_dec.h"
 using namespace std;
 extern WqxRom nc2k_rom;
 void print_help(){
@@ -136,8 +137,16 @@ void process_args(int argc, char *argv[])
 	};
 	string uart_dev_name;
 	int option_index = 0;
-    if (argc == 1)
-	{
+    if (argc >= 2&& strcmp(argv[1],"bindec")==0){
+		//built-in binary decode tool for convinence
+		if(argc<4) {
+			printf("not enough parameters. usage:\n");
+			printf("    ./this_program bindec <input_file> <output_file>\n");
+			exit(-1) ;
+		}
+		printf("decypting bin %s into %s\n",argv[2],argv[3]);
+		bin_dec(argv[2], argv[3]);
+		exit(-1) ;
         //printf("no argument provided\n");
 	}
 	for (i = 0; i < argc; i++)

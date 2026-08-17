@@ -236,7 +236,7 @@ void ProcessBinaryLinear(uint8_t* dest, uint8_t* src, uint32_t size){
     }
 }
 
-
+//use vector<char> here, because some platform's string has issue in storing '\0' in the middle
 void read_file(string name,vector<char> &v){
     FILE *f = fopen(name.c_str(), "rb");
     if(f==0) {
