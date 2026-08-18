@@ -172,7 +172,7 @@ void sync_time_1020(){
 	printf("sync_time() called\n");
 	time_t current_time = time(NULL);
 	struct tm *local_time = localtime(&current_time);
-int adjusted_year=get_adjusted_year(local_time->tm_year + 1900);
+	int adjusted_year=get_adjusted_year(local_time->tm_year + 1900);
 	Store(0x472, adjusted_year + 0x7a - 2003);
 	Store(0x473, local_time->tm_mon);
 	Store(0x474, local_time->tm_mday-1);
