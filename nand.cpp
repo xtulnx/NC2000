@@ -106,6 +106,28 @@ void clear_nand_status(){
     nand_addr.clear();
     nand_read_cnt = 0;
 }
+
+static uint8_t & nand_peek(int off){
+    static uint8_t dummy;
+    if(off<0 || off>=sizeof(nand)){
+        dummy=0xff;
+        if(debug_level>=1) printf("oops, read nand out of bound %d\n",off);
+        return dummy;
+    }
+    uint8_t *p=(uint8_t*)&nand[0][0];
+    return p[off];
+}
+
+#define nand_read_assert(expr)  \
+    do {  \
+        if(enable_assert_for_wqx_software) assert(expr); \
+        if(!(expr)) { \
+            printf("unexpected nand read %s:%d\n",__FILE__, __LINE__); \
+            clear_nand_status(); \
+            return 0xff; \
+        } \
+    } while(0)
+
 uint8_t read_nand(){
     bool CLE;
     bool ALE;
@@ -142,7 +164,6 @@ uint8_t read_nand(){
         if(debug_level>=1) printf("oops! no nand cmd %d %d %d\n",CLE,ALE,CE);
         return 0xff;
     }
-    assert(nand_cmd.size()>0);
 
     /*
         special handle of read status after a long time
@@ -161,8 +182,7 @@ uint8_t read_nand(){
             clear_nand_status();
             return 0x75;
         }
-        assert(false);
-        return 0;
+        nand_read_assert(false);
     }
 
     /*
@@ -174,8 +194,7 @@ uint8_t read_nand(){
             printf("<%x>",(unsigned char)nand_cmd[i]);
         }
         printf("\n");
-        assert(false);
-        return 0;
+        nand_read_assert(false);
     }
 
     /*
@@ -194,11 +213,11 @@ uint8_t read_nand(){
                 printf("oops!! nand_cmd=[0] but trying to read\n");
                 return 0xff;
             }*/
-            assert(false);
-            return 0xff;
+            nand_read_assert(false);
         }
 
-        assert(nand_cmd.size()==1 && nand_addr.size()==4 && nand_data.size()==0);
+        nand_read_assert(nand_cmd.size()==1 && nand_addr.size()==4 && nand_data.size()==0);
+
         unsigned char low=nand_addr[0];
         unsigned char mid=nand_addr[1];
         unsigned char high=nand_addr[2];
@@ -220,18 +239,13 @@ uint8_t read_nand(){
         
         unsigned int x=pos;
         unsigned int y=low;
-        //unsigned int pre_final= pos*528u+ y +nand_read_cnt;
-        //assert(pre_final%528==0);
         if(cmd==0x1) y+=256u;
         if(cmd==0x50) y+=512u;
         unsigned int final= pos*528u+ y +nand_read_cnt;
         if(nand_read_cnt!=0||cmd!=0){
-            //assert(final%528!=0);
             if(final%528==0) if(debug_level>=1) printf("warn: read %04x accross 528 boundary\n",final);
         }
 
-
-        //final-=32*1024;
         if(nand_read_cnt==0 && enable_debug_nand){
             printf("[%x %x]",low,high);
             
@@ -240,16 +254,13 @@ uint8_t read_nand(){
             }
             printf("<%x;%x,%x:%x,%d>\n", final, pos, low,cmd,nand_read_cnt);
         }
-        char *p=&nand[0][0];
-        uint8_t result=p[final];
-        //if(final<0) return 0x00;
-        //uint8_t result=nand[pos][low+off+nand_read_cnt];
+        uint8_t result=nand_peek(final);
         nand_read_cnt++;
         //printf("<<%02x>>",result);
         return result;
     }
 
-    assert(false);
+    nand_read_assert(false);
 }
 
 void debug_show_nand_cmd(){
@@ -261,6 +272,17 @@ void debug_show_nand_cmd(){
         printf("\n");
     }
 }
+
+#define nand_write_assert(expr)  \
+    do {  \
+        if(enable_assert_for_wqx_software) assert(expr); \
+        if(!(expr)) { \
+            printf("unexpected nand write %s:%d\n",__FILE__, __LINE__); \
+            clear_nand_status(); \
+            return; \
+        } \
+    } while(0)
+
 void nand_write(uint8_t value){
     bool CLE;
     bool ALE;
@@ -292,9 +314,9 @@ void nand_write(uint8_t value){
         if(value ==0xff || value == 0x00|| value==0x01 || value ==0x50 ||value==0x60||value ==0x70||value==0x90){
             debug_show_nand_cmd();
             if(nand_cmd.size()>0){
-                if(nand_cmd.size()==1 && nand_addr.size()==4 && nand_data.size()==0) assert(nand_cmd[0]==0x00||nand_cmd[0]==0x01||nand_cmd[0]==0x50);
-                else if(nand_cmd.size()==2 && nand_addr.size()==3 &&nand_data.size()==0) assert(nand_cmd[0]==0x60);
-                else assert(false);
+                if(nand_cmd.size()==1 && nand_addr.size()==4 && nand_data.size()==0) nand_write_assert(nand_cmd[0]==0x00||nand_cmd[0]==0x01||nand_cmd[0]==0x50);
+                else if(nand_cmd.size()==2 && nand_addr.size()==3 &&nand_data.size()==0) nand_write_assert(nand_cmd[0]==0x60);
+                else nand_write_assert(false);
             }
             clear_nand_status();
             if(value!=0xff){
@@ -304,7 +326,7 @@ void nand_write(uint8_t value){
         }
         if(value ==0x10) {
             if(nand_cmd[0]==0x50 && nand_cmd.size()== 2&& nand_addr.size()==4 && nand_data.size()==16) {
-                assert(nand_cmd[1]==0x80);
+                nand_write_assert(nand_cmd[1]==0x80);
 
                 unsigned char low=nand_addr[0];
                 unsigned char mid=nand_addr[1];
@@ -317,17 +339,16 @@ void nand_write(uint8_t value){
                 unsigned int y=low;
                 unsigned int final= pos*528u+ y +512;
 
-                assert((final-512)%(528)==0);
+                nand_write_assert((final-512)%(528)==0);
 
-                unsigned char *p=(unsigned char*)&nand[0][0];
                 bool warn=false;
                 for(int i=0;i<16;i++){
-                    if(p[final+i]!=0xff){
+                    if(nand_peek(final+i)!=0xff){
                         warn=true;
                         //this is allowed, but wqx's software always erase before write
-                        if(forced_erase_before_write) p[final+i]=0xff;
+                        if(forced_erase_before_write) nand_peek(final+i)=0xff;
                     }
-                    p[final+i]&=nand_data[i];
+                    nand_peek(final+i)&=nand_data[i];
                 }
                 if(warn){
                     if(debug_level>=1) printf("oops writing to non-erased byte at %x!!!!!!!!!!\n",final);
@@ -336,7 +357,7 @@ void nand_write(uint8_t value){
                 clear_nand_status();
             }
             else if(nand_cmd[0]==0x0 && nand_cmd.size()==2 && nand_addr.size()==4 && nand_data.size()==528){
-                assert(nand_cmd[1]==0x80);
+                nand_write_assert(nand_cmd[1]==0x80);
 
                 unsigned char low=nand_addr[0];
                 unsigned char mid=nand_addr[1];
@@ -348,18 +369,17 @@ void nand_write(uint8_t value){
                 unsigned int x=pos;
                 unsigned int y=low;
                 unsigned int final= pos*528u+ y;
-                assert(final%(528)==0);
-                unsigned char *p=(unsigned char*)&nand[0][0];
+                nand_write_assert(final%(528)==0);
                 printf("[nand] program, offset=%x\n",final);
 
                 bool warn=false;
                 for(int i=0;i<528;i++){
-                    if(p[final+i]!=0xff){
+                    if(nand_peek(final+i)!=0xff){
                         warn=true;
                         //this is allowed, but wqx's software always erase before write
-                        if(forced_erase_before_write) p[final+i]=0xff;
+                        if(forced_erase_before_write) nand_peek(final+i)=0xff;
                     }
-                    p[final+i]&=nand_data[i];
+                    nand_peek(final+i)&=nand_data[i];
                 }
                 if(warn){
                     if(debug_level>=1) printf("oops writing to non-erased byte at %x!!!!!!!!!!\n",final);
@@ -369,16 +389,16 @@ void nand_write(uint8_t value){
             else{
                 debug_show_nand_cmd();
                 printf("unexpected situation for cmd 0x10 %d",(int)nand_cmd.size());
-                assert(false);
+                nand_write_assert(false);
             }
             goto out;
         }
         if(value==0xd0||value==0x80){
             if(value==0xd0){
-                assert(nand_cmd.size()==1);
-                assert(nand_cmd[0]==0x60);
-                assert(nand_addr.size()==3);
-                assert(nand_data.size()==0);
+                nand_write_assert(nand_cmd.size()==1);
+                nand_write_assert(nand_cmd[0]==0x60);
+                nand_write_assert(nand_addr.size()==3);
+                nand_write_assert(nand_data.size()==0);
 
                 unsigned char low=nand_addr[0];
                 unsigned char mid=nand_addr[1];
@@ -390,26 +410,26 @@ void nand_write(uint8_t value){
                 char *p=&nand[0][0];
                 printf("[nand] erase, offset=%x\n",final);
 
-                assert(final%(32*528)==0);
-                assert(final +32*528 <= sizeof(nand));
+                nand_write_assert(final%(32*528)==0);
+                nand_write_assert(final +32*528 <= sizeof(nand));
                 memset(p+final,0xff,32*528);
             }
             if(value==0x80){
-                assert(nand_cmd.size()>=1);
-                assert(nand_cmd[0]==0x50||nand_cmd[0]==0x00);
-                assert(nand_addr.size()==0);
-                assert(nand_data.size()==0);
+                nand_write_assert(nand_cmd.size()>=1);
+                nand_write_assert(nand_cmd[0]==0x50||nand_cmd[0]==0x00);
+                nand_write_assert(nand_addr.size()==0);
+                nand_write_assert(nand_data.size()==0);
             }
             nand_cmd.push_back(value);
             goto out;
         }
-        assert(false);
+        nand_write_assert(false);
     }
 
     if(ALE){
         if(nand_cmd.size()==0){
             printf("got addr %02x while nand_cmd is empty\n",value);
-            assert(false);
+            nand_write_assert(false);
         }
 
         nand_addr.push_back(value);
@@ -419,15 +439,15 @@ void nand_write(uint8_t value){
 
     if(nand_cmd.size()!=0) {
         if(nand_cmd[0]==0x50) {
-            assert(nand_cmd.size()>=2);
-            assert(nand_cmd[1]==0x80);
-            assert(nand_cmd.size()<22);
+            nand_write_assert(nand_cmd.size()>=2);
+            nand_write_assert(nand_cmd[1]==0x80);
+            nand_write_assert(nand_cmd.size()<22);
         }else if (nand_cmd[0]==0x00){
-            assert(nand_cmd.size()>=2);
-            assert(nand_cmd[1]==0x80);
-            assert(nand_cmd.size()<534);
+            nand_write_assert(nand_cmd.size()>=2);
+            nand_write_assert(nand_cmd[1]==0x80);
+            nand_write_assert(nand_cmd.size()<534);
         }else{
-            assert(false);
+            nand_write_assert(false);
         }
         nand_data.push_back(value);
     }
@@ -437,7 +457,7 @@ void nand_write(uint8_t value){
         }
         printf("[%02x]\n",value);
         printf("got data %02x while nand_cmd is empty\n",value);
-        assert(false);
+        nand_write_assert(false);
     }
     goto out;
 
