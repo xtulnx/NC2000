@@ -289,11 +289,9 @@ void cpu_run3(){
 		}
 	}
 	if(reload_pending){
-		//if there is reload pending, exhuast current timeslice without doing anything
-		//then reload will be done in next timeslice
-		cycles+=jam_cycles;
 		return;
 	}
+
 	if(nc2000mode){
 		bool is_nc2600_rom(void);
 		if(is_nc2600_rom()){

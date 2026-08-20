@@ -181,7 +181,7 @@ void RunTimeSlice(uint32_t time_slice) {
 
 	u64_t target_cycles=nc2k_states.cycles +new_cycles;
 
-	while (nc2k_states.cycles < target_cycles) {
+	while (nc2k_states.cycles < target_cycles && !reload_pending) {
 		if(cpu_loop_version == CPU_RUN1){
 			cpu_run();
 		}else if (cpu_loop_version == CPU_RUN2){

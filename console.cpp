@@ -50,7 +50,7 @@ int history_index=0;
 string save_of_current;
 extern SDL_Window* window;
 
-void on_enter_consoel(){
+void on_enter_console(){
 	SDL_StartTextInput();
 	//SDL_SetWindowTitle(window, "Console");
 }
@@ -64,7 +64,7 @@ void handle_console(signed int sym, bool key_down){
 	if(!key_down) return;
 	if(!shift_down && sym==SDLK_BACKQUOTE){
 		console_on^= 0x1;
-		if(console_on) on_enter_consoel();
+		if(console_on) on_enter_console();
 		else on_exit_console();
 		//printf("console %s\n", console_on ? "on" : "off");
 	}
