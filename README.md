@@ -1,5 +1,5 @@
-# NC2000
-Retro device wqx nc2000/nc2600 emulator, which emulates a 6502 SoC and peripherals. The emulator runs firmware dumped from physical device.
+# NC2000/1020Emu
+Retro device wqx nc2000/nc2600/nc1020 emulator, which emulates a 6502 SoC and peripherals. The emulator runs firmware dumped from physical device.
 
 Cross-platform, supports running on windows/linux/mac.
 
@@ -14,7 +14,7 @@ The device has following hardware:
 * 512K x 8 Bit Nor Flash with Bus Flash interface, named SPR4096 (`nor.cpp` `nor.h`)
 * 32M x 8 Bit NAND Flash Memory, supplied by either Samsung or Toshiba (`nand.cpp` and `nand.h`)
 * 24K internal ram, 32K external ram, 4k addition ram built inside SPR4096  (`ram.cpp` and `ram.h`)
-* 00h~03Fh as special registers of SoC, also called IO port (`io.cpp` `io.h`)
+* 00h~03Fh as special registers of SoC, also called IO Ports (`io.cpp` `io.h`)
 * memory mapping from 0000h~FFFFh controlled by `00h` as "bank switch", `0Ah[0:3]` as "BIOS bank switch", `0Ah[8]` as "ROM/RAM select", `0D[0:1]` as "volume select", `0D[2]` as "ramb select" (`mem.cpp` `mem.h`)
 * 160*80 LCD with SPLD803A as LCD driver (`display.cpp` and `display.h`)
 * SPDS104A DSP with speaker (`sound.cpp` and `sound.h` and `dsp` folder)
@@ -60,7 +60,7 @@ The rest of Readme is going to be in Chinese, there are a few more english mater
 <img width="270" alt="image" src="https://github.com/wangyu-/NC2000/assets/4922024/b699cf4a-4831-4203-9446-9b6f7f257caa">
 <img width="270" alt="image" src="https://github.com/wangyu-/NC2000/assets/4922024/07fc2e49-46f8-4d84-8402-7bbdbd33d239">
 
-# NC2000/NC1020模拟器
+# NC2000/1020Emu
 
 文曲星nc2000/nc2600/nc1020模拟器。跨平台，可以运行在windows/linux/mac。
 
@@ -83,7 +83,7 @@ The rest of Readme is going to be in Chinese, there are a few more english mater
 * nc1020 `官方3.6` `4.3内核by SAILOR-HB` `4.9内核 by ZHY` `5.3内核 by 逍遥人`
 * 哈电族nc1020 `官方5.2`
 
-更多介绍见wiki[概述](https://github.com/wangyu-/NC2000/wiki/%E6%A6%82%E8%BF%B0)
+更多介绍见wiki [概述](https://github.com/wangyu-/NC2000/wiki/%E6%A6%82%E8%BF%B0)
   
 # 按键
 
@@ -99,6 +99,8 @@ on/off ： F12
 
 跳出 ： ESC
 翻页上 翻页下 ： , ?
+
+复位：ctrl+shift+F12
 ```
 其他的键都跟直觉相符，与电脑上的同名键对应
 
@@ -107,7 +109,7 @@ on/off ： F12
 * <code>\`</code> 可以进入模拟器内置的命令行
 * SHIFT + <code>\`</code> 可以切至其它键位
 
-具体见wiki[模拟器键位](https://github.com/wangyu-/NC2000/wiki/%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%94%AE%E4%BD%8D)
+具体见wiki [模拟器键位](https://github.com/wangyu-/NC2000/wiki/%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%94%AE%E4%BD%8D)
 
 # 模拟器参数
 
@@ -127,7 +129,7 @@ nc2600 3.5:
 nc2600 非常4.2:
  nc2000.exe --nc2000 --rom roms/fc42  (24MB扩容内核，集成了极速文件系统，同时支持新旧网络，兼容性较好，但是单词不能发音。里面预先下载了很多软件)
 ```
-更多见wiki[切换不同机型和内核](https://github.com/wangyu-/NC2000/wiki/%E5%88%87%E6%8D%A2%E4%B8%8D%E5%90%8C%E6%9C%BA%E5%9E%8B%E5%92%8C%E5%86%85%E6%A0%B8)
+更多见wiki [切换不同机型和内核](https://github.com/wangyu-/NC2000/wiki/%E5%88%87%E6%8D%A2%E4%B8%8D%E5%90%8C%E6%9C%BA%E5%9E%8B%E5%92%8C%E5%86%85%E6%A0%B8)
 
 ### 超频
 
@@ -149,11 +151,11 @@ nc2000.exe --rgb-scale 1,1,0.92
 ```
 nc2000.exe --pixel-size 3 --gap-size 1 --lcd-scale 1      
 ```
-每个wqx像素对应3个屏幕像素，wqx像素间隔对应1个屏幕像素，缩放1倍）
+每个wqx像素对应3个屏幕像素，wqx像素间隔对应1个屏幕像素，缩放1倍
 
 ### 完整参数
 
-见wiki[模拟器参数](https://github.com/wangyu-/NC2000/wiki/%E6%A8%A1%E6%8B%9F%E5%99%A8%E5%8F%82%E6%95%B0)
+见wiki [模拟器参数](https://github.com/wangyu-/NC2000/wiki/%E6%A8%A1%E6%8B%9F%E5%99%A8%E5%8F%82%E6%95%B0)
 
 # 模拟器命令行
 
@@ -161,15 +163,13 @@ nc2000.exe --pixel-size 3 --gap-size 1 --lcd-scale 1
 
 <img width="500" alt="image" src="https://github.com/user-attachments/assets/ab0955ee-38ec-4757-87fb-f99eb03c6210" />
 
-(另外还有其它方法运行命令，具体见wiki)
-
 ### 下载相关命令
 
-`create_dir XXXX`： 在文曲星当前目录内创建一个名为XXXX的目录。 
+`create_dir XXXX`： 在文曲星当前目录内创建一个名为`XXXX`的目录。 
 
-`put aaa.bas bbb.bas` ：把本地的`aaa.bas`下载到文曲星的当前目录，命名为`bbb.bas`
+`put aaa.bas bbb.bas` ：把电脑的`aaa.bas`下载到文曲星的当前目录，命名为`bbb.bas`
 
-`put 1.txt` 把本地的`1.txt`下载到文曲星的当前目录，命名为`1.txt` (也就是上一个命令省略了一个参数的形式)
+`put 1.txt` 把电脑的`1.txt`下载到文曲星的当前目录，命名为`1.txt` (也就是上一个命令省略了一个参数的形式)
 
 `get aaa.bas bbb.bas` ：把文曲星的当前目录的`aaa.bas`上传到电脑，命名为`bbb.bas`
 
@@ -177,14 +177,14 @@ nc2000.exe --pixel-size 3 --gap-size 1 --lcd-scale 1
 #### Note
 
 1. 如何切换当前目录呢？ 你在文曲星上打开资源管理器，进入哪个目录，哪个目录就是你的当前目录。 也就是说你文件上传到哪里，取决于模拟器内文曲星当前所在的文件夹。
-2. 以上命令需要文曲星在进入系统以后才可以运行
-3. `put`命令是把文件原封不动下载到文曲星。文曲星常见的bin是加密的，需要先解密才能传到文曲星上用。 见 [bin加密解密](https://github.com/wangyu-/NC2000/wiki/bin%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86)
+2. 以上命令需要文曲星在进入系统以后才可以运行。
+3. `put`命令是把文件原封不动下载到文曲星。文曲星常见的bin是加密的，需要先解密才能传到文曲星上用。 见wiki [bin加密解密](https://github.com/wangyu-/NC2000/wiki/bin%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86)
 
 ### flash保存
 
 `save_flash`:  把模拟器对nand和nor的修改保存到硬盘。  默认模拟器是不会写硬盘的。
 
-另外还支持ram保存，这样玩宠物猫等游戏退出模拟器后进度不会丢失，具体使用见wiki。
+另外还支持完整的状态保存，这样玩宠物猫等游戏退出模拟器后进度不会丢失，具体使用见wiki [即时存档](https://github.com/wangyu-/NC2000/wiki/%E5%8D%B3%E6%97%B6%E5%AD%98%E6%A1%A3)
 
 ### 其他命令
 
@@ -196,31 +196,35 @@ nc2000.exe --pixel-size 3 --gap-size 1 --lcd-scale 1
 
 # 代码基于以下项目
 
-**这个项目本质上是sim800和wayback的fork：**
+**这个项目本质上是Sim800和Wayback800的fork：**
 
-[sim800](https://github.com/banxian/Sim800 ): cc800模拟器。 作者：曾半仙
+[Sim800](https://github.com/banxian/Sim800 ): cc800模拟器。 作者：曾半仙
 
-[wayback800](https://github.com/banxian/Wayback800iOS): cc800/pc1000模拟器。（sim800作者的新版）
+[Wayback800](https://github.com/banxian/Wayback800iOS): cc800/pc1000模拟器。（同一作者的新版）
 
 **DSP功能基于：**
 
 Pc1000emux。 作者：Lee。
 
-**CPU[1], IO，中断处理参考、复用了：**
+**CPU[1]， IO，中断处理参考、复用了：**
 
 Pc1000emux，nc3000emux旧版，nc3000emux新版(没有源码) 作者：Lee。
 
 [1] 软件默认运行wayback的handypsp cpu实现，不过也支持pc1000emux的cpu实现用做对比查错。用 `--cpu 2`可以切换至pc1000emux的cpu
 
-**早期代码基于：**
+**Bin解密功能基于：**
 
-[nc1020模拟器SDL版](https://github.com/Wang-Yue/NC1020) 作者：Wang-Yue。 貌似此版本是基于"nc1020模拟器c语言版"做了SDL移植。 
+Ftplink。 作者：Lee。
 
-"nc1020模拟器c语言版"作者不详，代码最早应该也是基于sim800。 另外"nc1020模拟器c语言版"貌似跟[nc1020模拟器js版](https://github.com/hackwaly/jswqx)也有关系, 具体不详。
+**早期版本基于：**
 
-**感谢**
+[nc1020模拟器SDL版](https://github.com/Wang-Yue/NC1020) 作者：Wang-Yue。 (貌似此项目源头也是Sim800)
 
-除了感谢以上作者外，诗诺比对本项目提供了很多帮助，特此感谢。
+### 感谢
+
+感谢以上项目作者。
+
+此外，诗诺比对本项目提供了很多帮助，特此感谢。
 
 # Wiki
 
