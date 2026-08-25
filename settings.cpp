@@ -133,6 +133,7 @@ void process_args(int argc, char *argv[])
 		{"uart-log-level", required_argument, 0, 1},
 		{"uart-passthrough", required_argument, 0, 1},
 		{"uart-advance", no_argument, 0, 1},
+		{"mi-clear-pending", required_argument, 0, 1},
 		{NULL, 0, 0, 0}
 	};
 	string uart_dev_name;
@@ -382,6 +383,9 @@ void process_args(int argc, char *argv[])
 			}
 			else if(strcmp(long_options[option_index].name,"uart-advance")==0){
 				uart_advance = true;
+			}
+			else if (strcmp(long_options[option_index].name,"mi-clear-pending")==0){
+				mi_clear_pending_value = stoi(optarg);
 			}
 			else
 			{
