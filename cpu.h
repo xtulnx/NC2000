@@ -26,7 +26,7 @@ public:
     //simulate a delay after mI is cleared, which is seen on some old 6502 CPUs
     //to improve compatiblity with CLI + RTI  (CLI followed by RTI immediately)
     // (not 100% sure if this is real wqx hardware behavior)
-    int mi_clear_pending=0; 
+    int mi_clear_delay=0; 
 
     CPUInterface():A(mA), X(mX), Y(mY), SP(mSP), PC(mPC) {
         printf("using handypsp cpu\n");

@@ -164,7 +164,7 @@ emulation parameter
 extern uint32_t SLICE_INTERVAL;
 extern uint32_t power_save_interval;
 extern uint32_t cpu_batch;
-extern uint32_t mi_clear_pending_value;
+extern uint32_t mi_clear_delay_value;
 extern bool enable_keepon;
 extern bool enable_auto_time_sync;
 

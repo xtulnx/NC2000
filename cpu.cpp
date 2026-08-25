@@ -11,7 +11,7 @@ unsigned char illegal_op_byte[256];
 unsigned char illegal_op_cycle[256];
 
 void CPUInterface::reset(){
-	mi_clear_pending=0;
+	mi_clear_delay=0;
 
 	if(version==CPU_EMUX) return cpu_impl_emux->reset();
 
@@ -62,8 +62,8 @@ int CPUInterface::execute(int max_cycles){
     }
 
     do{
-		if(mi_clear_pending){
-			mi_clear_pending--;
+		if(mi_clear_delay){
+			mi_clear_delay--;
 		}else if (g_irq && !mI){
 			g_irq = false;
 			if(enable_dyn_debug_next_n||enable_dyn_debug||enable_debug_pc) printf("execute irq!!!!!!!\n");
@@ -77,7 +77,7 @@ int CPUInterface::execute(int max_cycles){
 		bool old_mi=mI;
 		cycle += CpuExecuteOP();
 		if(old_mi==true && mI==false) {//mI flipped from true to false
-			mi_clear_pending=mi_clear_pending_value;
+			mi_clear_delay=mi_clear_delay_value;
 		}
     }while(cycle<=max_cycles);
 
