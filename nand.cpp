@@ -109,7 +109,7 @@ void clear_nand_status(){
 
 static uint8_t & nand_peek(int off){
     static uint8_t dummy;
-    if(off<0 || off>=sizeof(nand)){
+    if(off<0 || off>=num_nand_pages*528 + 64*528){
         dummy=0xff;
         if(debug_level>=1) printf("oops, read nand out of bound %d\n",off);
         return dummy;
@@ -165,9 +165,6 @@ uint8_t read_nand(){
         return 0xff;
     }
 
-    /*
-        special handle of read status after a long time
-    */
     if(nand_cmd[0]==0x70 && nand_cmd.size()==1 && nand_addr.size()==0 &&nand_data.size()==0) {
         clear_nand_status();
         return 0x40;
@@ -345,7 +342,7 @@ void nand_write(uint8_t value){
                 for(int i=0;i<16;i++){
                     if(nand_peek(final+i)!=0xff){
                         warn=true;
-                        //this is allowed, but wqx's software always erase before write
+                        //write without erase is allowed, but wqx's software always erase before write
                         if(forced_erase_before_write) nand_peek(final+i)=0xff;
                     }
                     nand_peek(final+i)&=nand_data[i];
@@ -376,7 +373,7 @@ void nand_write(uint8_t value){
                 for(int i=0;i<528;i++){
                     if(nand_peek(final+i)!=0xff){
                         warn=true;
-                        //this is allowed, but wqx's software always erase before write
+                        //write without erase is allowed, but wqx's software always erase before write
                         if(forced_erase_before_write) nand_peek(final+i)=0xff;
                     }
                     nand_peek(final+i)&=nand_data[i];
